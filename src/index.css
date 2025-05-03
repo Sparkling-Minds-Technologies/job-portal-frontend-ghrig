@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-family-primary: "Plus Jakarta Sans", sans-serif;
+  /* --text-xxs: 14px;
+  --text-xs: 16px;
+  --text-s: 20px;
+  --text-md: 32px;
+  --text-lg: 64px; */
+  --color-custom-purple: rgba(125, 90, 226, 0.1);
+}
+@layer base {
+  input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
+:root {
+  font-family: var(--font-family-primary);
+}
+.bg-noise-pattern {
+  /* background-image: url("/path-to-your-noise.png"); */
+}
+.bg-gradient-radial {
+  background: radial-gradient(
+    96.66% 94.46% at 78.1% 9.62%,
+    #6945ed 0%,
+    #1e2d42 100%
+  );
+}
