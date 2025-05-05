@@ -344,7 +344,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-      <div className="w-full p-6 inline-flex flex-col justify-start items-start gap-6">
+      <div className="lg:hidden w-full p-6 inline-flex flex-col justify-start items-start gap-6">
         <HeroProfile />
         <div className="self-stretch p-7 bg-white rounded-2xl shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] outline outline-offset-[-1px] outline-neutral-300 flex flex-col justify-start items-end gap-4">
           <div className="self-stretch inline-flex justify-start items-start gap-3">
