@@ -7,6 +7,9 @@ import Dashboard from "./pages/recruiter-view/dashboard";
 import Candidates from "./pages/recruiter-view/candidates";
 import CandidateCreate from "./pages/recruiter-view/candidate-create";
 import MatchesAndSubmission from "./pages/recruiter-view/matches-and-submission";
+import ClientLoginPage from "./pages/client/client-login";
+import ClientProfilePage from "./pages/client/client-profile";
+import ClientLayout from "./components/client/ClientLayout";
 
 function App() {
   return (
@@ -29,6 +32,13 @@ function App() {
           />
         </Route>
         {/* <Route path="*" element={<NotFound />} /> */}
+
+        {/* Client Routes */}
+        <Route path="/client/login" element={<ClientLoginPage />} />
+        <Route path="/client/profile" element={<ClientProfilePage />} />
+        <Route path="/client" element={<ClientLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
     </div>
   );
