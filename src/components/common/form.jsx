@@ -108,8 +108,9 @@ export default function CommonForm({ formControls, formData, setFormData, i }) {
         }
 
       case "select":
-        const isMedicalProblemField = getControlItem.name === "medicalProblem";
-        const medicalDetailsValue = formData?.medicalDetails || "";
+        const isMedicalProblemField =
+          getControlItem.name === "hasMedicalProblem";
+        const medicalDetailsValue = formData?.medicalProblemDetails || "";
 
         const isOtherEnabled = getControlItem.showOtherInput; // decide if "Other" should show input field
         const selectedValue = formData?.[getControlItem.name] ?? "";
@@ -141,11 +142,6 @@ export default function CommonForm({ formControls, formData, setFormData, i }) {
                     }
                   }
 
-                  // Medical field case
-                  if (isMedicalProblemField && val !== "yes") {
-                    updated.medicalDetails = "";
-                  }
-
                   return updated;
                 });
 
@@ -161,7 +157,7 @@ export default function CommonForm({ formControls, formData, setFormData, i }) {
               }
             >
               <SelectTrigger className="w-full flex placeholder:translate-y-[1px] items-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[20px] px-[16px] placeholder:text-[#9B959F]">
-                <SelectValue placeholder={getControlItem.label} />
+                <SelectValue placeholder={getControlItem?.placeholder} />
               </SelectTrigger>
               <SelectContent className={"bg-white"}>
                 {getControlItem.options?.length > 0 &&
@@ -217,7 +213,7 @@ export default function CommonForm({ formControls, formData, setFormData, i }) {
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    medicalDetails: e.target.value,
+                    medicalProblemDetails: e.target.value,
                   }))
                 }
                 className="flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"

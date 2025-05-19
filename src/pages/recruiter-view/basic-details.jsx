@@ -6,6 +6,45 @@ import { Slate, Upload } from "../../utils/icon";
 import { useRegister } from "../../hooks/recruiter/useAuth";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { z } from "zod";
+import { validateFormData } from "../../utils/objectUtils";
+
+const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
+
+const formSchema = z
+  .object({
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    email: z.string().email("Invalid email address"),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .regex(
+        passwordRegex,
+        "Password must include at least one special character"
+      ),
+    confirmPassword: z.string(),
+    profileImage: z.string().url("Must be a valid URL").optional(),
+    phone: z.object({
+      number: z.union([z.number(), z.string()]), // Accept number or string
+      countryCode: z.string(),
+    }),
+    currentAddress: z.object({
+      address: z.string().min(1, "Current address is required"),
+      city: z.string().min(1, "City is required"),
+      pincode: z.string().min(1, "Pincode is required"),
+    }),
+    permanentAddress: z.object({
+      address: z.string().min(1, "Permanent address is required"),
+      city: z.string().min(1, "City is required"),
+      pincode: z.string().min(1, "Pincode is required"),
+    }),
+    resume: z.string().url("Must be a valid URL").optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"], // Error will be attached to confirmPassword field
+  });
 
 const BasicDetails = () => {
   const [formData, setFormData] = useState({
@@ -35,9 +74,9 @@ const BasicDetails = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    formData.password === formData.confirmPassword
-      ? mutate(formData)
-      : toast.error("Password Mismatch!!");
+    const isValid = validateFormData(formSchema, formData);
+    if (!isValid) return;
+    mutate(formData);
   };
   return (
     <div className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-14 inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">

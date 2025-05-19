@@ -4,6 +4,42 @@ import { KycVerificationDetails, recruiterSignUp } from "../../config";
 import { Button } from "../../components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useKycDetails } from "../../hooks/recruiter/useProfile";
+import { z } from "zod";
+import { validateFormData } from "../../utils/objectUtils";
+
+const formSchema = z.object({
+  panDetails: z.object({
+    number: z
+      .string()
+      .min(1, "PAN number is required")
+      // PAN format: 5 letters, 4 digits, 1 letter (e.g. ABCDE1234F)
+      .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number format"),
+    image: z.string().url("PAN image must be a valid URL"),
+  }),
+  aadharDetails: z.object({
+    number: z
+      .string()
+      .min(1, "Aadhar number is required")
+      // Aadhar: 12 digits exactly
+      .regex(/^\d{12}$/, "Aadhar number must be 12 digits"),
+    image: z.string().url("Aadhar image must be a valid URL"),
+  }),
+  bankDetails: z.object({
+    accountNumber: z.string().min(1, "Account number is required"),
+    accountHolderName: z.string().min(1, "Account holder name is required"),
+    bankName: z.string().min(1, "Bank name is required"),
+    ifscCode: z
+      .string()
+      .min(1, "IFSC code is required")
+      // IFSC format: 4 letters + 0 + 6 digits/letters (e.g. HDFC0001234)
+      .regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code format"),
+    accountType: z.enum(
+      ["saving", "current"],
+      "Account type must be saving or current"
+    ),
+  }),
+  cancelChequeOrPassbookImage: z.string().url("Must be a valid URL"),
+});
 
 const KycVerification = () => {
   const [formData, setFormData] = useState({
@@ -28,6 +64,8 @@ const KycVerification = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    const isValid = validateFormData(formSchema, formData);
+    if (!isValid) return;
     mutate(formData);
   };
   return (

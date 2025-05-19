@@ -9,7 +9,6 @@ import {
 
 const CandidateProfile = () => {
   const { jobSeekerProfile } = useJobSeekerProfileStore();
-  console.log(jobSeekerProfile);
   return (
     <Fragment>
       <div className="hidden w-full min-h-screen self-stretch p-6 bg-white rounded-lg shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] outline outline-offset-[-1px] outline-zinc-300 lg:inline-flex flex-col justify-start items-start gap-4">

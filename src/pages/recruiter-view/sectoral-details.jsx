@@ -5,6 +5,37 @@ import CommonForm from "../../components/common/form";
 import { sectoralFieldsForm } from "../../config";
 import { useSectoralDetails } from "../../hooks/recruiter/useProfile";
 import { useSectorOptions } from "../../hooks/recruiter/useSectoralOption";
+import { z } from "zod";
+import { validateFormData } from "../../utils/objectUtils";
+
+const formSchema = z.object({
+  sectorSpecialization: z
+    .array(z.string().min(1))
+    .length(3, "Exactly 3 sector specializations are required"),
+
+  totalExperience: z
+    .number()
+    .min(0, "Total experience cannot be negative")
+    .optional(), // You can remove optional if it's required
+
+  experienceLevel: z
+    .array(z.string().min(1))
+    .length(2, "Exactly 2 experience levels are required"),
+
+  lastOrganization: z.object({
+    name: z.string().min(1, "Organization name is required"),
+    position: z.string().min(1, "Position is required"),
+    employmentType: z.string().optional(),
+    startYear: z.number().int(),
+  }),
+
+  relievingLetter: z.string().url("Relieving letter must be a valid URL"),
+
+  linkedinProfile: z
+    .string()
+    .url("Linkedin profile must be a valid URL")
+    .or(z.literal("")), // allow empty string or valid URL
+});
 
 const SectoralDetails = () => {
   const [formData, setFormData] = useState({
@@ -36,6 +67,8 @@ const SectoralDetails = () => {
       ),
       experienceLevel: formData.experienceLevel.map((ex) => ex.id),
     };
+    const isValid = validateFormData(formSchema, payload);
+    if (!isValid) return;
     mutate(payload);
   };
   return (

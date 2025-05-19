@@ -7,7 +7,6 @@ const CheckAuth = ({ allowedRoles = [], fetchProfileHook, children }) => {
   const { isAuthenticated, user } = useAuthStore();
   const shouldFetchProfile = !user; // Only fetch if authenticated and no user data
   const role = user?.role || allowedRoles[0]; // fallback to allowedRole during first render
-
   // ✅ Always call both hooks
   const recruiterProfile = useGetRecruiterUserProfile({
     enabled: !user && role === "recruiter",

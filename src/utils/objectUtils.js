@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 export const getNestedValue = (obj, path) => {
   return path.split(".").reduce((acc, key) => acc?.[key], obj);
 };
@@ -69,4 +71,19 @@ export const getDurationBetweenDates = (startDateStr, endDateStr) => {
   if (months > 0) result += `${months} mon${months > 1 ? "s" : ""}`;
 
   return result.trim() || "0 mon";
+};
+export const validateFormData = (validationSchema, formData) => {
+  if (!validationSchema) return true;
+
+  const result = validationSchema.safeParse(formData);
+
+  if (!result.success) {
+    const allErrors = result.error.flatten().fieldErrors;
+    const firstError = Object.values(allErrors)[0]?.[0];
+
+    if (firstError) toast.error(firstError);
+    return false;
+  }
+
+  return true;
 };

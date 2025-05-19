@@ -101,7 +101,7 @@ function App() {
         <Route
           path="/"
           element={
-            <CheckAuth allowedRoles={["corporate"]}>
+            <CheckAuth allowedRoles={["recruiter", "corporate"]}>
               <CorporateDashboard />
             </CheckAuth>
           }

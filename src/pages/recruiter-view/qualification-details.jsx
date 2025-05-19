@@ -4,6 +4,50 @@ import { Loader2 } from "lucide-react";
 import CommonForm from "../../components/common/form";
 import { referenceFields, sectoralFieldsForm2 } from "../../config";
 import { useSectoralDetails } from "../../hooks/recruiter/useProfile";
+import { z } from "zod";
+import { validateFormData } from "../../utils/objectUtils";
+
+const referenceSchema = z.object({
+  name: z.string().min(1, "Reference name is required"),
+  contactNo: z
+    .string()
+    .min(10, "Contact number must be 10 digits")
+    .max(10, "Contact number must be 10 digits")
+    .regex(/^\d+$/, "Contact number must contain only digits"),
+  organization: z.string().min(1, "Organization is required"),
+  designation: z.string().min(1, "Designation is required"),
+});
+
+const formDataSchema = z
+  .object({
+    latestQualification: z.string().url("Must be a valid URL"),
+    joinReason: z.string().min(1, "Join reason is required"),
+    monthlyClosures: z
+      .number()
+      .int()
+      .nonnegative("Monthly closures must be zero or more"),
+    jobSource: z.string().min(1, "Job source is required"),
+    fatherName: z.string().min(1, "Father's name is required"),
+    motherName: z.string().min(1, "Mother's name is required"),
+    references: z
+      .array(referenceSchema)
+      .length(2, "Exactly 2 references required"),
+    hasMedicalProblem: z.boolean(),
+    medicalProblemDetails: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      // If hasMedicalProblem is true, medicalDetails must be non-empty
+      if (data.hasMedicalProblem) {
+        return data.medicalProblemDetails.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message: "Medical details are required if there is a medical problem",
+      path: ["medicalDetails"],
+    }
+  );
 
 const QualificationDetails = () => {
   const [formData, setFormData] = useState({
@@ -28,13 +72,19 @@ const QualificationDetails = () => {
       },
     ],
     hasMedicalProblem: false,
+    medicalProblemDetails: "",
   });
   const { mutate, isPending } = useSectoralDetails();
   const onSubmit = (e) => {
     e.preventDefault();
-    mutate(formData);
+    const payLoad = {
+      ...formData,
+      hasMedicalProblem: formData.hasMedicalProblem === "yes" ? true : false,
+    };
+    const isValid = validateFormData(formDataSchema, payLoad);
+    if (!isValid) return;
+    mutate(payLoad);
   };
-
   return (
     <div className="w-full self-stretch lg:px-36 lg:py-14 p-[20px] inline-flex flex-col justify-start items-start lg:gap-2 gap-[10px]">
       <div className="w-full inline-flex justify-start items-start gap-3">

@@ -7,6 +7,71 @@ import {
 import { Button } from "../../ui/button";
 import { useCreateApplicant } from "../../../hooks/recruiter/useApplicant";
 import { Loader2 } from "lucide-react";
+import { z } from "zod";
+import { validateFormData } from "../../../utils/objectUtils";
+
+const educationSchema = z.object({
+  degree: z.string().min(1, "Degree is required"),
+  institution: z.string(),
+  studyType: z.string(),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().min(1, "End date is required"),
+});
+
+const formDataSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+
+  profilePicture: z.string().url("Profile picture must be a valid URL"),
+
+  phone: z.object({
+    number: z
+      .string()
+      .min(10, "Phone number must be 10 digits")
+      .max(10, "Phone number must be 10 digits")
+      .regex(/^\d+$/, "Phone number must contain only digits"),
+    countryCode: z.string().min(1, "Country code is required"),
+  }),
+
+  email: z.string().email("Email must be valid"),
+
+  currentAddress: z.object({
+    address: z.string().min(1, "Current address is required"),
+    city: z.string().min(1, "City is required"),
+    pincode: z
+      .string()
+      .min(6, "Pincode must be 6 digits")
+      .max(6, "Pincode must be 6 digits")
+      .regex(/^\d+$/, "Pincode must contain only digits"),
+  }),
+
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    ),
+
+  permanentAddress: z.object({
+    address: z.string().min(1, "Permanent address is required"),
+    city: z.string().min(1, "City is required"),
+    pincode: z
+      .string()
+      .min(6, "Pincode must be 6 digits")
+      .max(6, "Pincode must be 6 digits")
+      .regex(/^\d+$/, "Pincode must contain only digits"),
+  }),
+
+  gender: z.string().min(1, "Gender is required"),
+
+  education: z
+    .array(educationSchema)
+    .min(1, "At least one education record is required"),
+
+  currentWorkingStatus: z.string().min(1, "Current working status is required"),
+
+  resume: z.string().url("Resume must be a valid URL"),
+});
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +88,7 @@ const Index = () => {
       city: "",
       pincode: "",
     },
-    password: "qwe",
+    password: "peeyush@123",
     permanentAddress: {
       address: "",
       city: "",
@@ -45,6 +110,8 @@ const Index = () => {
   const { mutate, isPending } = useCreateApplicant();
   const onSubmit = (e) => {
     e.preventDefault();
+    const isValid = validateFormData(formDataSchema, formData);
+    if (!isValid) return;
     mutate(formData);
   };
   return (
@@ -121,11 +188,11 @@ const Index = () => {
                   onClick={() =>
                     setFormData((prev) => ({
                       ...prev,
-                      currentWorkingStatus: "notice period",
+                      currentWorkingStatus: "serving-notice-period",
                     }))
                   }
                   className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
-                    formData.currentWorkingStatus === "notice period"
+                    formData.currentWorkingStatus === "serving-notice-period"
                       ? "outline-[#6945ED]"
                       : "outline-neutral-200"
                   } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
@@ -134,7 +201,8 @@ const Index = () => {
                     Serving Notice Period
                   </span>
 
-                  {formData.currentWorkingStatus === "notice period" && (
+                  {formData.currentWorkingStatus ===
+                    "serving-notice-period" && (
                     <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
                   )}
                 </div>
@@ -143,11 +211,11 @@ const Index = () => {
                   onClick={() =>
                     setFormData((prev) => ({
                       ...prev,
-                      currentWorkingStatus: "not working",
+                      currentWorkingStatus: "not-working",
                     }))
                   }
                   className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
-                    formData.currentWorkingStatus === "not working"
+                    formData.currentWorkingStatus === "not-working"
                       ? "outline-[#6945ED]"
                       : "outline-neutral-200"
                   } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
@@ -156,7 +224,7 @@ const Index = () => {
                     Not working
                   </span>
 
-                  {formData.currentWorkingStatus === "not working" && (
+                  {formData.currentWorkingStatus === "not-working" && (
                     <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
                   )}
                 </div>

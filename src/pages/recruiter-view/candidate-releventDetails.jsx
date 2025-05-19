@@ -9,6 +9,54 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useCreateApplicant } from "../../hooks/recruiter/useApplicant";
+import { z } from "zod";
+import { validateFormData } from "../../utils/objectUtils";
+
+const experienceDetailSchema = z.object({
+  companyName: z.string().min(1, "Company name is required"),
+  employmentType: z.string().optional(),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z
+    .string()
+    .min(1, "End date is required")
+    .optional()
+    .or(z.literal("")), // Allow empty string if currentlyWorking is true
+  currentlyWorking: z.boolean().optional(),
+});
+
+const formDataSchema = z.object({
+  noticePeriod: z
+    .number()
+    .min(0, "Notice period must be a non-negative number"),
+
+  totalExperience: z
+    .number()
+    .min(0, "Total experience must be a non-negative number"),
+
+  totalExperienceInMonth: z
+    .number()
+    .min(0, "Total experience in months must be non-negative"),
+
+  currentSalary: z
+    .number()
+    .min(0, "Current salary must be a non-negative number"),
+
+  expectedSalary: z
+    .number()
+    .min(0, "Expected salary must be a non-negative number"),
+
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    ),
+  currentIndustry: z.string().min(1, "Current Sector is required"),
+  experienceDetails: z
+    .array(experienceDetailSchema)
+    .min(1, "At least one experience entry is required"),
+});
 
 const CandidateReleventDetails = () => {
   const [formData, setFormData] = useState({
@@ -16,11 +64,9 @@ const CandidateReleventDetails = () => {
     totalExperience: 0,
     totalExperienceInMonth: 0,
     currentSalary: 0,
+    currentIndustry: "",
     expectedSalary: 0,
-    roleLookingFor: "",
-    areaOfExpertise: "",
-    functionalArea: "",
-    password: "qwe",
+    password: "peeyush@123",
     experienceDetails: [
       {
         companyName: "",
@@ -34,6 +80,8 @@ const CandidateReleventDetails = () => {
   const { mutate, isPending } = useCreateApplicant();
   const onSubmit = (e) => {
     e.preventDefault();
+    const isValid = validateFormData(formDataSchema, formData);
+    if (!isValid) return;
     mutate(formData);
   };
   return (

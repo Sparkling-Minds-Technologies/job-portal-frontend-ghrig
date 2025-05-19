@@ -64,6 +64,16 @@ export const KycVerificationDetails = [
         componentType: "input",
         type: "text",
       },
+      {
+        name: "bankDetails.accountType",
+        label: "",
+        placeholder: "Account Type",
+        componentType: "select",
+        options: [
+          { id: "saving", label: "Saving" },
+          { id: "current", label: "Current" },
+        ],
+      },
     ],
   },
 ];
@@ -746,6 +756,7 @@ export const sectoralFieldsForm2 = [
     allowOther: true,
     showOtherInput: true,
     inlineOther: true,
+    placeholder: "Select",
   },
 
   {
@@ -762,13 +773,14 @@ export const sectoralFieldsForm2 = [
   },
 
   {
-    name: "medicalProblem",
+    name: "hasMedicalProblem",
     label: "Any Medical Problem?",
     componentType: "select",
     options: [
       { id: "no", label: "No" },
       { id: "yes", label: "Yes" },
     ],
+    placeholder: "select",
   },
 ];
 export const referenceFields = [
@@ -863,7 +875,7 @@ export const candiadateCreationformControls = [
         label: "",
         placeholder: "Enter Pincode",
         componentType: "input",
-        type: "number",
+        type: "text",
         width: "1/3",
       },
     ],
@@ -891,7 +903,7 @@ export const candiadateCreationformControls = [
         label: "",
         placeholder: "Enter Pincode",
         componentType: "input",
-        type: "number",
+        type: "text",
         width: "1/3",
       },
     ],
