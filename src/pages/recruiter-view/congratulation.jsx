@@ -32,10 +32,10 @@ const Congratulation = () => {
         <div className="self-stretch px-[20px] py-[20px] lg:px-36 lg:py-24 flex flex-col justify-center items-center gap-20">
           <div className="flex flex-col justify-start items-start gap-8">
             <div className="flex flex-col justify-start items-start gap-7">
-              <div className="self-stretch text-center justify-start text-gray-900 text-3xl font-bold leading-10">
+              <div className="self-stretch text-center justify-start text-gray-900 text-xl lg:text-3xl font-bold leading-10">
                 Congratulations, You’re In!
               </div>
-              <div className="self-stretch text-center justify-start text-gray-900 text-2xl font-bold leading-loose">
+              <div className="self-stretch text-center justify-start text-gray-900 text-lg lg:text-2xl font-bold leading-loose">
                 Welcome aboard, {user?.name}
               </div>
               <div className="self-stretch text-center justify-start text-neutral-900 text-base font-normal leading-snug">
