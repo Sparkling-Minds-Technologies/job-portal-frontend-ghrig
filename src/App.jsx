@@ -18,10 +18,13 @@ import RecruiterLogin from "./pages/recruiter-view/log-in";
 import CorporateLogIn from "./pages/corporate-view/log-in";
 import RecruiterDashboard from "./pages/recruiter-view/dashboard";
 import CorporateDashboard from "./pages/corporate-view/dashboard";
+import { useGetUserProfile as useGetRecruiterUserProfile } from "./hooks/recruiter/useProfile";
+import { useEffect } from "react";
 
 function App() {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
+
   if (token) {
     useAuthStore.getState().setToken(token, !!localStorage.getItem("token"));
     useAuthStore.getState().setIsAuthenticated(true);
@@ -34,7 +37,10 @@ function App() {
         <Route
           path="/recruiter/profile-setup"
           element={
-            <CheckAuth allowedRoles={["recruiter"]}>
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["recruiter"]}
+            >
               <ProfileSetupLayout />
             </CheckAuth>
           }
@@ -51,7 +57,10 @@ function App() {
         <Route
           path="/recruiter"
           element={
-            <CheckAuth allowedRoles={["recruiter"]}>
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["recruiter"]}
+            >
               <RecruiterLayout />
             </CheckAuth>
           }
@@ -76,7 +85,10 @@ function App() {
         <Route
           path="/recruiter/log-in"
           element={
-            <CheckAuth allowedRoles={["recruiter"]}>
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["recruiter"]}
+            >
               <RecruiterLogin />
             </CheckAuth>
           }
@@ -84,7 +96,10 @@ function App() {
         <Route
           path="/corporate/log-in"
           element={
-            <CheckAuth allowedRoles={["corporate"]}>
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["corporate"]}
+            >
               <CorporateLogIn />
             </CheckAuth>
           }
@@ -92,7 +107,10 @@ function App() {
         <Route
           path="/corporate/dashboard"
           element={
-            <CheckAuth allowedRoles={["corporate"]}>
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["corporate"]}
+            >
               <CorporateDashboard />
             </CheckAuth>
           }
@@ -101,7 +119,10 @@ function App() {
         <Route
           path="/"
           element={
-            <CheckAuth allowedRoles={["recruiter", "corporate"]}>
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["recruiter", "recruiter"]}
+            >
               <CorporateDashboard />
             </CheckAuth>
           }
@@ -109,7 +130,10 @@ function App() {
         <Route
           path="*"
           element={
-            <CheckAuth allowedRoles={[""]}>
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["recuiter"]}
+            >
               <CorporateDashboard />
             </CheckAuth>
           }

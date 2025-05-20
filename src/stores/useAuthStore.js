@@ -4,6 +4,7 @@ export const useAuthStore = create((set) => ({
   token: null,
   user: null,
   isAuthenticated: false,
+  refetchProfile: false,
   setToken: (token, rememberMe) => {
     if (rememberMe) {
       localStorage.setItem("token", token);
@@ -22,10 +23,16 @@ export const useAuthStore = create((set) => ({
       if (state.isAuthenticated === isAuthenticated) return state;
       return { isAuthenticated };
     }),
+  setRefetchProfile: (value) => set({ refetchProfile: value }),
   logout: () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
-    set({ token: null, user: null, isAuthenticated: false });
+    set({
+      token: null,
+      user: null,
+      isAuthenticated: false,
+      refetchProfile: false,
+    });
   },
 }));
 

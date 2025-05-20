@@ -1,44 +1,66 @@
 import { Navigate, useLocation } from "react-router-dom";
 import useAuthStore from "../../stores/useAuthStore";
-import { useGetUserProfile as useGetRecruiterUserProfile } from "../../hooks/recruiter/useProfile";
+import { useEffect } from "react";
 
 const CheckAuth = ({ allowedRoles = [], fetchProfileHook, children }) => {
   const location = useLocation();
-  const { isAuthenticated, user } = useAuthStore();
-  const shouldFetchProfile = !user; // Only fetch if authenticated and no user data
-  const role = user?.role || allowedRoles[0]; // fallback to allowedRole during first render
-  // ✅ Always call both hooks
-  const recruiterProfile = useGetRecruiterUserProfile({
-    enabled: !user && role === "recruiter",
-  });
-  // const corporateProfile = useGetCorporateUserProfile({
-  //   enabled: !user && role === "corporate",
-  // });
+  const {
+    isAuthenticated,
+    setIsAuthenticated,
+    user,
+    setUser,
+    refetchProfile,
+    setRefetchProfile,
+    token,
+  } = useAuthStore();
+  const profile = fetchProfileHook
+    ? fetchProfileHook({
+        enabled:
+          isAuthenticated &&
+          (!user || refetchProfile) &&
+          allowedRoles.includes("recruiter"),
+      })
+    : null;
+  useEffect(() => {
+    if (profile?.status === "success") {
+      setUser(profile?.data?.data);
+      setIsAuthenticated(true);
+      if (refetchProfile) {
+        setRefetchProfile(false);
+      }
+    }
+  }, [
+    profile?.status,
+    profile?.data?.data,
+    setUser,
+    refetchProfile,
+    setRefetchProfile,
+  ]);
+  const role = user?.role;
 
-  // ✅ Use only the relevant hook result
-  const isLoading = recruiterProfile.isLoading;
+  const isLoading = profile?.isLoading;
+  // console.log(isAuthenticated, user, token, role);
   const isLoginOrRegisterRoute =
     location.pathname.includes("/log-in") ||
     location.pathname.includes("/basic-details");
 
-  if (isLoading && shouldFetchProfile) return <div>Loading...</div>;
-  // If user is at root route "/"
+  if (isLoading && !user) return <div>Loading...</div>;
+
   if (location.pathname === "/") {
-    if (isAuthenticated) {
-      // Redirect to user's role-based dashboard
-      return <Navigate to={`/${user?.role}/dashboard`} replace />;
-    } else {
-      // Default unauthenticated to recruiter login for now
-      return <Navigate to="/recruiter/log-in" replace />;
-    }
-  }
-  // Redirect logged-in users away from login/register pages
-  if (isAuthenticated && isLoginOrRegisterRoute) {
-    return <Navigate to={`/${user?.role}/dashboard`} replace />;
+    return isAuthenticated ? (
+      <Navigate to={`/${role}/dashboard`} replace />
+    ) : (
+      <Navigate to={`/${allowedRoles[0]}/log-in`} replace />
+    );
   }
 
-  // If not authenticated and trying to access protected routes
-  if (!isAuthenticated && !isLoginOrRegisterRoute) {
+  if (isAuthenticated && isLoginOrRegisterRoute && !isLoading && role) {
+    // console.log("first");
+    return <Navigate to={`/${role}/dashboard`} replace />;
+  }
+
+  if (!isAuthenticated && !isLoginOrRegisterRoute && !isLoading) {
+    // console.log("second");
     return (
       <Navigate
         to={`/${allowedRoles[0]}/log-in`}
@@ -48,12 +70,14 @@ const CheckAuth = ({ allowedRoles = [], fetchProfileHook, children }) => {
     );
   }
 
-  // If user is authenticated but does not have access to this route
   if (
     isAuthenticated &&
-    allowedRoles.length > 0 &&
-    !allowedRoles.includes(user?.role)
+    allowedRoles?.length &&
+    !allowedRoles.includes(role) &&
+    !isLoading &&
+    role
   ) {
+    // console.log("third");
     return <Navigate to="/unauthorized" replace />;
   }
 

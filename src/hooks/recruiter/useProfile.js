@@ -7,10 +7,12 @@ import useAuthStore from "../../stores/useAuthStore";
 
 export const useKycDetails = () => {
   const navigate = useNavigate();
+  const { setRefetchProfile } = useAuthStore();
   return useMutation({
     mutationFn: kycDetails,
     onSuccess: (data) => {
       toast.success(data.data.message);
+      setRefetchProfile(true);
       navigate("/recruiter/profile-setup/congratulation");
     },
     onError: (error) => {
@@ -20,13 +22,12 @@ export const useKycDetails = () => {
 };
 export const useSectoralDetails = () => {
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
+  const { setRefetchProfile } = useAuthStore();
   return useMutation({
     mutationFn: sectoralDetails,
     onSuccess: async (data, variables) => {
       toast.success(data.data.message);
-      const response = await getUserDetails({});
-      setUser(response.data.data);
+      setRefetchProfile(true);
       if (variables.sectorSpecialization) {
         navigate("/recruiter/profile-setup/qualification-details");
       } else {
@@ -40,24 +41,14 @@ export const useSectoralDetails = () => {
 };
 export const useGetUserProfile = ({ enabled = true } = {}) => {
   const { token } = useAuthStore();
-  const setUser = useAuthStore((state) => state.setUser);
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
   const navigate = useNavigate();
-
   return useQuery({
     queryKey: ["user-profile", token],
     queryFn: ({ signal }) => getUserDetails({ signal }),
     enabled: enabled && !!token,
-    select: (data) => {
-      const newUser = data.data;
-      setUser(newUser);
-      setIsAuthenticated(true);
-    },
     onError: (error) => {
       toast.error("Session expired. Please login again.");
       navigate("/recruiter/log-in");
     },
-    staleTime: 5 * 60 * 1000,
-    retry: false,
   });
 };

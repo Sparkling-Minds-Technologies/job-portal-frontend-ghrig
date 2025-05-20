@@ -3,19 +3,19 @@ import useAuthStore from "../../stores/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { login, register } from "../../api/recruiter/auth";
 import { toast } from "sonner";
-import { getUserDetails } from "../../api/recruiter/user";
 
 export const useLogin = () => {
   const navigate = useNavigate();
-  const { setUser, setToken, setIsAuthenticated } = useAuthStore();
+  const { setUser, setToken, setIsAuthenticated, setRefetchProfile } =
+    useAuthStore();
   return useMutation({
     mutationFn: login,
     onSuccess: async (data, variables) => {
       toast.success(data.data.message);
       setToken(data.data.data.token, variables.rememberme);
       setIsAuthenticated(true);
-      const response = await getUserDetails({});
-      setUser(response.data.data);
+      setUser(data.data.data);
+      setRefetchProfile(true);
       navigate("/recruiter/dashboard");
     },
     onError: (error) => {
@@ -25,17 +25,22 @@ export const useLogin = () => {
 };
 
 export const useRegister = () => {
-  const { setToken } = useAuthStore();
+  const { setToken, setRefetchProfile, setIsAuthenticated } = useAuthStore();
   const navigate = useNavigate();
   return useMutation({
     mutationFn: register,
     onSuccess: (data) => {
       toast.success(data.data.message);
       setToken(data.data.data.token);
+      setIsAuthenticated(true);
+      setRefetchProfile(true);
       navigate("/recruiter/profile-setup/kyc-verification");
     },
     onError: (error) => {
-      toast.error(error.response.data.message, {});
+      const message =
+        error?.response?.data?.message ||
+        "An error occurred during registration.";
+      toast.error(message);
     },
   });
 };

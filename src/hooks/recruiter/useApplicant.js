@@ -17,6 +17,7 @@ export const useGetAllApplicant = () => {
     refetchOnWindowFocus: false,
   });
 };
+
 export const useCreateApplicant = () => {
   const navigate = useNavigate();
   const { setJobSeekerProfile } = useJobSeekerProfileStore();
