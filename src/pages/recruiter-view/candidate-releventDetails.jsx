@@ -69,7 +69,6 @@ const CandidateReleventDetails = () => {
     currentSalary: 0,
     currentIndustry: "",
     expectedSalary: 0,
-    password: "peeyush@123",
     experienceDetails: [
       {
         companyName: "",
