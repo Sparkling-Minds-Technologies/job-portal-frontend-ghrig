@@ -146,11 +146,9 @@ const Index = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const isValid = validateFormData(formDataSchema, formData);
-    if (!isValid) return;
-
+    let payLoad;
     if (formData.sameAs) {
-      let payLoad = {
+      payLoad = {
         ...formData,
         permanentAddress: {
           ...formData.permanentAddress,
@@ -160,9 +158,11 @@ const Index = () => {
           pincode: formData.currentAddress.pincode,
         },
       };
-      return mutate(payLoad);
     }
-    mutate(formData);
+    const isValid = validateFormData(formDataSchema, payLoad);
+    if (!isValid) return;
+
+    mutate(payLoad);
   };
   const handleUpload = (file, callback) => {
     UploadImage(file, {
