@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -27,6 +27,7 @@ import {
 } from "../../config";
 import MonthYearPicker from "./monthYearCalendar";
 import { Checkbox } from "../ui/checkbox";
+import { X } from "lucide-react";
 
 export default function CommonForm({
   formControls,
@@ -264,60 +265,75 @@ export default function CommonForm({
 
       case "file":
         const [fileNames, setFileNames] = useState("");
-
+        const fileInputRef = useRef(null);
         const acceptType =
           getControlItem.accept === "image"
             ? "image/*"
             : getControlItem.accept === "pdf"
             ? "application/pdf"
             : "";
+
+        const handleRemoveFile = () => {
+          setFormData(
+            (prev) => setNestedValue(prev, nameWithIndex, "") // Clear uploaded file URL
+          );
+          setFileNames("");
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          } // Clear file name
+        };
+
         return (
           <div className="relative">
             <div className="relative w-full cursor-pointer">
-              <Input
-                id={getControlItem.name}
-                type="file"
-                accept={acceptType}
-                className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
+              {!fileNames && (
+                <Input
+                  ref={fileInputRef}
+                  id={getControlItem.name}
+                  type="file"
+                  accept={acceptType}
+                  className={`absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full`}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
 
-                  const isImage = file.type.startsWith("image/");
-                  const isPdf = file.type === "application/pdf";
-                  const isValidSize = file.size <= 5 * 1024 * 1024;
+                    const isImage = file.type.startsWith("image/");
+                    const isPdf = file.type === "application/pdf";
+                    const isValidSize = file.size <= 5 * 1024 * 1024;
 
-                  let isValidType = false;
+                    let isValidType = false;
 
-                  if (getControlItem.accept === "image") {
-                    isValidType = isImage;
-                  } else if (getControlItem.accept === "pdf") {
-                    isValidType = isPdf;
-                  }
+                    if (getControlItem.accept === "image") {
+                      isValidType = isImage;
+                    } else if (getControlItem.accept === "pdf") {
+                      isValidType = isPdf;
+                    }
 
-                  if (!isValidType) {
-                    alert(
-                      getControlItem.accept === "image"
-                        ? "Only image files are allowed."
-                        : "Only PDF files are allowed."
-                    );
-                    return;
-                  }
+                    if (!isValidType) {
+                      alert(
+                        getControlItem.accept === "image"
+                          ? "Only image files are allowed."
+                          : "Only PDF files are allowed."
+                      );
+                      return;
+                    }
 
-                  if (!isValidSize) {
-                    alert("File must be smaller than 5MB.");
-                    return;
-                  }
-                  handleUpload(file, (uploadedFileUrl, fileName) => {
-                    setFormData((prev) =>
-                      setNestedValue(prev, nameWithIndex, uploadedFileUrl)
-                    );
-                    setFileNames(fileName);
-                  });
-                }}
-              />
+                    if (!isValidSize) {
+                      alert("File must be smaller than 5MB.");
+                      return;
+                    }
+
+                    handleUpload(file, (uploadedFileUrl, fileName) => {
+                      setFormData((prev) =>
+                        setNestedValue(prev, nameWithIndex, uploadedFileUrl)
+                      );
+                      setFileNames(fileName);
+                    });
+                  }}
+                />
+              )}
               <Label
-                htmlFor={getControlItem.name}
+                htmlFor={!fileNames ? getControlItem.name : undefined}
                 className="flex items-center justify-between border border-[#E2E2E2] w-full rounded-[4px] py-[9px] px-[16px] cursor-pointer z-10"
               >
                 <span
@@ -327,8 +343,20 @@ export default function CommonForm({
                 >
                   {fileNames || getControlItem.placeholder || "Upload File"}
                 </span>
-                <span className="flex justify-center items-center">
-                  <Plus className="h-[15px] w-[15px]" />
+
+                <span
+                  className="flex justify-center items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // stops file dialog from opening
+                    if (fileNames !== "") handleRemoveFile();
+                  }}
+                >
+                  {fileNames === "" ? (
+                    <Plus className="h-[15px] w-[15px]" />
+                  ) : (
+                    <X className="h-[15px] w-[15px] text-red-500 cursor-pointer" />
+                  )}
                 </span>
               </Label>
             </div>

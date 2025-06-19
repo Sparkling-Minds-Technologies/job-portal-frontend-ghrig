@@ -186,7 +186,16 @@ const Index = () => {
       },
     });
   };
-  console.log(formData);
+  const handleRemoveFile = () => {
+    setFormData(
+      (prev) => setNestedValue(prev, "resume", "") // Clear uploaded file URL
+    );
+    setFileName("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    } // Clear file name
+  };
+
   return (
     <div className="w-full self-stretch lg:px-36 lg:py-20 p-[20px] lg:pt-0 inline-flex flex-col justify-start items-end lg:gap-10 gap-[15px]">
       <div className="w-full inline-flex justify-start items-start gap-8">
@@ -440,36 +449,51 @@ const Index = () => {
                   </div>
                   <div className="self-stretch flex flex-col justify-start items-center gap-2">
                     <div className="relative w-60 inline-flex justify-start items-start">
-                      <div className="flex-1 px-4 py-2.5 bg-[#6945ED1A] rounded-[100px] shadow-[0px_1px_2px_0px_rgba(5,32,81,0.05)] outline-1 outline-offset-[-1px] outline-white flex justify-center items-center gap-2.5">
-                        <div className="justify-center text-[#6945ED] text-base font-semibold leading-normal">
-                          {fileName ? "Uploaded" : "Upload"}
+                      <div
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation(); // stops file dialog from opening
+                          if (fileName !== "") handleRemoveFile();
+                        }}
+                        className={`flex-1 px-4 py-2.5 ${
+                          fileName ? "bg-[#e64d4d]" : "bg-[#6945ED1A]"
+                        } rounded-[100px] shadow-[0px_1px_2px_0px_rgba(5,32,81,0.05)] outline-1 outline-offset-[-1px] outline-white flex justify-center items-center gap-2.5 cursor-pointer`}
+                      >
+                        <div
+                          className={`justify-center   ${
+                            fileName ? "text-[#fff]" : "text-[#6945ED]"
+                          } text-base font-semibold leading-normal`}
+                        >
+                          {fileName ? "Delete" : "Upload"}
                         </div>
                       </div>
-                      <Input
-                        type="file"
-                        accept="application/pdf"
-                        className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
-                          const isValidSize = file.size <= 5 * 1024 * 1024;
-                          if (!file.type === "application/pdf") {
-                            alert("Only PDF files are allowed.");
-                            return;
-                          }
+                      {!fileName && (
+                        <Input
+                          type="file"
+                          accept="application/pdf"
+                          className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const isValidSize = file.size <= 5 * 1024 * 1024;
+                            if (!file.type === "application/pdf") {
+                              alert("Only PDF files are allowed.");
+                              return;
+                            }
 
-                          if (!isValidSize) {
-                            alert("File must be smaller than 5MB.");
-                            return;
-                          }
-                          handleUpload2(file, (uploadedFileUrl, fileName) => {
-                            setFormData((prev) =>
-                              setNestedValue(prev, "resume", uploadedFileUrl)
-                            );
-                            setFileName(fileName);
-                          });
-                        }}
-                      />
+                            if (!isValidSize) {
+                              alert("File must be smaller than 5MB.");
+                              return;
+                            }
+                            handleUpload2(file, (uploadedFileUrl, fileName) => {
+                              setFormData((prev) =>
+                                setNestedValue(prev, "resume", uploadedFileUrl)
+                              );
+                              setFileName(fileName);
+                            });
+                          }}
+                        />
+                      )}
                     </div>
                     <div className="justify-start text-stone-500 text-sm font-normal leading-tight">
                       Format: pdf & Max file size: 5 MB

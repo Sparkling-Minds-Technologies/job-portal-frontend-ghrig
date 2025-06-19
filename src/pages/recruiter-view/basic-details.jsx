@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CommonForm from "../../components/common/form";
 import { basicInformation, recruiterSignUp } from "../../config";
 import { Slate, Upload } from "../../utils/icon";
@@ -8,6 +8,7 @@ import { setNestedValue, validateFormData } from "../../utils/objectUtils";
 import ButtonComponent from "../../components/common/button";
 import { useUpload } from "../../hooks/common/useUpload";
 import { Input } from "../../components/ui/input";
+import { X } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -44,6 +45,7 @@ const formSchema = z
   });
 
 const BasicDetails = () => {
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -95,6 +97,15 @@ const BasicDetails = () => {
     if (!isValid) return;
     mutate(formData);
   };
+  const handleRemoveFile = () => {
+    setFormData(
+      (prev) => setNestedValue(prev, "resume", "") // Clear uploaded file URL
+    );
+    setFileName("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    } // Clear file name
+  };
   return (
     <div className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-14 inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
       <div className="w-full flex flex-col justify-start items-start gap-8">
@@ -145,35 +156,49 @@ const BasicDetails = () => {
                   {fileName ? fileName : "Upload Resume"}
                 </div>
                 <div className="w-4 h-4 relative overflow-hidden flex justify-center items-center">
-                  <Upload className="h-full w-full" />
+                  {fileName ? (
+                    <X
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation(); // stops file dialog from opening
+                        if (fileName !== "") handleRemoveFile();
+                      }}
+                      className="h-[15px] w-[15px] text-red-500 cursor-pointer"
+                    />
+                  ) : (
+                    <Upload className="h-full w-full" />
+                  )}
                 </div>
-                <div>
-                  <Input
-                    type="file"
-                    accept="application/pdf"
-                    className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      const isValidSize = file.size <= 5 * 1024 * 1024;
-                      if (!file.type === "application/pdf") {
-                        alert("Only PDF files are allowed.");
-                        return;
-                      }
+                {!fileName && (
+                  <div>
+                    <Input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="application/pdf"
+                      className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const isValidSize = file.size <= 5 * 1024 * 1024;
+                        if (!file.type === "application/pdf") {
+                          alert("Only PDF files are allowed.");
+                          return;
+                        }
 
-                      if (!isValidSize) {
-                        alert("File must be smaller than 5MB.");
-                        return;
-                      }
-                      handleUpload2(file, (uploadedFileUrl, fileName) => {
-                        setFormData((prev) =>
-                          setNestedValue(prev, "resume", uploadedFileUrl)
-                        );
-                        setFileName(fileName);
-                      });
-                    }}
-                  />
-                </div>
+                        if (!isValidSize) {
+                          alert("File must be smaller than 5MB.");
+                          return;
+                        }
+                        handleUpload2(file, (uploadedFileUrl, fileName) => {
+                          setFormData((prev) =>
+                            setNestedValue(prev, "resume", uploadedFileUrl)
+                          );
+                          setFileName(fileName);
+                        });
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
             <div className="self-stretch p-6 bg-white rounded-lg shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] outline-1 outline-offset-[-1px] outline-zinc-300 flex flex-col justify-start items-start gap-4">
