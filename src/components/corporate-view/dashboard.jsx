@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import SearchComponent from "../common/searchComponent";
 import {
@@ -10,6 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "../ui/checkbox";
+import useAuthStore from "../../stores/useAuthStore";
+import { getNextIncompleteStep } from "../../utils/profileCompletion/calculate";
+import { calculateProfileCompletionPercentage } from "../../utils/profileCompletion/rule";
+import { PostJobIcon, PostTrainingIcon } from "../../utils/icon";
 const candidates = [
   {
     id: 1,
@@ -86,6 +89,7 @@ const hiringFunnelData = [
       interview: 0,
       task: 0,
       hired: 0,
+      rejects: 8,
     },
   },
   {
@@ -96,6 +100,7 @@ const hiringFunnelData = [
       screening: 80,
       interview: 80,
       task: 0,
+      rejects: 8,
       hired: 0,
     },
   },
@@ -107,12 +112,22 @@ const hiringFunnelData = [
       screening: 34,
       interview: 80,
       task: 0,
+      rejects: 8,
       hired: 0,
     },
   },
 ];
 
 const Dashboard = () => {
+  const { user } = useAuthStore();
+  const stepRoutes = {
+    page2: { route: "/corporate/profile-setup/final-setup" },
+  };
+  const nextStep = getNextIncompleteStep(user?.profileCompletion || {});
+  const percent = calculateProfileCompletionPercentage(
+    user?.profileCompletion || {}
+  );
+
   return (
     <div className="w-full flex flex-col gap-12">
       {/* Header Section */}
@@ -124,52 +139,14 @@ const Dashboard = () => {
               to={"/corporate/job-posting"}
               className="cursor-pointer px-6 py-3 bg-gray-900 text-base text-white rounded-lg flex items-center gap-2 font-semibold hover:bg-gray-800"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  d="M13.334 4.66669H2.66732C1.93094 4.66669 1.33398 5.26364 1.33398 6.00002V12.6667C1.33398 13.4031 1.93094 14 2.66732 14H13.334C14.0704 14 14.6673 13.4031 14.6673 12.6667V6.00002C14.6673 5.26364 14.0704 4.66669 13.334 4.66669Z"
-                  stroke="#54C413"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M10.6673 14V3.33333C10.6673 2.97971 10.5268 2.64057 10.2768 2.39052C10.0267 2.14048 9.68761 2 9.33398 2H6.66732C6.3137 2 5.97456 2.14048 5.72451 2.39052C5.47446 2.64057 5.33398 2.97971 5.33398 3.33333V14"
-                  stroke="#54C413"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <PostJobIcon />
               Post a New Job
             </Link>
             <Link
               to={"/corporate/trainning-posting"}
               className="cursor-pointer px-6 py-3 bg-gray-900 text-base text-white rounded-lg flex items-center gap-2 font-semibold hover:bg-gray-800"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  d="M13.334 4.66669H2.66732C1.93094 4.66669 1.33398 5.26364 1.33398 6.00002V12.6667C1.33398 13.4031 1.93094 14 2.66732 14H13.334C14.0704 14 14.6673 13.4031 14.6673 12.6667V6.00002C14.6673 5.26364 14.0704 4.66669 13.334 4.66669Z"
-                  stroke="#D9790A"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M10.6673 14V3.33333C10.6673 2.97971 10.5268 2.64057 10.2768 2.39052C10.0267 2.14048 9.68761 2 9.33398 2H6.66732C6.3137 2 5.97456 2.14048 5.72451 2.39052C5.47446 2.64057 5.33398 2.97971 5.33398 3.33333V14"
-                  stroke="#D9790A"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <PostTrainingIcon />
               Post a New Training
             </Link>
           </div>
@@ -179,41 +156,46 @@ const Dashboard = () => {
         <SearchComponent />
 
         {/* Profile Completion */}
-        <div className="p-10 bg-white rounded-2xl shadow-sm border border-gray-200 flex gap-12">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-7xl font-semibold text-gray-900">50%</h2>
-            <p className="text-sm font-semibold text-gray-900 opacity-70">
-              Of your profile is complete
-            </p>
-          </div>
-          <div className="flex-1 flex flex-col gap-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Complete your profile to post jobs!
-            </h3>
-            <div className="flex gap-2">
-              <div className="flex-1 h-2 bg-lime-600 rounded-full"></div>
-              <div className="flex-1 h-2 bg-lime-600 rounded-full"></div>
-              <div className="flex-1 h-2 bg-lime-600 rounded-full"></div>
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 h-2 bg-gray-300 rounded-full"
-                ></div>
-              ))}
-            </div>
-            <div className="flex justify-between items-center">
-              <p className="flex-1 text-sm text-gray-900 opacity-70">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        {!user?.bankDetails && (
+          <div className="p-10 bg-white rounded-2xl shadow-sm border border-gray-200 flex gap-12">
+            <div className="flex flex-col gap-4">
+              <h2 className="text-7xl font-semibold text-gray-900">
+                {percent}%
+              </h2>
+              <p className="text-sm font-semibold text-gray-900 opacity-70">
+                Of your profile is complete
               </p>
-              <Link
-                to={"/corporate/profile-setup/final-setup"}
-                className="px-4 py-3 bg-gray-800 text-white rounded-md font-semibold text-xs hover:bg-gray-700"
-              >
-                Proceed to Complete
-              </Link>
+            </div>
+            <div className="flex-1 flex flex-col gap-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Complete your profile to post jobs!
+              </h3>
+              <div className="flex gap-2">
+                {Object.values(user?.profileCompletion || {}).map(
+                  (step, index) => (
+                    <div
+                      key={index}
+                      className={`flex-1 h-2 ${
+                        step ? "bg-lime-600" : "bg-zinc-300"
+                      } rounded-xl`}
+                    />
+                  )
+                )}
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="flex-1 text-sm text-gray-900 opacity-70">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                </p>
+                <Link
+                  to={stepRoutes[nextStep]?.route || "#"}
+                  className="px-4 py-3 bg-gray-800 text-white rounded-md font-semibold text-xs hover:bg-gray-700"
+                >
+                  Proceed to Complete
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Stats Section */}
@@ -318,9 +300,6 @@ const Dashboard = () => {
               <h3 className="text-lg font-semibold text-gray-900">
                 Hiring Pipeline
               </h3>
-              <span className="text-sm font-medium text-gray-500 cursor-pointer hover:underline">
-                View All
-              </span>
             </div>
             <hr className="border-gray-200" />
 
@@ -329,10 +308,11 @@ const Dashboard = () => {
                 <TableRow>
                   <TableHead>Jobs</TableHead>
                   <TableHead>Applied</TableHead>
-                  <TableHead>Screening</TableHead>
-                  <TableHead>Interview</TableHead>
-                  <TableHead>Task</TableHead>
+                  <TableHead>Screened</TableHead>
+                  <TableHead>Hold</TableHead>
+                  <TableHead>Offered</TableHead>
                   <TableHead>Hired</TableHead>
+                  <TableHead>Reject</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="[&_td]:text-base [&_td]:px-[16px] [&_td]:py-[12px]">
@@ -385,6 +365,13 @@ const Dashboard = () => {
                         </div>
                       </div>
                     </TableCell>
+                    <TableCell className="px-[16px] py-[12px]">
+                      <div className="w-14 px-5 py-2.5 bg-green-100 rounded-md inline-flex justify-center items-center gap-2.5 overflow-hidden">
+                        <div className="justify-start text-green-600 text-xs font-medium leading-none">
+                          {item.stages?.rejects}
+                        </div>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -397,9 +384,6 @@ const Dashboard = () => {
               <h3 className="text-lg font-semibold text-gray-900">
                 Job Postings Management
               </h3>
-              <span className="text-sm font-medium text-gray-500 cursor-pointer hover:underline">
-                View All
-              </span>
             </div>
             <hr className="border-gray-200" />
             <Table>

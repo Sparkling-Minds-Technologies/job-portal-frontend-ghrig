@@ -7,3 +7,5 @@ export const getFilteredJobs = async ({ queryKey }) => {
   const response = await api.get(`/api/v1/corporate/job?${params}`);
   return response.data;
 };
+export const corporateJobPost = (data) =>
+  api.post("/api/v1/corporate/job", data);

@@ -14,7 +14,7 @@ export const useLogin = () => {
       toast.success(data.data.message);
       setToken(data.data.data.token, variables.rememberme);
       setIsAuthenticated(true);
-      setUser(data.data.data);
+      // setUser(data.data.data);
       setRefetchProfile(true);
       navigate("/recruiter/dashboard");
     },

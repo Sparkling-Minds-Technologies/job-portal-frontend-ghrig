@@ -5,7 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { setNestedValue } from "../../utils/objectUtils";
+import { setNestedValue } from "../../utils/commonFunctions";
 
 const months = [
   "Jan",
@@ -40,7 +40,7 @@ export default function MonthYearPicker({
     setSelectedYear(year);
     setStep("month");
   };
-  console.log(open, step);
+ 
   const handleMonthSelect = (monthIndex) => {
     if (selectedYear !== null) {
       const formatted = `${String(monthIndex + 1).padStart(2, "0")}/${String(

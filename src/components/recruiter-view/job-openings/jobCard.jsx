@@ -12,7 +12,7 @@ import {
   formatSalaryRange,
   isTodayOrFuture,
   timeAgo,
-} from "../../../utils/objectUtils";
+} from "../../../utils/commonFunctions";
 import useJobPostStore from "../../../stores/useJobPostStore";
 
 const JobCard = ({ setOpen, item }) => {
@@ -54,7 +54,7 @@ const JobCard = ({ setOpen, item }) => {
             <div className="flex items-center justify-center">
               <LocationIcon className="h-[16px] w-[16px]" />
             </div>
-            <div className="text-[#141414] text-sm">{item?.location}</div>
+            <div className="text-[#141414] text-sm">{item?.city}</div>
           </div>
           <div className="flex gap-[6px] items-center">
             <div className="flex items-center justify-center">
@@ -67,7 +67,10 @@ const JobCard = ({ setOpen, item }) => {
               <CurrencyIcon className="h-[16px] w-[16px]" />
             </div>
             <div className="text-[#141414] text-sm">
-              {formatSalaryRange(item?.salaryRange?.min, item?.salaryRange?.max)}
+              {formatSalaryRange(
+                item?.salaryRange?.min,
+                item?.salaryRange?.max
+              )}
             </div>
           </div>
           <div className="flex gap-[6px] items-center">
@@ -80,7 +83,7 @@ const JobCard = ({ setOpen, item }) => {
           </div>
         </div>
         <div className="flex flex-col gap-[11px]">
-          {isTodayOrFuture(item?.applicationDeadline) ? (
+          {item?.status === "active" ? (
             <div className="flex items-center justify-center gap-[13px] rounded-[8px] border border-[#54C413] px-[12px] py-[8px]">
               <span className="text-[#54C413] text-sm">Active</span>
               <span className="flex items-center justify-center">

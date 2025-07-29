@@ -7,7 +7,7 @@ import {
   CurrencyIcon,
   LocationIcon,
 } from "../../../utils/icon";
-import { formatSalaryRange, timeAgo } from "../../../utils/objectUtils";
+import { formatSalaryRange, timeAgo } from "../../../utils/commonFunctions";
 import { useLocation } from "react-router-dom";
 
 const JobDescription = ({ setOpen1 }) => {

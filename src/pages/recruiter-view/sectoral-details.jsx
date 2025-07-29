@@ -4,14 +4,15 @@ import { sectoralFieldsForm } from "../../config";
 import { useSectoralDetails } from "../../hooks/recruiter/useProfile";
 import { useSectorOptions } from "../../hooks/recruiter/useSectoralOption";
 import { z } from "zod";
-import { validateFormData } from "../../utils/objectUtils";
+import { validateFormData } from "../../utils/commonFunctions";
 import ButtonComponent from "../../components/common/button";
 import { useUpload } from "../../hooks/common/useUpload";
+import Navbar from "../../components/recruiter-view/navbar";
 
 const formSchema = z.object({
   sectorSpecialization: z
-    .array(z.string().min(1))
-    .length(1, "Atleast 1 sector specializations is required"),
+    .array(z.string().min(1, "Sector name cannot be empty"))
+    .min(1, "At least one sector specialization is required"),
 
   totalExperience: z
     .number()
@@ -20,7 +21,7 @@ const formSchema = z.object({
 
   experienceLevel: z
     .array(z.string().min(1))
-    .length(1, "At least 1 experience levels is required"),
+    .min(1, "At least 1 experience levels is required"),
 
   permanentAddress: z.object({
     address: z.string().min(1, "Permanent address is required"),
@@ -67,6 +68,7 @@ const SectoralDetails = () => {
     relievingLetter: "",
     linkedinProfile: "",
   });
+
   const { data: sectorOptions = [], isLoading, error } = useSectorOptions();
   const updatedFields = sectoralFieldsForm.map((field) =>
     field.name === "sectorSpecialization"
@@ -100,7 +102,8 @@ const SectoralDetails = () => {
     });
   };
   return (
-    <div className="w-full self-stretch lg:px-36 lg:py-14 p-[20px] inline-flex flex-col justify-start items-start lg:gap-2 gap-[10px]">
+    <div className="w-full self-stretch lg:px-36 lg:py-[0px] lg:pb-[32px] p-[20px] inline-flex flex-col justify-start items-start lg:gap-2 gap-[10px]">
+      <Navbar onlySupport={true} />
       <div className="w-full flex justify-start items-start gap-3">
         <div className="justify-start text-gray-900 lg:text-3xl text-lg font-bold leading-loose">
           Recruiter Profile Setup

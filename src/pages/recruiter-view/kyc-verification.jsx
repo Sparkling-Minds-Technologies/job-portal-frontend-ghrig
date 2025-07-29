@@ -3,9 +3,10 @@ import CommonForm from "../../components/common/form";
 import { KycVerificationDetails } from "../../config";
 import { useKycDetails } from "../../hooks/recruiter/useProfile";
 import { z } from "zod";
-import { validateFormData } from "../../utils/objectUtils";
+import { validateFormData } from "../../utils/commonFunctions";
 import ButtonComponent from "../../components/common/button";
 import { useUpload } from "../../hooks/common/useUpload";
+import Navbar from "../../components/recruiter-view/navbar";
 
 const formSchema = z.object({
   panDetails: z.object({
@@ -16,7 +17,7 @@ const formSchema = z.object({
       .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number format"),
     image: z
       .string()
-      .min(1, "Image is required")
+      .min(1, "PAN Image is required")
       .url("PAN image must be a valid URL"),
   }),
   aadharDetails: z.object({
@@ -27,7 +28,7 @@ const formSchema = z.object({
       .regex(/^\d{12}$/, "Aadhar number must be 12 digits"),
     image: z
       .string()
-      .min(1, "PAN number is required")
+      .min(1, "Adhaar Image is required")
       .url("Aadhar image must be a valid URL"),
   }),
   bankDetails: z.object({
@@ -39,10 +40,11 @@ const formSchema = z.object({
       .min(1, "IFSC code is required")
       // IFSC format: 4 letters + 0 + 6 digits/letters (e.g. HDFC0001234)
       .regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code format"),
-    accountType: z.enum(
-      ["saving", "current"],
-      "Account type must be saving or current"
-    ),
+    accountType: z.enum(["saving", "current"], {
+      errorMap: () => ({
+        message: "Account type must be either 'saving' or 'current'",
+      }),
+    }),
   }),
   cancelChequeOrPassbookImage: z
     .string()
@@ -91,7 +93,8 @@ const KycVerification = () => {
   };
 
   return (
-    <div className="w-full self-stretch p-[20px] lg:px-36 lg:py-20 inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
+    <div className="w-full self-stretch p-[20px] lg:px-36 lg:py-[0px] lg:pb-[32px] inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
+      <Navbar onlySupport={true} />
       <div className="w-full flex flex-col justify-start items-start gap-8">
         <div className="flex flex-col justify-start items-start gap-7">
           <div className="justify-start text-gray-900 text-md2 lg:text-3xl font-bold leading-loose">

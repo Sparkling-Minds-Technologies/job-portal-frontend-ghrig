@@ -16,7 +16,6 @@ export const useLogin = () => {
       setRefetchProfile(true);
       setToken(data.data.data.token, variables.rememberme);
       setIsAuthenticated(true);
-
       navigate("/corporate/dashboard");
     },
     onError: (error) => {

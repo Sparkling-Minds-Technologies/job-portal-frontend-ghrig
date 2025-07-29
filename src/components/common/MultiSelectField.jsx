@@ -8,6 +8,7 @@ import {
 
 import { X } from "lucide-react";
 import { Input } from "../ui/input";
+import { ArrowDown } from "../../utils/icon";
 
 export default function MultiSelectField({
   value = [],
@@ -72,20 +73,7 @@ export default function MultiSelectField({
                 className="flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="10"
-                  height="6"
-                  viewBox="0 0 10 6"
-                  fill="none"
-                >
-                  <path
-                    d="M0.5 0.75L5 5.25L9.5 0.75"
-                    stroke="#20102B"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <ArrowDown />
               </span>
             </div>
           </div>

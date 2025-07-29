@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "../ui/label";
-import { setNestedValue } from "../../utils/objectUtils";
+import { setNestedValue } from "../../utils/commonFunctions";
 import { CalenderIcon } from "../../utils/icon";
 import { MultiSelectFilter } from "./multiselectFilter";
 import SalaryRangeFilter from "./rangeFilter";
@@ -108,11 +108,12 @@ export default function FilterComponent({
                 </div>
               </div>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto p-0 bg-white" align="start">
               <Calendar
                 mode="single"
                 selected={isValidDate ? new Date(value) : undefined}
-                defaultMonth={isValidDate ? new Date(value) : undefined}
+                month={isValidDate ? new Date(value) : undefined}
+                captionLayout="dropdown"
                 onSelect={(date) => {
                   setFormData((prev) =>
                     setNestedValue(

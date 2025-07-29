@@ -7,12 +7,14 @@ import {
 import ButtonComponent from "../common/button";
 import CommonForm from "../common/form";
 import useAuthStore from "../../stores/useAuthStore";
+import Navbar from "../recruiter-view/navbar";
 
 const FinalSetup = () => {
   const { user } = useAuthStore();
   const [formData, setFormData] = useState({});
   return (
-    <div className="w-full self-stretch px-36 py-14 inline-flex flex-col justify-start items-start gap-12">
+    <div className="w-full self-stretch px-36 py-0 pb-[32px] inline-flex flex-col justify-start items-start gap-12">
+      <Navbar onlySupport={false} />
       <div className="w-full flex flex-col justify-start items-start gap-8">
         <div className="self-stretch flex flex-col justify-start items-start gap-7">
           <div className="self-stretch justify-start text-gray-900 text-3xl font-bold leading-loose">

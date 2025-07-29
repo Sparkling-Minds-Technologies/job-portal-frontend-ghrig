@@ -159,3 +159,8 @@ export function formatDate(dateValue) {
 
   return `${day} ${month}, ${year}`;
 }
+export const getValue = (obj, path) => {
+  return path
+    .split(".")
+    .reduce((acc, key) => (acc ? acc[key] : undefined), obj);
+};

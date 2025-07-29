@@ -54,19 +54,19 @@ const Analytics = () => {
         </div>
       </div>
       <div className="size- inline-flex justify-start items-center gap-5">
+        <Link
+          to={"/corporate/job-posting/listing"}
+          className="w-28 p-3 bg-white rounded-[69px] flex justify-center items-center outline-1 outline-offset-[-1px] gap-6 overflow-hidden outline-neutral-400"
+        >
+          <div className="justify-center  text-neutral-400 text-base font-normal leading-snug">
+            Listings
+          </div>
+        </Link>
         <div className="w-28 p-3 bg-[#6945ED] rounded-[69px] flex justify-center items-center gap-6 overflow-hidden">
           <div className="justify-center text-white text-base font-normal leading-snug">
             Analytics
           </div>
         </div>
-        <Link
-          to={"/corporate/job-posting/listing"}
-          className="w-28 p-3 bg-white rounded-[69px] outline-1 outline-offset-[-1px] outline-neutral-400 flex justify-center items-center gap-6 overflow-hidden"
-        >
-          <div className="justify-center text-neutral-400 text-base font-normal leading-snug">
-            Listings
-          </div>
-        </Link>
       </div>
       <div className="self-stretch p-6 bg-white rounded-lg shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] outline-1 outline-offset-[-1px] outline-zinc-300 flex flex-col justify-start items-start gap-4 overflow-hidden">
         <div className="self-stretch inline-flex justify-between items-center">

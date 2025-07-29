@@ -5,25 +5,33 @@ export const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
   refetchProfile: false,
+  tokenInitialized: false, 
+
   setToken: (token, rememberMe) => {
     if (rememberMe) {
       localStorage.setItem("token", token);
     } else {
       sessionStorage.setItem("token", token);
     }
-    set({ token });
+    set({ token, tokenInitialized: true }); // ✅ mark as initialized
   },
+
+  setTokenInitialized: () => set({ tokenInitialized: true }),
+
   setUser: (user) =>
     set((state) => {
       if (JSON.stringify(state.user) === JSON.stringify(user)) return state;
       return { user };
     }),
+
   setIsAuthenticated: (isAuthenticated) =>
     set((state) => {
       if (state.isAuthenticated === isAuthenticated) return state;
       return { isAuthenticated };
     }),
+
   setRefetchProfile: (value) => set({ refetchProfile: value }),
+
   logout: () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
@@ -32,6 +40,7 @@ export const useAuthStore = create((set) => ({
       user: null,
       isAuthenticated: false,
       refetchProfile: false,
+      tokenInitialized: true, // ✅ make sure to reset this
     });
   },
 }));

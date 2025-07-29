@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getNestedValue, setNestedValue } from "../../utils/objectUtils";
+import { getNestedValue, setNestedValue } from "../../utils/commonFunctions";
 import MultiSelectField from "./MultiSelectField";
 import {
   highestQualification,
@@ -262,6 +262,16 @@ export default function CommonForm({
             rows={4}
           />
         );
+      case "time":
+        return (
+          <Input
+            type="time"
+            id="time-picker"
+            step="1"
+            defaultValue="10:30:00"
+            className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+          />
+        );
 
       case "file":
         const [fileNames, setFileNames] = useState("");
@@ -398,11 +408,12 @@ export default function CommonForm({
                 </div>
               </div>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto p-0 bg-white" align="start">
               <Calendar
                 mode="single"
                 selected={isValidDate ? new Date(value) : undefined}
-                defaultMonth={isValidDate ? new Date(value) : undefined}
+                month={isValidDate ? new Date(value) : undefined}
+                captionLayout="dropdown"
                 onSelect={(date) => {
                   setFormData((prev) =>
                     setNestedValue(

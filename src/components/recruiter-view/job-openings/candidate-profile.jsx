@@ -1,5 +1,11 @@
 import { Fragment } from "react";
-import { ClockIcon, LocationIcon } from "../../../utils/icon";
+import {
+  CallIcon,
+  ClockIcon,
+  DOBIcon,
+  EmailIcon,
+  LocationIcon,
+} from "../../../utils/icon";
 import useJobSeekerProfileStore from "../../../stores/useJobSeekerProfileStore";
 import {
   formatDate,
@@ -7,8 +13,9 @@ import {
   formatIndianNumber,
   formatToMonthYear,
   getDurationBetweenDates,
-} from "../../../utils/objectUtils";
+} from "../../../utils/commonFunctions";
 import { useLocation } from "react-router-dom";
+import ResumeViewer from "../../common/ResumeViewer";
 
 const CandidateProfile = () => {
   const { jobSeekerProfile } = useJobSeekerProfileStore();
@@ -138,27 +145,7 @@ const CandidateProfile = () => {
                 </div>
                 <div className="inline-flex justify-start items-center gap-3">
                   <div className="flex justify-start items-center gap-2.5">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <g clip-path="url(#clip0_1167_6472)">
-                        <path
-                          d="M12.8328 9.86989V11.6199C12.8335 11.7824 12.8002 11.9432 12.7351 12.092C12.6701 12.2409 12.5746 12.3745 12.4549 12.4843C12.3352 12.5941 12.1938 12.6778 12.04 12.7298C11.8861 12.7819 11.723 12.8012 11.5612 12.7866C9.76617 12.5915 8.04193 11.9781 6.52701 10.9957C5.11758 10.1001 3.92263 8.90516 3.02701 7.49573C2.04117 5.97393 1.42766 4.24131 1.23618 2.43823C1.2216 2.27692 1.24077 2.11434 1.29247 1.96084C1.34417 1.80735 1.42726 1.6663 1.53646 1.54667C1.64566 1.42705 1.77857 1.33147 1.92672 1.26603C2.07488 1.20059 2.23505 1.16671 2.39701 1.16656H4.14701C4.43011 1.16377 4.70456 1.26402 4.91921 1.44862C5.13386 1.63322 5.27406 1.88957 5.31368 2.16989C5.38754 2.72993 5.52453 3.27982 5.72201 3.80906C5.8005 4.01785 5.81748 4.24476 5.77096 4.46291C5.72443 4.68105 5.61635 4.88129 5.45951 5.03989L4.71868 5.78073C5.54909 7.24113 6.75828 8.45032 8.21868 9.28073L8.95951 8.53989C9.11812 8.38306 9.31835 8.27497 9.5365 8.22845C9.75465 8.18192 9.98156 8.19891 10.1903 8.27739C10.7196 8.47488 11.2695 8.61186 11.8295 8.68573C12.1129 8.7257 12.3717 8.86843 12.5567 9.08677C12.7417 9.3051 12.8399 9.58381 12.8328 9.86989Z"
-                          stroke="#6945ED"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_1167_6472">
-                          <rect width="14" height="14" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
+                    <CallIcon />
                   </div>
                   <div className="justify-start text-neutral-900 text-sm font-normal leading-normal">
                     {jobSeekerProfile?.phone?.countryCode}
@@ -168,26 +155,7 @@ const CandidateProfile = () => {
                 <div className="inline-flex justify-start items-center gap-3">
                   <div className="flex justify-start items-center gap-2.5">
                     <div className="size-3.5 relative overflow-hidden">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                      >
-                        <path
-                          d="M2.33366 2.33325H11.667C12.3087 2.33325 12.8337 2.85825 12.8337 3.49992V10.4999C12.8337 11.1416 12.3087 11.6666 11.667 11.6666H2.33366C1.69199 11.6666 1.16699 11.1416 1.16699 10.4999V3.49992C1.16699 2.85825 1.69199 2.33325 2.33366 2.33325Z"
-                          stroke="#6945ED"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                        <path
-                          d="M12.8337 3.5L7.00033 7.58333L1.16699 3.5"
-                          stroke="#6945ED"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
+                      <EmailIcon />
                     </div>
                   </div>
                   <div className="justify-start text-neutral-900 text-sm font-normal leading-normal">
@@ -198,38 +166,7 @@ const CandidateProfile = () => {
               <div className="h-20 inline-flex flex-col justify-end items-start gap-1.5">
                 <div className="inline-flex justify-start items-center gap-3">
                   <div className="size-4 relative overflow-hidden">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                    >
-                      <path
-                        d="M12.6667 2.66675H3.33333C2.59695 2.66675 2 3.2637 2 4.00008V13.3334C2 14.0698 2.59695 14.6667 3.33333 14.6667H12.6667C13.403 14.6667 14 14.0698 14 13.3334V4.00008C14 3.2637 13.403 2.66675 12.6667 2.66675Z"
-                        stroke="#6945ED"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M10.667 1.33325V3.99992"
-                        stroke="#6945ED"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M5.33301 1.33325V3.99992"
-                        stroke="#6945ED"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                      <path
-                        d="M2 6.66675H14"
-                        stroke="#6945ED"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
+                    <DOBIcon />
                   </div>
                   <div className="justify-start text-neutral-900 text-sm font-normal leading-normal">
                     {formatDate(jobSeekerProfile?.dob)}
@@ -255,13 +192,6 @@ const CandidateProfile = () => {
                   <span class="text-neutral-900 text-base font-normal leading-snug">
                     {jobSeekerProfile?.about}
                   </span>
-                </div>
-                <div className="w-64 h-36 relative bg-neutral-200 rounded-lg outline-1 outline-offset-[-1px] outline-[#6945ED] overflow-hidden">
-                  <div className="w-40 px-5 py-2.5 left-[51px] top-[51px] absolute bg-[#6945ED] rounded-3xl inline-flex justify-center items-center gap-2.5">
-                    <div className="justify-start text-white text-sm font-medium capitalize">
-                      PDF Viewer
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className="inline-flex justify-start items-start gap-4">
@@ -368,6 +298,10 @@ const CandidateProfile = () => {
                   ))}
                 </div>
               </div>
+              <ResumeViewer
+                name={jobSeekerProfile?.name}
+                fileUrl={jobSeekerProfile?.resume}
+              />
             </div>
           </div>
         </div>

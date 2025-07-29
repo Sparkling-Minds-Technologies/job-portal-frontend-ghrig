@@ -12,7 +12,7 @@ import {
   CommandEmpty,
 } from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getNestedValue } from "../../utils/objectUtils";
+import { getNestedValue } from "../../utils/commonFunctions";
 
 export function MultiSelectFilter({
   name,

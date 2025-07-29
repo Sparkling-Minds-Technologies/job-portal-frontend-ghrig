@@ -1,22 +1,79 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CorporateListing from "../../components/corporate-view/listing";
 import { useFilteredJobs } from "../../hooks/corporate/useJob";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import JobDescription from "../../components/recruiter-view/job-openings/job-description";
+import Navbar from "../../components/recruiter-view/navbar";
+import { useSearchParams } from "react-router-dom";
+import { useDebounce } from "../../hooks/common/useDebounce";
 
 const Listing = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
-  const [filters, setFilters] = useState({
-    page: 1,
-    limit: 10,
-    search: "",
-    jobType: "",
-    sortBy: "",
+  const [searchText, setSearchText] = useState("");
+
+  const [filters, setFilters] = useState(() => {
+    // Restore from URL on first render
+    const params = Object.fromEntries([...searchParams]);
+    return {
+      page: params.page ? parseInt(params.page) : 1,
+      limit: 10,
+      search: params.search || "",
+      jobType: params.jobType || "",
+      sortBy: params.sortBy || "",
+      jobStatus: params.jobStatus || "",
+    };
   });
   const { data: jobPosts, isLoading: isLoading2 } = useFilteredJobs(filters);
+  // const applicants = data?.data ? [...data.data].reverse() : [];
+  // 👇 Sync filters.search to searchText on mount
+  useEffect(() => {
+    if (filters?.search && !searchText) {
+      setSearchText(filters.search);
+    }
+  }, [filters.search]);
 
+  // Debounce searchText to avoid too many API calls
+  const debouncedSearch = useDebounce(searchText, 500);
+
+  // 👇 Sync debounced searchText → filters
+  useEffect(() => {
+    setFilters((prev) => {
+      if (prev.search === debouncedSearch) return prev;
+      return {
+        ...prev,
+        search: debouncedSearch,
+        page: 1,
+      };
+    });
+  }, [debouncedSearch]);
+  // Update URL when filters change
+  useEffect(() => {
+    const updatedParams = {};
+    for (const key in filters) {
+      if (filters[key]) updatedParams[key] = filters[key];
+    }
+    setSearchParams(updatedParams);
+  }, [filters]);
+  // Handle search input
+  const handleSearch = (e) => {
+    setSearchText(e);
+  };
+  // Clear all filters
+  const ClearAll = () => {
+    setFilters((prev) => ({
+      ...prev,
+      page: 1,
+      limit: 10,
+      search: "",
+      jobType: "",
+      sortBy: "",
+      jobStatus: "",
+    }));
+    setSearchText("");
+  };
   return (
-    <div className="lg:pt-[80px] w-full">
+    <div className="w-full">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="right"
@@ -25,18 +82,22 @@ const Listing = () => {
             lg:max-w-[999px] 
             md:max-w-full
             sm:max-w-full 
-            overflow-y-auto"
+            overflow-y-auto border-transparent"
         >
           <div className="w-full h-full">
             <JobDescription />
           </div>
         </SheetContent>
       </Sheet>
+      <Navbar onlySupport={false} />
       <CorporateListing
         jobPosts={jobPosts}
         formData={filters}
         setFormData={setFilters}
         setOpen={setOpen}
+        handleSearch={handleSearch}
+        searchText={searchText}
+        ClearAll={ClearAll}
       />
     </div>
   );

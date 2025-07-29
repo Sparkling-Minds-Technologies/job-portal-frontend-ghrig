@@ -4,11 +4,12 @@ import { basicInformation, recruiterSignUp } from "../../config";
 import { Slate, Upload } from "../../utils/icon";
 import { useRegister } from "../../hooks/recruiter/useAuth";
 import { z } from "zod";
-import { setNestedValue, validateFormData } from "../../utils/objectUtils";
+import { setNestedValue, validateFormData } from "../../utils/commonFunctions";
 import ButtonComponent from "../../components/common/button";
 import { useUpload } from "../../hooks/common/useUpload";
 import { Input } from "../../components/ui/input";
 import { X } from "lucide-react";
+import Navbar from "../../components/recruiter-view/navbar";
 
 const formSchema = z
   .object({
@@ -28,8 +29,20 @@ const formSchema = z
       .min(1, "Profile Image is Required")
       .url("Must be a valid URL"),
     phone: z.object({
-      number: z.union([z.number(), z.string()]), // Accept number or string
-      countryCode: z.string(),
+      number: z.union([
+        z.string().regex(/^\d{10}$/, {
+          message: "Phone number must be a 10-digit string",
+        }),
+        z.number().refine((val) => val.toString().length === 10, {
+          message: "Phone number must be 10 digits",
+        }),
+      ]),
+      countryCode: z
+        .string({
+          required_error: "Country code is required",
+          invalid_type_error: "Country code must be a string",
+        })
+        .min(1, { message: "Country code cannot be empty" }),
     }),
     currentAddress: z.object({
       address: z.string().min(1, "Current address is required"),
@@ -104,10 +117,11 @@ const BasicDetails = () => {
     setFileName("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
-    } // Clear file name
+    }
   };
   return (
-    <div className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-14 inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
+    <div className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-[0px] lg:pb-[32px] inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
+      <Navbar onlySupport={true} />
       <div className="w-full flex flex-col justify-start items-start gap-8">
         <div className="flex flex-col justify-start items-start gap-7">
           <div className="justify-start text-gray-900 text-md2 lg:text-3xl font-bold leading-loose">

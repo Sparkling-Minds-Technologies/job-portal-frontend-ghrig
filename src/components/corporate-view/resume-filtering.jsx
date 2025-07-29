@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "../ui/checkbox";
-import { convertMonthsToYearsAndMonths } from "../../utils/objectUtils";
+import { convertMonthsToYearsAndMonths } from "../../utils/commonFunctions";
 import useJobSeekerProfileStore from "../../stores/useJobSeekerProfileStore";
 const candidateList = [
   {

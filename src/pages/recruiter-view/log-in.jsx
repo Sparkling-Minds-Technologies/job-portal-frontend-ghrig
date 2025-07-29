@@ -2,11 +2,11 @@ import { useState } from "react";
 import LogInComponent from "../../components/recruiter-view/log-in";
 import { useLogin } from "../../hooks/recruiter/useAuth";
 import { z } from "zod";
-import { validateFormData } from "../../utils/objectUtils";
+import { validateFormData } from "../../utils/commonFunctions";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
-  password: z.string().min(1,"Password is Required"),
+  password: z.string().min(1, "Password is Required"),
   rememberme: z.boolean(),
 });
 

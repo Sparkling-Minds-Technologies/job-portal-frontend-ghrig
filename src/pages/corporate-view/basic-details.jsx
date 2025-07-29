@@ -7,9 +7,10 @@ import {
   spocInformationControls,
 } from "../../config";
 import { z } from "zod";
-import { validateFormData } from "../../utils/objectUtils";
+import { validateFormData } from "../../utils/commonFunctions";
 import { useCorporateRegister } from "../../hooks/corporate/useAuth";
 import { useUpload } from "../../hooks/common/useUpload";
+import Navbar from "../../components/recruiter-view/navbar";
 
 // Define the schema for the phone number object (used in both companyContactNumber and contactNumber)
 const phoneNumberSchema = z.object({
@@ -120,8 +121,9 @@ const CorporateBasicDetails = () => {
   return (
     <form
       onSubmit={onSubmit}
-      className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-14 inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7"
+      className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:pt-0 lg:pb-[32px] inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7"
     >
+      <Navbar onlySupport={true} />
       <div className="w-full flex flex-col justify-start items-start gap-8">
         <div className="self-stretch flex flex-col justify-start items-start gap-7">
           <div className="self-stretch justify-start text-gray-900 text-lg lg:text-3xl font-bold leading-loose">

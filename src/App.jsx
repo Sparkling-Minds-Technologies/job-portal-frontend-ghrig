@@ -1,26 +1,36 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import ScrollToTop from "./components/common/scrollToTop";
+import CheckAuth from "./components/common/checkAuth";
+import DynamicCheckAuthWrapper from "./components/common/dynamicCheckAuthWrapper";
+
 import Layout from "./components/recruiter-view/layout";
 import ProfileSetupLayout from "./components/recruiter-view/profile-setup-layout";
+
+import { useGetUserProfile as useGetRecruiterUserProfile } from "./hooks/recruiter/useProfile";
+import { useGetCorporateUserProfile } from "./hooks/corporate/useProfile";
+
+import useAuthStore from "./stores/useAuthStore";
+
+// Recruiter Pages
+import RecruiterLogin from "./pages/recruiter-view/log-in";
+import RecruiterDashboard from "./pages/recruiter-view/dashboard";
 import JobOpenings from "./pages/recruiter-view/job-openings";
 import Candidates from "./pages/recruiter-view/candidates";
 import CandidateCreate from "./pages/recruiter-view/candidate-create";
+import CandidateReleventDetails from "./pages/recruiter-view/candidate-releventDetails";
 import MatchesAndSubmission from "./pages/recruiter-view/matches-and-submission";
 import BasicDetails from "./pages/recruiter-view/basic-details";
 import KycVerification from "./pages/recruiter-view/kyc-verification";
 import SectoralDetails from "./pages/recruiter-view/sectoral-details";
 import QualificationDetails from "./pages/recruiter-view/qualification-details";
-import useAuthStore from "./stores/useAuthStore";
-import ScrollToTop from "./components/common/scrollToTop";
-import CheckAuth from "./components/common/checkAuth";
-import CandidateReleventDetails from "./pages/recruiter-view/candidate-releventDetails";
-import RecruiterLogin from "./pages/recruiter-view/log-in";
+import Profile from "./pages/recruiter-view/profile";
+import Faq from "./pages/recruiter-view/faq";
+
+// Corporate Pages
 import CorporateLogIn from "./pages/corporate-view/log-in";
-import RecruiterDashboard from "./pages/recruiter-view/dashboard";
 import CorporateDashboard from "./pages/corporate-view/dashboard";
-import { useGetUserProfile as useGetRecruiterUserProfile } from "./hooks/recruiter/useProfile";
-import { useGetCorporateUserProfile } from "./hooks/corporate/useProfile";
 import CorporateBasicDetails from "./pages/corporate-view/basic-details";
-import DynamicCheckAuthWrapper from "./components/common/dynamicCheckAuthWrapper";
 import FinalSetup from "./pages/corporate-view/final-setup";
 import Analytics from "./pages/corporate-view/analytics";
 import Listing from "./pages/corporate-view/listing";
@@ -28,19 +38,34 @@ import ResumeFiltering from "./pages/corporate-view/resume-filtering";
 import TrainningPosting from "./pages/corporate-view/trainning-posting";
 import JobPosting from "./pages/corporate-view/job-posting";
 
-function App() {
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
+// Job Seeker Pages
+import JobSeekerLogin from "./pages/jobSeeker-view/log-in";
+import SeekerBasicDetails from "./pages/jobSeeker-view/basic-details";
+import EducationDetails from "./pages/jobSeeker-view/education-details";
+import WorkingDetails from "./pages/jobSeeker-view/working-details";
+import CertificateDetails from "./pages/jobSeeker-view/certificate-details";
+import JobSeekerDashboard from "./pages/jobSeeker-view/dashboard";
 
-  if (token) {
-    useAuthStore.getState().setToken(token, !!localStorage.getItem("token"));
-    useAuthStore.getState().setIsAuthenticated(true);
-  }
+function App() {
+  useEffect(() => {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    const store = useAuthStore.getState();
+
+    if (token) {
+      store.setToken(token, !!localStorage.getItem("token"));
+      store.setIsAuthenticated(true);
+    } else {
+      store.setTokenInitialized(); // ✅ even if no token, we set initialized
+    }
+  }, []);
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <ScrollToTop />
       <Routes>
+        {/* Home redirect */}
         <Route
           path="/"
           element={
@@ -52,8 +77,20 @@ function App() {
             </CheckAuth>
           }
         />
-        <Route element={<ProfileSetupLayout />}>
-          <Route path="congratulation" element={<DynamicCheckAuthWrapper />} />
+
+        {/* Recruiter Auth and Setup */}
+        <Route
+          path="/recruiter"
+          element={
+            <CheckAuth
+              fetchProfileHook={useGetRecruiterUserProfile}
+              allowedRoles={["recruiter"]}
+            >
+              <ProfileSetupLayout />
+            </CheckAuth>
+          }
+        >
+          <Route path="log-in" element={<RecruiterLogin />} />
         </Route>
         <Route
           path="/recruiter/profile-setup"
@@ -61,6 +98,12 @@ function App() {
             <CheckAuth
               fetchProfileHook={useGetRecruiterUserProfile}
               allowedRoles={["recruiter"]}
+              lockedPages={{
+                "/recruiter/profile-setup/basic-details": "page1",
+                "/recruiter/profile-setup/kyc-verification": "page2",
+                "/recruiter/profile-setup/sectoral-details": "page3",
+                "/recruiter/profile-setup/qualification-details": "page4",
+              }}
             >
               <ProfileSetupLayout />
             </CheckAuth>
@@ -74,6 +117,8 @@ function App() {
             element={<QualificationDetails />}
           />
         </Route>
+
+        {/* Recruiter Main Dashboard */}
         <Route
           path="/recruiter"
           element={
@@ -95,39 +140,16 @@ function App() {
             path="candidates/relevent-details"
             element={<CandidateReleventDetails />}
           />
-
           <Route path="job-openings" element={<JobOpenings />} />
           <Route
             path="matches-and-submissions"
             element={<MatchesAndSubmission />}
           />
+          <Route path="profile" element={<Profile />} />
+          <Route path="faq" element={<Faq />} />
         </Route>
-        <Route
-          path="/recruiter"
-          element={
-            <CheckAuth
-              fetchProfileHook={useGetRecruiterUserProfile}
-              allowedRoles={["recruiter"]}
-            >
-              <ProfileSetupLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="log-in" element={<RecruiterLogin />} />
-        </Route>
-        <Route
-          path="/corporate/profile-setup"
-          element={
-            <CheckAuth
-              fetchProfileHook={useGetCorporateUserProfile}
-              allowedRoles={["corporate"]}
-            >
-              <ProfileSetupLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="basic-details" element={<CorporateBasicDetails />} />
-        </Route>
+
+        {/* Corporate Auth and Setup */}
         <Route
           path="/corporate"
           element={
@@ -144,6 +166,26 @@ function App() {
           <Route path="job-posting" element={<JobPosting />} />
         </Route>
         <Route
+          path="/corporate/profile-setup"
+          element={
+            <CheckAuth
+              fetchProfileHook={useGetCorporateUserProfile}
+              allowedRoles={["corporate"]}
+              lockedPages={{
+                "/corporate/profile-setup/basic-details": "page1",
+                "/corporate/profile-setup/final-setup": "page2",
+              }}
+            >
+              <ProfileSetupLayout />
+            </CheckAuth>
+          }
+        >
+          <Route path="basic-details" element={<CorporateBasicDetails />} />
+          <Route path="final-setup" element={<FinalSetup />} />
+        </Route>
+
+        {/* Corporate Main Dashboard */}
+        <Route
           path="/corporate"
           element={
             <CheckAuth
@@ -159,30 +201,26 @@ function App() {
           <Route path="job-posting/listing" element={<Listing />} />
           <Route path="resume-filtering" element={<ResumeFiltering />} />
         </Route>
+
+        {/* Job Seeker Auth */}
+        <Route path="/job-seeker/log-in" element={<JobSeekerLogin />} />
+
+        {/* Job Seeker Profile Setup */}
         <Route
-          path="/corporate/profile-setup"
-          element={
-            <CheckAuth
-              fetchProfileHook={useGetCorporateUserProfile}
-              allowedRoles={["corporate"]}
-            >
-              <ProfileSetupLayout />
-            </CheckAuth>
-          }
+          path="/job-seeker/profile-setup"
+          element={<ProfileSetupLayout />}
         >
-          <Route path="final-setup" element={<FinalSetup />} />
+          <Route path="basic-details" element={<SeekerBasicDetails />} />
+          <Route path="education-details" element={<EducationDetails />} />
+          <Route path="working-details" element={<WorkingDetails />} />
+          <Route path="certificate-details" element={<CertificateDetails />} />
         </Route>
-        {/* <Route
-          path="*"
-          element={
-            <CheckAuth
-              fetchProfileHook={useGetRecruiterUserProfile}
-              allowedRoles={["recuiter"]}
-            >
-              <CorporateDashboard />
-            </CheckAuth>
-          }
-        /> */}
+
+        {/* Job Seeker Dashboard */}
+        <Route path="/job-seeker/dashboard" element={<JobSeekerDashboard />} />
+
+        {/* Congrats fallback route */}
+        <Route path="congratulation" element={<DynamicCheckAuthWrapper />} />
       </Routes>
     </div>
   );

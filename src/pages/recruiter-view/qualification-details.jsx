@@ -3,10 +3,11 @@ import CommonForm from "../../components/common/form";
 import { referenceFields, sectoralFieldsForm2 } from "../../config";
 import { useSectoralDetails } from "../../hooks/recruiter/useProfile";
 import { z } from "zod";
-import { validateFormData } from "../../utils/objectUtils";
+import { validateFormData } from "../../utils/commonFunctions";
 import ButtonComponent from "../../components/common/button";
 import { useUpload } from "../../hooks/common/useUpload";
 import PrevButton from "../../components/common/prevButton";
+import Navbar from "../../components/recruiter-view/navbar";
 
 const referenceSchema = z.object({
   name: z.string().min(1, "Reference name is required"),
@@ -103,7 +104,8 @@ const QualificationDetails = () => {
     });
   };
   return (
-    <div className="w-full self-stretch lg:px-36 lg:py-14 p-[20px] inline-flex flex-col justify-start items-start lg:gap-2 gap-[10px]">
+    <div className="w-full self-stretch lg:px-36 lg:py-[0px] lg:pb-[32px] p-[20px] inline-flex flex-col justify-start items-start lg:gap-2 gap-[10px]">
+      <Navbar onlySupport={true} />
       <div className="w-full inline-flex justify-start items-start gap-3">
         <div className="justify-start text-gray-900 lg:text-3xl text-lg font-bold leading-loose">
           Recruiter Profile Setup

@@ -17,8 +17,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 401) {
-      useAuthStore.getState().logout();
+    const status = error.response?.status;
+    if (status === 401) {
+      window.location.href = "/unauthorized";
     }
     return Promise.reject(error);
   }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CommonForm from "../../common/form";
 import {
   candiadateCreationformControls,
@@ -6,13 +6,17 @@ import {
 } from "../../../config";
 import { useCreateApplicant } from "../../../hooks/recruiter/useApplicant";
 import { z } from "zod";
-import { setNestedValue, validateFormData } from "../../../utils/objectUtils";
+import {
+  setNestedValue,
+  validateFormData,
+} from "../../../utils/commonFunctions";
 import ButtonComponent from "../../common/button";
 import { useUpload } from "../../../hooks/common/useUpload";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Textarea } from "../../ui/textarea";
 import { Checkbox } from "../../ui/checkbox";
+import { ResumeSlateIcon } from "../../../utils/icon";
 
 const educationSchema = z
   .object({
@@ -105,6 +109,7 @@ const formDataSchema = z.object({
 });
 
 const Index = () => {
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
     name: "",
     profilePicture: "",
@@ -423,25 +428,7 @@ const Index = () => {
                 <div className="self-stretch flex flex-col justify-center items-center gap-4">
                   <div className="self-stretch h-32 relative bg-white rounded-lg outline-[1.50px] outline-offset-[-1.50px] outline-gray-200 overflow-hidden">
                     <div className="lg:left-1/2 lg:top-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 absolute inline-flex flex-col justify-start items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="44"
-                        height="43"
-                        viewBox="0 0 44 43"
-                        fill="none"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M13.2466 5.19678L13.1513 5.20906L11.7078 5.39335L9.95399 5.61449C8.88535 5.73964 7.89347 6.23244 7.14823 7.0085C6.40299 7.78456 5.95076 8.79559 5.86899 9.86842C5.23182 18.7426 5.23182 27.6511 5.86899 36.5253C5.94431 37.6061 6.40368 38.6243 7.1641 39.396C7.92453 40.1677 8.93587 40.642 10.0154 40.7332C18.2346 41.4212 25.7596 41.4212 33.9756 40.7332C35.0552 40.642 36.0665 40.1677 36.827 39.396C37.5874 38.6243 38.0467 37.6061 38.1221 36.5253C38.7591 27.6511 38.7591 18.7426 38.1221 9.86842C38.0404 8.79605 37.5886 7.78539 36.844 7.0094C36.0994 6.2334 35.1082 5.7403 34.0401 5.61449L32.2894 5.39335L30.8458 5.20906L30.7476 5.19678H13.2466Z"
-                          fill="#6945ED"
-                          fillOpacity="0.1"
-                        />
-                        <path
-                          d="M14.3214 5.7802C14.3206 5.25105 14.4242 4.72692 14.6262 4.23785C14.8283 3.74878 15.1248 3.30436 15.4988 2.93005C15.8728 2.55574 16.317 2.25888 16.806 2.05647C17.2949 1.85406 17.8189 1.75008 18.3481 1.75049H25.6458C26.7149 1.75049 27.7403 2.17521 28.4963 2.93122C29.2523 3.68722 29.677 4.71259 29.677 5.78174C29.677 6.85089 29.2523 7.87626 28.4963 8.63226C27.7403 9.38827 26.7149 9.81299 25.6458 9.81299H18.3511C17.8214 9.81339 17.2968 9.70936 16.8074 9.50683C16.3179 9.30431 15.8732 9.00727 15.4986 8.63271C15.1241 8.25816 14.827 7.81342 14.6245 7.32396C14.422 6.8345 14.321 6.30991 14.3214 5.7802Z"
-                          fill="#6945ED"
-                        />
-                      </svg>
+                      <ResumeSlateIcon />
                       <div className="justify-start text-gray-900 lg:text-base text-sm font-medium leading-normal">
                         {fileName ? fileName : "No files Uploaded yet!"}
                       </div>
@@ -470,6 +457,7 @@ const Index = () => {
                       {!fileName && (
                         <Input
                           type="file"
+                          ref={fileInputRef}
                           accept="application/pdf"
                           className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
                           onChange={(e) => {

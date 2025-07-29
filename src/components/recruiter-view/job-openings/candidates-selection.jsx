@@ -1,7 +1,13 @@
 import { Fragment, useState } from "react";
 import { Input } from "../../ui/input";
 import { Checkbox } from "../../ui/checkbox";
-import { BlackBag, FilterIcon, SearchIcon } from "../../../utils/icon";
+import {
+  AppliedIcon,
+  ArrowDownIcon,
+  BlackBag,
+  FilterIcon,
+  SearchIcon,
+} from "../../../utils/icon";
 import {
   Table,
   TableBody,
@@ -10,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { convertMonthsToYearsAndMonths } from "../../../utils/objectUtils";
+import { convertMonthsToYearsAndMonths } from "../../../utils/commonFunctions";
 import useJobSeekerProfileStore from "../../../stores/useJobSeekerProfileStore";
 import Pagination from "../../common/pagination";
 import SearchComponent from "../../common/searchComponent";
@@ -49,132 +55,36 @@ const CandidateSelection = ({ setOpen2, show, button, applicants }) => {
             <div className="max-w-[261px] w-full flex items-center gap-[8px]">
               <div className="w-full flex items-center gap-[10px]">
                 <div className="flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="17"
-                    viewBox="0 0 16 17"
-                    fill="none"
-                  >
-                    <path
-                      d="M13.3335 5.16675H2.66683C1.93045 5.16675 1.3335 5.7637 1.3335 6.50008V13.1667C1.3335 13.9031 1.93045 14.5001 2.66683 14.5001H13.3335C14.0699 14.5001 14.6668 13.9031 14.6668 13.1667V6.50008C14.6668 5.7637 14.0699 5.16675 13.3335 5.16675Z"
-                      stroke="#606060"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M10.6668 14.5V3.83333C10.6668 3.47971 10.5264 3.14057 10.2763 2.89052C10.0263 2.64048 9.68712 2.5 9.3335 2.5H6.66683C6.31321 2.5 5.97407 2.64048 5.72402 2.89052C5.47397 3.14057 5.3335 3.47971 5.3335 3.83333V14.5"
-                      stroke="#606060"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  <AppliedIcon />
                 </div>
                 <div className="font-medium text-xs">Applied For</div>
               </div>
               <div className="flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="17"
-                  viewBox="0 0 16 17"
-                  fill="none"
-                >
-                  <path
-                    d="M4 6.5L8 10.5L12 6.5"
-                    stroke="#606060"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <ArrowDownIcon />
               </div>
             </div>
             <div className="h-[35px] border border-[#606060] border-r-1" />
             <div className="max-w-[261px] w-full flex items-center gap-[8px]">
               <div className="w-full flex items-center gap-[10px]">
                 <div className="flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="17"
-                    viewBox="0 0 16 17"
-                    fill="none"
-                  >
-                    <path
-                      d="M13.3335 5.16675H2.66683C1.93045 5.16675 1.3335 5.7637 1.3335 6.50008V13.1667C1.3335 13.9031 1.93045 14.5001 2.66683 14.5001H13.3335C14.0699 14.5001 14.6668 13.9031 14.6668 13.1667V6.50008C14.6668 5.7637 14.0699 5.16675 13.3335 5.16675Z"
-                      stroke="#606060"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M10.6668 14.5V3.83333C10.6668 3.47971 10.5264 3.14057 10.2763 2.89052C10.0263 2.64048 9.68712 2.5 9.3335 2.5H6.66683C6.31321 2.5 5.97407 2.64048 5.72402 2.89052C5.47397 3.14057 5.3335 3.47971 5.3335 3.83333V14.5"
-                      stroke="#606060"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  <AppliedIcon />
                 </div>
-                <div className="font-medium text-xs">Applied For</div>
+                <div className="font-medium text-xs">Experience</div>
               </div>
               <div className="flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="17"
-                  viewBox="0 0 16 17"
-                  fill="none"
-                >
-                  <path
-                    d="M4 6.5L8 10.5L12 6.5"
-                    stroke="#606060"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <ArrowDownIcon />
               </div>
             </div>
             <div className="h-[35px] border border-[#606060] border-r-1" />
             <div className="max-w-[261px] w-full flex items-center gap-[8px]">
               <div className="w-full flex items-center gap-[10px]">
                 <div className="flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="17"
-                    viewBox="0 0 16 17"
-                    fill="none"
-                  >
-                    <path
-                      d="M13.3335 5.16675H2.66683C1.93045 5.16675 1.3335 5.7637 1.3335 6.50008V13.1667C1.3335 13.9031 1.93045 14.5001 2.66683 14.5001H13.3335C14.0699 14.5001 14.6668 13.9031 14.6668 13.1667V6.50008C14.6668 5.7637 14.0699 5.16675 13.3335 5.16675Z"
-                      stroke="#606060"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M10.6668 14.5V3.83333C10.6668 3.47971 10.5264 3.14057 10.2763 2.89052C10.0263 2.64048 9.68712 2.5 9.3335 2.5H6.66683C6.31321 2.5 5.97407 2.64048 5.72402 2.89052C5.47397 3.14057 5.3335 3.47971 5.3335 3.83333V14.5"
-                      stroke="#606060"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  <AppliedIcon />
                 </div>
-                <div className="font-medium text-xs">Applied For</div>
+                <div className="font-medium text-xs">Skills</div>
               </div>
               <div className="flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="17"
-                  viewBox="0 0 16 17"
-                  fill="none"
-                >
-                  <path
-                    d="M4 6.5L8 10.5L12 6.5"
-                    stroke="#606060"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <ArrowDownIcon />
               </div>
             </div>
           </div>

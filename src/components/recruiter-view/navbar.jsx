@@ -1,37 +1,118 @@
 import useAuthStore from "../../stores/useAuthStore";
-import { BurgerIcon, GearIcon } from "../../utils/icon";
-import { Link } from "react-router-dom";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from "react";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import ProfileSideDrawer from "../common/profileSideDrawer";
+import NotificationSideDrawer from "../common/notificationSideDrawer";
+import {
+  ContactUsIcon,
+  NotificationIcon,
+  SupportIcon,
+  WhatsappIcon,
+} from "../../utils/icon";
 
-const Navbar = () => {
+const Navbar = ({ onlySupport }) => {
   const { user } = useAuthStore();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [supportDialogOpen, setSupportDialogOpen] = useState(false);
+  const [notificationDialogOpen, setNotificationDialogOpen] = useState(false);
+
   return (
-    <div className="fixed top-0 right-0 left-0 bg-[#141E2B] w-full flex items-center justify-center z-50">
-      <div className="w-full flex justify-between items-center lg:py-[24px] lg:px-[167px] py-[16px] px-[24px]">
-        <div className="flex justify-center items-center lg:text-xl font-bold text-white text-md">
-          Company
-        </div>
-        <div className="lg:flex items-center gap-[24px] text-[#F4F4F4] text-base font-medium hidden ">
-          <Link
-            to={`/${user?.role || "recruiter"}/dashboard`}
-            className="cursor-pointer"
+    <>
+      <div className="w-full lg:inline-flex hidden relative justify-end items-center gap-4">
+        <Popover open={supportDialogOpen} onOpenChange={setSupportDialogOpen}>
+          <PopoverTrigger asChild>
+            <div
+              onClick={() => setSupportDialogOpen(true)}
+              variant="outline"
+              className="cursor-pointer pl-3.5 pr-2 py-2 rounded-[50px] border-1 border-[#6B6B6B] flex justify-center items-center gap-2.5 bg-white"
+            >
+              <div className="text-center justify-center text-neutral-500 text-sm font-medium leading-snug">
+                Support
+              </div>
+              <SupportIcon />
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <div className="size- px-3.5 py-2.5 bg-white rounded-lg shadow-[0px_3px_13px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-0.50px] outline-zinc-100 inline-flex flex-col justify-start items-start gap-2.5 overflow-hidden">
+              <div className="size- inline-flex justify-start items-center gap-2">
+                <ContactUsIcon />
+                <div className="size- inline-flex flex-col justify-center items-start gap-[5px]">
+                  <div className="text-center justify-start text-gray-900 text-xs font-medium leading-none">
+                    Contact Us
+                  </div>
+                </div>
+              </div>
+              <div className="self-stretch h-0 outline outline-1 outline-offset-[-0.50px] outline-gray-100"></div>
+              <div className="size- inline-flex justify-start items-center gap-2">
+                <WhatsappIcon />
+                <div className="w-28 h-2 justify-start text-gray-900 text-xs font-medium leading-none">
+                  Chat on Whatsapp
+                </div>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+        {!onlySupport && (
+          <div
+            onClick={() => setNotificationDialogOpen(true)}
+            className="cursor-pointer p-2 rounded-[50px] outline-1 outline-offset-[-1px] outline-neutral-500 flex justify-center items-center gap-2.5"
           >
-            Dashboard
-          </Link>
-          <span className="cursor-pointer">Applied Job/Internship</span>
-          <span className="cursor-pointer">Courses</span>
-          <span className="cursor-pointer">Chat</span>
-        </div>
-        <div className="lg:flex justify-center items-center hidden">
-          <GearIcon className="h-[32px] w-[32px]" />
-        </div>
-        <div className="lg:hidden items-center gap-[20px] flex">
-          <div></div>
-          <div className="flex justify-center items-center p-[4px] rounded-[4px] bg-[#6945ED]">
-            <BurgerIcon className="h-[18px] w-[18px]" />
+            <NotificationIcon />
           </div>
-        </div>
+        )}
+        <Sheet
+          open={notificationDialogOpen}
+          onOpenChange={setNotificationDialogOpen}
+        >
+          <SheetContent
+            side="right"
+            className="
+              w-full h-screen 
+            lg:max-w-[399px] 
+            md:max-w-full
+            sm:max-w-full 
+            overflow-y-auto border-transparent"
+          >
+            <div className="w-full h-full">
+              <NotificationSideDrawer />
+            </div>
+          </SheetContent>
+        </Sheet>
+        {!onlySupport && (
+          <div
+            onClick={() => setModalOpen(true)}
+            className="relative cursor-pointer"
+          >
+            <img
+              className="size-8 rounded-full border border-neutral-500 object-cover bg-black"
+              src={user?.profilePicture || user?.basicInformation?.companyLogo}
+              alt={user?.name}
+            />
+            <div className="size-2.5 right-[0px] top-[23px] absolute bg-lime-600 rounded-full" />
+          </div>
+        )}
+        <Sheet open={modalOpen} onOpenChange={setModalOpen}>
+          <SheetContent
+            side="right"
+            className="
+              w-full h-screen 
+            lg:max-w-[399px] 
+            md:max-w-full
+            sm:max-w-full 
+            overflow-y-auto border-transparent"
+          >
+            <div className="w-full h-full">
+              <ProfileSideDrawer />
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -6,7 +6,15 @@ import Pagination from "../common/pagination";
 import FilterComponent from "../common/filterComponent";
 import { jobOpeningFilters } from "../../config";
 
-const Listing = ({ jobPosts, formData, setFormData, ClearAll,setOpen }) => {
+const Listing = ({
+  jobPosts,
+  formData,
+  setFormData,
+  ClearAll,
+  setOpen,
+  handleSearch,
+  searchText,
+}) => {
   const totalPages = Math.ceil(jobPosts?.data?.length / 10);
   return (
     <div className="w-full flex flex-col gap-[26px] lg:gap-6 max-sm:p-[20px]">
@@ -14,19 +22,19 @@ const Listing = ({ jobPosts, formData, setFormData, ClearAll,setOpen }) => {
         <HeroProfile />
       </div>
       <div className="inline-flex justify-start items-center gap-5">
+        <div className="w-28 p-3  bg-[#6945ED]  rounded-[69px]   flex justify-center items-center gap-6 overflow-hidden">
+          <div className="justify-center text-white text-base font-normal leading-snug">
+            Listings
+          </div>
+        </div>
         <Link
           to={"/corporate/job-posting/analytics"}
-          className="w-28 p-3 bg-white rounded-[69px] outline-1 outline-offset-[-1px] outline-neutral-400 flex justify-center items-center gap-6 overflow-hidden"
+          className="w-28 p-3 bg-white outline-neutral-400  outline-1 outline-offset-[-1px] rounded-[69px] flex justify-center items-center gap-6 overflow-hidden"
         >
           <div className="justify-center text-neutral-400 text-base font-normal leading-snug">
             Analytics
           </div>
         </Link>
-        <div className="w-28 p-3 bg-[#6945ED] rounded-[69px] flex justify-center items-center gap-6 overflow-hidden">
-          <div className="justify-center text-white text-base font-normal leading-snug">
-            Listings
-          </div>
-        </div>
       </div>
       <div className="self-stretch inline-flex justify-start items-start gap-10">
         <div className="w-[196px] hidden lg:flex flex-col gap-[23px]">
@@ -50,7 +58,7 @@ const Listing = ({ jobPosts, formData, setFormData, ClearAll,setOpen }) => {
             </div>
           </div>
           <div className="self-stretch h-0 outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
-          <SearchComponent />
+          <SearchComponent handleSearch={handleSearch} value={searchText} />
           <div className="self-stretch flex flex-col justify-start items-start gap-4 w-full">
             {jobPosts?.data?.map((item, i) => (
               <JobCard key={i} item={item} setOpen={setOpen} />
