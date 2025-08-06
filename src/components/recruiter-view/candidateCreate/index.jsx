@@ -150,6 +150,7 @@ const Index = () => {
   const { mutate: UploadImage } = useUpload();
 
   const onSubmit = (e) => {
+    localStorage.removeItem("seekerID");
     e.preventDefault();
     let payLoad = { ...formData };
     if (formData.sameAs) {

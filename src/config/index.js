@@ -872,13 +872,13 @@ export const jobOpeningFilters = [
     label: "Status",
     componentType: "select",
     placeholder: "Choose Job Status",
-    name: "jobStatus",
+    name: "status",
     options: [
       {
         id: "active",
         label: "Active",
       },
-      { id: "end", label: "Ended" },
+      { id: "ended", label: "Ended" },
     ],
   },
   {
@@ -1027,10 +1027,10 @@ export const trainingController1 = [
     componentType: "input",
     type: "text",
     placeholder: "Enter Title",
-    name: "jobTitle",
+    name: "title",
   },
   {
-    name: "jobDescription",
+    name: "description",
     label: "Please provide a detailed description of the training program.",
     placeholder: "Enter Description",
     componentType: "textarea",
@@ -1038,7 +1038,7 @@ export const trainingController1 = [
     width: "full",
   },
   {
-    name: "skillSet",
+    name: "skills",
     label: "What skills should the trainer have?",
     componentType: "multi-select",
     max: 30,
@@ -1050,14 +1050,14 @@ export const trainingMode = [
     label: "What is the mode of the training?",
     componentType: "select",
     placeholder: "Select",
-    name: "mode",
+    name: "trainingMode",
     options: [
       {
-        id: "daily",
+        id: "Virtual / Online",
         label: "Virtual / Online",
       },
-      { id: "alternateDays", label: "In-person / On-site" },
-      { id: "weekly", label: "Hybrid" },
+      { id: "In-person / On-site", label: "In-person / On-site" },
+      { id: "Hybrid", label: "Hybrid" },
     ],
   },
 ];
@@ -1104,7 +1104,7 @@ export const trainingController2 = [
     label: "How frequently should the training sessions be conducted?",
     componentType: "select",
     placeholder: "Select",
-    name: "session",
+    name: "sessionFrequency",
     options: [
       {
         id: "daily",
@@ -1119,22 +1119,22 @@ export const trainingController2 = [
     ],
   },
   {
-    name: "duration",
+    name: "totalDurationDays",
     label: " What is the total duration of the training in days?",
     placeholder: "Enter duration",
     componentType: "input",
     type: "number",
   },
   {
-    name: "hours",
+    name: "hoursPerDay",
     label: "How many hours per day will the training be conducted?",
     componentType: "select",
     placeholder: "Select",
     options: [
-      { id: "1", label: "1 hour" },
-      { id: "2", label: "2 hour" },
-      { id: "3", label: "4 hour" },
-      { id: "4", label: "6 hour" },
+      { id: 1, label: "1 hour" },
+      { id: 2, label: "2 hour" },
+      { id: 3, label: "4 hour" },
+      { id: 4, label: "6 hour" },
     ],
     allowOther: true,
     showOtherInput: true,
@@ -1144,7 +1144,7 @@ export const trainingController2 = [
     label: "What is the minimum experience required?",
     componentType: "select",
     placeholder: "Select",
-    name: "experience",
+    name: "minimumExperience",
     options: [
       {
         id: "1y",
@@ -1164,7 +1164,7 @@ export const trainingController2 = [
     label: "What level of subject matter expertise do you expect?",
     componentType: "select",
     placeholder: "Select",
-    name: "expertise",
+    name: "subjectMatterExpertise",
     options: [
       {
         id: "high",
@@ -1176,7 +1176,7 @@ export const trainingController2 = [
 ];
 export const trainingController3 = [
   {
-    name: "qualification",
+    name: "qualificationsRequired",
     label: "What qualifications are preferred or required?",
     placeholder: "Enter Degree",
     componentType: "input",
@@ -1191,7 +1191,7 @@ export const trainingController3 = [
     accept: "image",
   },
   {
-    name: "expected",
+    name: "sessionsExpected",
     label: " How many sessions are expected in total?",
     placeholder: "Enter session",
     componentType: "input",
@@ -1201,7 +1201,7 @@ export const trainingController3 = [
     label: "Will you cover travel/stay if the trainer needs to relocate?",
     componentType: "select",
     placeholder: "Select",
-    name: "relocate",
+    name: "travelRequired",
     options: [
       {
         id: "yes",
@@ -1212,22 +1212,22 @@ export const trainingController3 = [
     ],
   },
   {
-    name: "langyages",
+    name: "languagesFluent",
     label: "What languages should the trainer be fluent in?",
     componentType: "multi-select",
     max: 30,
     options: [],
   },
   {
-    name: "batch",
+    name: "participantsPerBatch",
     label: " How many participants will be in each batch?",
     componentType: "select",
     placeholder: "Select",
     options: [
-      { id: "1", label: "1-5" },
-      { id: "2", label: "5-10" },
-      { id: "3", label: "10-20" },
-      { id: "4", label: "20+" },
+      { id: 1, label: "1-5" },
+      { id: 2, label: "5-10" },
+      { id: 3, label: "10-20" },
+      { id: 4, label: "20+" },
     ],
     allowOther: true,
     showOtherInput: true,
@@ -1237,7 +1237,7 @@ export const trainingController3 = [
     label: "Do you expect the trainer to provide study materials or slides?",
     componentType: "select",
     placeholder: "Select",
-    name: "provide",
+    name: "studyMaterialsProvided",
     options: [
       {
         id: "yes",
@@ -1251,7 +1251,7 @@ export const trainingController3 = [
     label: "Would you like a demo session before confirming?",
     componentType: "select",
     placeholder: "Select",
-    name: "demo",
+    name: "demoSessionBeforeConfirming",
     options: [
       {
         id: "yes",
@@ -1264,7 +1264,7 @@ export const trainingController3 = [
     label: "Would you require Recommendations from past Clients?",
     componentType: "select",
     placeholder: "Select",
-    name: "rating",
+    name: "recommendationsFromPastClients",
     options: [
       {
         id: "4",
@@ -1499,28 +1499,28 @@ export const jobController2 = [
 ];
 export const walkinAdress = [
   {
-    name: "birthDate",
+    name: "walkInDate",
     label: "",
     componentType: "calendar",
     placeholder: "Select Date",
     required: true,
   },
   {
-    name: "time",
+    name: "walkInTime",
     label: "",
     componentType: "time",
     placeholder: "Enter Time",
     required: true,
   },
   {
-    name: "permanentAddress",
+    name: "walkInAddress",
     label: "Address",
     componentType: "textarea",
     placeholder: "Enter your address",
     required: true,
   },
   {
-    name: "fullName",
+    name: "spocName",
     label: "SPOC Name (Contact Person)",
     componentType: "input",
     type: "text",
@@ -1528,7 +1528,7 @@ export const walkinAdress = [
     required: true,
   },
   {
-    name: "number",
+    name: "spocNumber",
     label: "SPOC Number",
     componentType: "input",
     type: "text",

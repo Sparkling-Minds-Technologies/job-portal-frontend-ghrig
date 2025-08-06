@@ -11,7 +11,27 @@ import Navbar from "../../components/recruiter-view/navbar";
 import { PostTrainingIcon } from "../../utils/icon";
 
 const TrainningPosting = () => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    title: "Full Stack Web Development Bootcamp",
+    description:
+      "Comprehensive training program covering modern web development technologies including React, Node.js, and MongoDB",
+    skills: ["6876a60170cc0ae27963d009"],
+    trainingMode: "Virtual / Online",
+    sessionFrequency: "daily",
+    totalDurationDays: 90,
+    hoursPerDay: 4,
+    minimumExperience: "1y",
+    subjectMatterExpertise: "high",
+    qualificationsRequired:
+      "Bachelor's degree in Computer Science or related field",
+    sessionsExpected: 60,
+    travelRequired: false,
+    languagesFluent: ["English", "Hindi"],
+    participantsPerBatch: 3,
+    studyMaterialsProvided: true,
+    demoSessionBeforeConfirming: true,
+    recommendationsFromPastClients: true,
+  });
   return (
     <div className="w-full self-stretch px-36 py-0 pb-[32px] inline-flex flex-col justify-start items-start gap-7">
       <Navbar onlySupport={false} />
@@ -50,8 +70,8 @@ const TrainningPosting = () => {
               formData={formData}
               setFormData={setFormData}
             />
-            {formData?.mode === "alternateDays" ||
-            formData.mode === "weekly" ? (
+            {formData?.trainingMode === "In-person / On-site" ||
+            formData.trainingMode === "Hybrid" ? (
               <CommonForm
                 formControls={trainingAddress}
                 formData={formData}

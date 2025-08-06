@@ -60,7 +60,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, range }) => {
 
       <button
         onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
+        disabled={currentPage >= totalPages}
         className="w-[32px] h-[32px] flex items-center justify-center border border-[#F1F1F1] rounded-[8px] hover:bg-gray-100 disabled:opacity-50"
       >
         <ChevronRight size={18} />
@@ -68,7 +68,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, range }) => {
 
       <button
         onClick={() => onPageChange(totalPages)}
-        disabled={currentPage === totalPages}
+        disabled={currentPage >= totalPages}
         className="w-[32px] h-[32px] flex items-center justify-center border border-[#F1F1F1] rounded-[8px] hover:bg-gray-100 disabled:opacity-50"
       >
         <ChevronsRight size={18} />

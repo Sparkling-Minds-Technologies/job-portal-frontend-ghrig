@@ -22,7 +22,7 @@ const JobOpenings = () => {
       search: params.search || "",
       jobType: params.jobType || "",
       sortBy: params.sortBy || "",
-      jobStatus: params.jobStatus || "",
+      status: params.status || "",
     };
   });
   const [open1, setOpen1] = useState(false);
@@ -78,7 +78,7 @@ const JobOpenings = () => {
       page: 1,
       limit: 10,
       search: "",
-      jobType: "",
+      status: "",
       sortBy: "",
       jobStatus: "",
     }));

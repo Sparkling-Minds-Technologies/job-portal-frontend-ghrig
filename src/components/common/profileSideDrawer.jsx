@@ -10,7 +10,7 @@ const ProfileSideDrawer = () => {
         <div className="self-stretch px-5 py-4 relative rounded-lg inline-flex justify-center items-start gap-4">
           <img
             className="size-20 rounded-full border-[1.25px] border-black object-cover"
-            src={user?.profilePicture || user?.basicInformation?.companyLogo}
+            src={user?.profileImage || user?.basicInformation?.companyLogo}
             alt={user?.name || user?.basicInformation?.companyName}
           />
           <div className="flex-1 inline-flex flex-col justify-start items-center gap-1.5">

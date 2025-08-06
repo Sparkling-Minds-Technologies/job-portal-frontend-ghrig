@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   createJobSeeker,
   getAllApplicantDetails,
+  updateJobSeeker,
 } from "../../api/recruiter/applicant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -23,14 +24,27 @@ export const useCreateApplicant = () => {
   const { setJobSeekerProfile } = useJobSeekerProfileStore();
   return useMutation({
     mutationFn: createJobSeeker,
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       toast.success(data.data.message);
+      localStorage.setItem("seekerID", data.data.data._id);
       setJobSeekerProfile(data.data.data);
-      if (variables.name) {
-        navigate("/recruiter/candidates/relevent-details");
-      } else {
-        navigate("/recruiter/candidates");
-      }
+      navigate("/recruiter/candidates/relevent-details");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message, {});
+    },
+  });
+};
+export const useUpdateApplicant = () => {
+  const navigate = useNavigate();
+  const { setJobSeekerProfile } = useJobSeekerProfileStore();
+  return useMutation({
+    mutationFn: ({ id, data }) => updateJobSeeker({ id, data }),
+    onSuccess: (data) => {
+      toast.success(data.data.message);
+      localStorage.removeItem("seekerID");
+      setJobSeekerProfile(data.data.data);
+      navigate("/recruiter/candidates");
     },
     onError: (error) => {
       toast.error(error.response.data.message, {});

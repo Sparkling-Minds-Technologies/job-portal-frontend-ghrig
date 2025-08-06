@@ -6,7 +6,7 @@ import {
   workingExperience,
 } from "../../config";
 import { Input } from "../../components/ui/input";
-import { useCreateApplicant } from "../../hooks/recruiter/useApplicant";
+import { useUpdateApplicant } from "../../hooks/recruiter/useApplicant";
 import { z } from "zod";
 import { validateFormData } from "../../utils/commonFunctions";
 import useJobSeekerProfileStore from "../../stores/useJobSeekerProfileStore";
@@ -81,10 +81,7 @@ const formDataSchema = z.object({
 
 const CandidateReleventDetails = () => {
   const queryClient = useQueryClient();
-  const { jobSeekerProfile } = useJobSeekerProfileStore();
   const [formData, setFormData] = useState({
-    email: jobSeekerProfile?.email,
-    password: jobSeekerProfile?.password,
     noticePeriod: 0,
     totalExperience: "0",
     totalExperienceInMonth: "0",
@@ -102,8 +99,9 @@ const CandidateReleventDetails = () => {
     ],
     variable: false,
   });
-  const { mutate, isPending } = useCreateApplicant();
+  const { mutate, isPending } = useUpdateApplicant();
   const onSubmit = (e) => {
+    const id = localStorage.getItem("seekerID");
     e.preventDefault();
     const payload = {
       ...formData,
@@ -112,7 +110,7 @@ const CandidateReleventDetails = () => {
     };
     const isValid = validateFormData(formDataSchema, payload);
     if (!isValid) return;
-    mutate(formData);
+    mutate({ id, data: payload });
     queryClient.invalidateQueries({ queryKey: ["applicants"] });
   };
   return (

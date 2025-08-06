@@ -25,7 +25,7 @@ const Listing = () => {
     };
   });
   const { data: jobPosts, isLoading: isLoading2 } = useFilteredJobs(filters);
-  // const applicants = data?.data ? [...data.data].reverse() : [];
+  
   // 👇 Sync filters.search to searchText on mount
   useEffect(() => {
     if (filters?.search && !searchText) {

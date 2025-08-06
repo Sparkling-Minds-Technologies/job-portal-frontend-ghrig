@@ -93,6 +93,22 @@ const formSchema = z.object({
   isWalkInInterview: z.boolean({
     required_error: "Please specify if it's a walk-in interview",
   }),
+  walkInDate: z
+    .string({ required_error: "Date is required" })
+    .min(1, "Date cannot be empty"),
+  walkInTime: z
+    .string({ required_error: "Time is required" })
+    .min(1, "Time cannot be empty"),
+  walkInAddress: z
+    .string({ required_error: "Address is required" })
+    .min(1, "Address cannot be empty"),
+  spocName: z
+    .string({ required_error: "Name is required" })
+    .min(1, "Name cannot be empty"),
+  spocNumber: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
 });
 
 const JobPosting = () => {
@@ -117,9 +133,14 @@ const JobPosting = () => {
     twoWheelerMandatory: "",
     jobDescription: "",
     isWalkInInterview: "",
+    walkInDate: "",
+    walkInTime: "",
+    walkInAddress: "",
+    spocName: "",
+    spocNumber: "",
   });
   const { mutate, isPending, isError, error } = useCorporateJobPost();
-
+  console.log(formData);
   const onSubmit = (e) => {
     e.preventDefault();
     let payload = { ...formData };

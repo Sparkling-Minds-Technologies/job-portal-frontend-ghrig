@@ -90,7 +90,7 @@ const Navbar = ({ onlySupport }) => {
           >
             <img
               className="size-8 rounded-full border border-neutral-500 object-cover bg-black"
-              src={user?.profilePicture || user?.basicInformation?.companyLogo}
+              src={user?.profileImage || user?.basicInformation?.companyLogo}
               alt={user?.name}
             />
             <div className="size-2.5 right-[0px] top-[23px] absolute bg-lime-600 rounded-full" />

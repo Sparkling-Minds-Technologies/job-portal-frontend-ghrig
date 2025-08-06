@@ -43,45 +43,36 @@ const JobCard = ({ setOpen, item }) => {
               {item?.jobTitle}
             </div>
           </div>
-          <div className="flex items-center justify-start">
+          <div className="flex items-center gap-[24px]">
             <span className="text-[#7D5AE2] text-xs font-medium py-[2px] px-[6px] rounded-[3px] bg-custom-purple">
               2 Applied
             </span>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-[24px]">
-          <div className="flex gap-[6px] items-center">
-            <div className="flex items-center justify-center">
-              <LocationIcon className="h-[16px] w-[16px]" />
-            </div>
-            <div className="text-[#141414] text-sm">{item?.city}</div>
-          </div>
-          <div className="flex gap-[6px] items-center">
-            <div className="flex items-center justify-center">
-              <ClockIcon className="h-[16px] w-[16px]" />
-            </div>
-            <div className="text-[#141414] text-sm">{item?.jobType}</div>
-          </div>
-          <div className="flex gap-[6px] items-center">
-            <div className="flex items-center justify-center">
-              <CurrencyIcon className="h-[16px] w-[16px]" />
-            </div>
-            <div className="text-[#141414] text-sm">
-              {formatSalaryRange(
-                item?.salaryRange?.min,
-                item?.salaryRange?.max
-              )}
-            </div>
-          </div>
-          <div className="flex gap-[6px] items-center">
-            <div className="flex items-center justify-center">
-              <CalenderIcon className="h-[16px] w-[16px]" />
-            </div>
-            <div className="text-[#141414] text-sm">
-              {timeAgo(item?.createdAt)}
+            <div className="flex items-center gap-[14px]">
+              <div className="flex gap-[6px] items-center">
+                <div className="flex items-center justify-center">
+                  <LocationIcon className="h-[16px] w-[16px]" />
+                </div>
+                <div className="text-[#141414] text-sm">{item?.city}</div>
+              </div>
+              <div className="flex gap-[6px] items-center">
+                <div className="flex items-center justify-center">
+                  <ClockIcon className="h-[16px] w-[16px]" />
+                </div>
+                <div className="text-[#141414] text-sm">{item?.jobType}</div>
+              </div>
+
+              <div className="flex gap-[6px] items-center">
+                <div className="flex items-center justify-center">
+                  <CalenderIcon className="h-[16px] w-[16px]" />
+                </div>
+                <div className="text-[#141414] text-sm">
+                  {timeAgo(item?.createdAt)}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
         <div className="flex flex-col gap-[11px]">
           {item?.status === "active" ? (
             <div className="flex items-center justify-center gap-[13px] rounded-[8px] border border-[#54C413] px-[12px] py-[8px]">

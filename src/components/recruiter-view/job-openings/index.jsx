@@ -15,7 +15,8 @@ const Index = ({
   searchText,
   ClearAll,
 }) => {
-  const totalPages = Math.ceil(jobPosts?.data?.length / 10);
+  const totalPages = Math.ceil(jobPosts?.pagination?.total / 10);
+  console.log(totalPages);
   return (
     <Fragment>
       {/* Desktop-view */}

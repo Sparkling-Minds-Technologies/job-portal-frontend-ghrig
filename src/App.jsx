@@ -101,7 +101,7 @@ function App() {
               lockedPages={{
                 "/recruiter/profile-setup/basic-details": "page1",
                 "/recruiter/profile-setup/kyc-verification": "page2",
-                "/recruiter/profile-setup/sectoral-details": "page3",
+                "/recruiter/profile-setup/sectoral-details": "page3"  ,
                 "/recruiter/profile-setup/qualification-details": "page4",
               }}
             >

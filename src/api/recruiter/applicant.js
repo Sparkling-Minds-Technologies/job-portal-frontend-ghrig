@@ -6,3 +6,5 @@ export const getAllApplicantDetails = async ({ signal }) => {
 };
 export const createJobSeeker = (data) =>
   api.post("/api/v1/recruiter/jobseeker", data);
+export const updateJobSeeker = ({ id, data }) =>
+  api.put(`/api/v1/recruiter/jobseeker/${id}`, data);

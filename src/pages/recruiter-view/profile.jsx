@@ -14,6 +14,7 @@ const Profile = () => {
     "Aadhar Card": "kycDetails.aadharDetails.image",
     "Cancel Cheque": "kycDetails.cancelChequeOrPassbookImage",
     "Relieving Letter": "relievingLetter",
+    "Latest Qualification": "latestQualification",
   };
   const pdfFiles = Object.entries(pdfObject).reduce(
     (acc, [customKey, path]) => {
@@ -33,12 +34,9 @@ const Profile = () => {
               <div className="text-center justify-start text-black text-xl font-semibold leading-tight">
                 {user?.name}
               </div>
-              <div className="text-center justify-start text-zinc-500 text-base font-normal leading-normal">
-                Recruiter for OpenAI [Latest Qualification]
-              </div>
             </div>
             <img
-              className="size-28 left-[42px] top-[-6px] absolute rounded-full outline-2 outline-white"
+              className="size-28 left-[42px] top-[-21px] absolute object-cover rounded-full outline-2 outline-white"
               src={user?.profileImage}
               alt={user?.name}
             />
@@ -144,7 +142,7 @@ const Profile = () => {
                     </svg>
                   </div>
                   <div className="text-[#121417] text-md font-semibold">
-                    Current Employment
+                    Latest Qualification
                   </div>
                 </div>
                 <div className="text-[#61758A] text-base font-normal">
@@ -254,7 +252,10 @@ const Profile = () => {
             </div>
             <div className="self-stretch inline-flex flex-wrap justify-between items-center gap-3">
               {Object.entries(pdfFiles).map(([key, value]) => {
-                const isPdf = key === "Resume" || key === "Relieving Letter";
+                const isPdf =
+                  key === "Resume" ||
+                  key === "Relieving Letter" ||
+                  key === "Latest Qualification";
                 const fileName = value?.split("/").pop();
                 const handleDownload = () => {
                   if (!value) return;
@@ -317,7 +318,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="flex items-center justify-between w-full gap-[12px]">
-            <div className="w-[487px] inline-flex flex-col justify-start items-start gap-6">
+            <div className="w-[48%] inline-flex flex-col justify-start items-start gap-6">
               <div className="self-stretch justify-start text-gray-900 text-xl font-semibold leading-tight">
                 Professional Details
               </div>
@@ -327,7 +328,9 @@ const Profile = () => {
                     Sectoral Specialization
                   </div>
                   <div className="w-48 justify-start text-neutral-900 text-sm font-normal leading-tight">
-                    Information Technology
+                    {user?.sectorSpecialization
+                      .map((item) => item.name)
+                      .join(", ")}
                   </div>
                 </div>
                 <div className="self-stretch py-4 border-t border-b border-gray-200 inline-flex justify-start items-center gap-28">
@@ -369,7 +372,7 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            <div className="w-[487px] h-full inline-flex flex-col justify-start items-start gap-6">
+            <div className="w-[48%] h-full inline-flex flex-col justify-start items-start gap-6">
               <div className="self-stretch justify-start text-gray-900 text-xl font-semibold leading-tight">
                 Additional Information
               </div>
@@ -426,7 +429,7 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-[12px] p-[16px]  w-full h-[115px] rounded-[8px] border-[#CFD1E8] border-[1px]">
+                {/* <div className="flex flex-col gap-[12px] p-[16px]  w-full h-[115px] rounded-[8px] border-[#CFD1E8] border-[1px]">
                   <div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -451,8 +454,8 @@ const Profile = () => {
                       Michael Bennett
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col gap-[12px] p-[16px]  w-full h-[115px] rounded-[8px] border-[#CFD1E8] border-[1px]">
+                </div> */}
+                <div className="col-start-1 col-end-3 flex flex-col gap-[12px] p-[16px]  w-full h-[115px] rounded-[8px] border-[#CFD1E8] border-[1px]">
                   <div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
