@@ -3,13 +3,15 @@ import { corporateJobPost, getFilteredJobs } from "../../api/corporate/job";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import useAuthStore from "../../stores/useAuthStore";
+import { omit } from "../../utils/commonFunctions";
 
 export const useFilteredJobs = (filters) => {
+  const sanitizedFilters = omit(filters, ["jobType"]);
   return useQuery({
-    queryKey: ["filteredJobs", filters],
+    queryKey: ["filteredJobs", sanitizedFilters],
     queryFn: getFilteredJobs,
     keepPreviousData: true, // helpful for pagination
-    enabled: !!filters, // ensure filters is not null
+    enabled: filters.jobType === "job", // ensure filters is not null
   });
 };
 export const useCorporateJobPost = () => {

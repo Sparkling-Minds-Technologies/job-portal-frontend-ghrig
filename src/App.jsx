@@ -37,6 +37,7 @@ import Listing from "./pages/corporate-view/listing";
 import ResumeFiltering from "./pages/corporate-view/resume-filtering";
 import TrainningPosting from "./pages/corporate-view/trainning-posting";
 import JobPosting from "./pages/corporate-view/job-posting";
+import CorporateProfile from "./pages/corporate-view/profile";
 
 // Job Seeker Pages
 import JobSeekerLogin from "./pages/jobSeeker-view/log-in";
@@ -101,7 +102,7 @@ function App() {
               lockedPages={{
                 "/recruiter/profile-setup/basic-details": "page1",
                 "/recruiter/profile-setup/kyc-verification": "page2",
-                "/recruiter/profile-setup/sectoral-details": "page3"  ,
+                "/recruiter/profile-setup/sectoral-details": "page3",
                 "/recruiter/profile-setup/qualification-details": "page4",
               }}
             >
@@ -200,6 +201,7 @@ function App() {
           <Route path="job-posting/analytics" element={<Analytics />} />
           <Route path="job-posting/listing" element={<Listing />} />
           <Route path="resume-filtering" element={<ResumeFiltering />} />
+          <Route path="profile" element={<CorporateProfile />} />
         </Route>
 
         {/* Job Seeker Auth */}

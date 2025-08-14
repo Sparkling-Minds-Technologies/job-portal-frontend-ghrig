@@ -101,6 +101,7 @@ const formDataSchema = z.object({
     .min(1, "At least one education record is required"),
 
   currentWorkingStatus: z.string().min(1, "Current working status is required"),
+  summary: z.string().min(1, "Summary is Required"),
 
   resume: z
     .string()
@@ -124,6 +125,7 @@ const Index = () => {
       pincode: "",
       state: "",
     },
+    summary: "",
     permanentAddress: {
       address: "",
       city: "",
@@ -201,7 +203,7 @@ const Index = () => {
       fileInputRef.current.value = "";
     } // Clear file name
   };
-
+  console.log(formData);
   return (
     <div className="w-full self-stretch lg:px-36 lg:py-20 p-[20px] lg:pt-0 inline-flex flex-col justify-start items-end lg:gap-10 gap-[15px]">
       <div className="w-full inline-flex justify-start items-start gap-8">
@@ -339,86 +341,11 @@ const Index = () => {
                   setFormData={setFormData}
                   key={index}
                   i={index}
+                  disabled={false}
                 />
               ))}
             </div>
-            <div className="self-stretch flex flex-col justify-start items-start gap-2">
-              <div className="self-stretch inline-flex justify-start items-center gap-3">
-                <div className="flex justify-start items-start gap-2.5">
-                  <div className="justify-start text-gray-900 text-sm font-semibold leading-normal">
-                    Current Working Status
-                  </div>
-                </div>
-              </div>
-              <div className="self-stretch inline-flex justify-start items-start gap-2">
-                <div
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      currentWorkingStatus: "working",
-                    }))
-                  }
-                  className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
-                    formData.currentWorkingStatus === "working"
-                      ? "outline-[#6945ED]"
-                      : "outline-neutral-200"
-                  } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
-                >
-                  <span className="text-sm text-neutral-400 truncate whitespace-nowrap overflow-hidden max-w-[80%]">
-                    Working
-                  </span>
 
-                  {formData.currentWorkingStatus === "working" && (
-                    <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
-                  )}
-                </div>
-
-                <div
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      currentWorkingStatus: "serving-notice-period",
-                    }))
-                  }
-                  className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
-                    formData.currentWorkingStatus === "serving-notice-period"
-                      ? "outline-[#6945ED]"
-                      : "outline-neutral-200"
-                  } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
-                >
-                  <span className="text-sm text-neutral-400 truncate whitespace-nowrap overflow-hidden max-w-[80%]">
-                    Serving Notice Period
-                  </span>
-
-                  {formData.currentWorkingStatus ===
-                    "serving-notice-period" && (
-                    <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
-                  )}
-                </div>
-
-                <div
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      currentWorkingStatus: "not-working",
-                    }))
-                  }
-                  className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
-                    formData.currentWorkingStatus === "not-working"
-                      ? "outline-[#6945ED]"
-                      : "outline-neutral-200"
-                  } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
-                >
-                  <span className="text-sm text-neutral-400 truncate whitespace-nowrap overflow-hidden max-w-[80%]">
-                    Not working
-                  </span>
-
-                  {formData.currentWorkingStatus === "not-working" && (
-                    <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
-                  )}
-                </div>
-              </div>
-            </div>
             <div className="self-stretch flex flex-col justify-start items-start gap-10">
               <div className="self-stretch p-6 bg-white rounded-lg shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] outline-1 outline-offset-[-1px] outline-zinc-300 flex flex-col justify-start items-start gap-4">
                 <div className="inline-flex justify-start items-start gap-2.5">

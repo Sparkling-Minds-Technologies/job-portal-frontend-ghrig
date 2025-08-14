@@ -9,6 +9,6 @@ export const useFilteredJobs = (filters) => {
     queryKey: ["filteredJobs", sanitizedFilters],
     queryFn: getFilteredJobs,
     keepPreviousData: true, // helpful for pagination
-    enabled: !!sanitizedFilters, // ensure filters is not null
+    enabled: filters?.jobType === "job",
   });
 };

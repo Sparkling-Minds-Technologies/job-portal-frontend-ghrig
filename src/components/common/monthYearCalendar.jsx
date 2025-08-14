@@ -21,27 +21,35 @@ const months = [
   "Nov",
   "Dec",
 ];
+const currentYear = new Date().getFullYear();
+const pastYears = 30;
+const futureYears = 10;
+
 const years = Array.from(
-  { length: 30 },
-  (_, i) => new Date().getFullYear() - i
+  { length: pastYears + futureYears + 1 },
+  (_, i) => currentYear + futureYears - i
 );
 
 export default function MonthYearPicker({
   name,
   formData,
+  index,
   setFormData,
   value,
+  disabled,
 }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState("year");
   const [selectedYear, setSelectedYear] = useState(null);
 
   const handleYearSelect = (year) => {
+    if (disabled && index === 1) return;
     setSelectedYear(year);
     setStep("month");
   };
- 
+console.log(name)
   const handleMonthSelect = (monthIndex) => {
+    if (disabled && index === 1) return;
     if (selectedYear !== null) {
       const formatted = `${String(monthIndex + 1).padStart(2, "0")}/${String(
         selectedYear
@@ -54,10 +62,13 @@ export default function MonthYearPicker({
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={disabled && index === 1 ? null : setOpen}
+    >
       <PopoverTrigger asChild>
         <div
-          onClick={() => setOpen(true)}
+          onClick={() => setOpen(disabled && index === 1 ? null : !open)}
           className="w-full self-stretch px-4 py-2.5 bg-white rounded outline outline-neutral-200 inline-flex justify-start items-center gap-2 cursor-pointer text-neutral-400 text-sm font-normal leading-normal"
         >
           {value ? (

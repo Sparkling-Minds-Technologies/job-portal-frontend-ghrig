@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommonForm from "../../components/common/form";
 import {
   releventCandidateProfessionalDetails,
@@ -9,12 +9,12 @@ import { Input } from "../../components/ui/input";
 import { useUpdateApplicant } from "../../hooks/recruiter/useApplicant";
 import { z } from "zod";
 import { validateFormData } from "../../utils/commonFunctions";
-import useJobSeekerProfileStore from "../../stores/useJobSeekerProfileStore";
 import ButtonComponent from "../../components/common/button";
 import PrevButton from "../../components/common/prevButton";
 import { Checkbox } from "../../components/ui/checkbox";
 import Navbar from "../../components/recruiter-view/navbar";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const experienceDetailSchema = z
   .object({
@@ -80,6 +80,8 @@ const formDataSchema = z.object({
 });
 
 const CandidateReleventDetails = () => {
+  const [showPage, setShowPage] = useState(false);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     noticePeriod: 0,
@@ -88,6 +90,7 @@ const CandidateReleventDetails = () => {
     currentSalary: 0,
     currentIndustry: "",
     expectedSalary: 0,
+    currentWorkingStatus: "",
     experienceDetails: [
       {
         companyName: "",
@@ -113,6 +116,16 @@ const CandidateReleventDetails = () => {
     mutate({ id, data: payload });
     queryClient.invalidateQueries({ queryKey: ["applicants"] });
   };
+  useEffect(() => {
+    if (!localStorage.getItem("seekerID")) {
+      return navigate("/recruiter/candidates/candidate-create");
+    }
+    return setShowPage(true);
+  }, []);
+  if (!showPage) {
+    return <div>Loading....</div>;
+  }
+
   return (
     <>
       <Navbar onlySupport={false} />
@@ -141,6 +154,96 @@ const CandidateReleventDetails = () => {
                   formData={formData}
                   setFormData={setFormData}
                 />
+                <div className="self-stretch flex flex-col justify-start items-start gap-2">
+                  <div className="self-stretch inline-flex justify-start items-center gap-3">
+                    <div className="flex justify-start items-start gap-2.5">
+                      <div className="justify-start text-gray-900 text-sm font-semibold leading-normal">
+                        Current Working Status
+                      </div>
+                    </div>
+                  </div>
+                  <div className="self-stretch inline-flex justify-start items-start gap-2">
+                    <div
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          currentWorkingStatus: "working",
+                          experienceDetails: prev.experienceDetails.map(
+                            (item) => ({
+                              ...item,
+                              currentlyWorking: true,
+                            })
+                          ),
+                        }))
+                      }
+                      className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
+                        formData.currentWorkingStatus === "working"
+                          ? "outline-[#6945ED]"
+                          : "outline-neutral-200"
+                      } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
+                    >
+                      <span className="text-sm text-neutral-400 truncate whitespace-nowrap overflow-hidden max-w-[80%]">
+                        Working
+                      </span>
+
+                      {formData.currentWorkingStatus === "working" && (
+                        <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
+                      )}
+                    </div>
+
+                    <div
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          currentWorkingStatus: "serving-notice-period",
+                          experienceDetails: prev.experienceDetails.map(
+                            (item) => ({ ...item, currentlyWorking: true })
+                          ),
+                        }))
+                      }
+                      className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
+                        formData.currentWorkingStatus ===
+                        "serving-notice-period"
+                          ? "outline-[#6945ED]"
+                          : "outline-neutral-200"
+                      } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
+                    >
+                      <span className="text-sm text-neutral-400 truncate whitespace-nowrap overflow-hidden max-w-[80%]">
+                        Serving Notice Period
+                      </span>
+
+                      {formData.currentWorkingStatus ===
+                        "serving-notice-period" && (
+                        <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
+                      )}
+                    </div>
+
+                    <div
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          currentWorkingStatus: "not-working",
+                          experienceDetails: prev.experienceDetails.map(
+                            (item) => ({ ...item, currentlyWorking: false })
+                          ),
+                        }))
+                      }
+                      className={`min-w-[100px] flex-1 px-4 py-2.5 bg-white rounded outline-2 outline-offset-[-1px] ${
+                        formData.currentWorkingStatus === "not-working"
+                          ? "outline-[#6945ED]"
+                          : "outline-neutral-200"
+                      } flex justify-between items-center gap-2 cursor-pointer min-h-[44px]`}
+                    >
+                      <span className="text-sm text-neutral-400 truncate whitespace-nowrap overflow-hidden max-w-[80%]">
+                        Not working
+                      </span>
+
+                      {formData.currentWorkingStatus === "not-working" && (
+                        <div className="w-2 h-2 bg-white rounded-full outline-4 outline-offset-[-2px] outline-[#6945ED]" />
+                      )}
+                    </div>
+                  </div>
+                </div>
                 <div className="w-full">
                   {formData.experienceDetails.map((item, index) => (
                     <CommonForm
@@ -149,6 +252,7 @@ const CandidateReleventDetails = () => {
                       setFormData={setFormData}
                       key={index}
                       i={index}
+                      disabled={item.currentlyWorking}
                     />
                   ))}
                 </div>

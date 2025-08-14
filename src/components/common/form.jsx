@@ -35,10 +35,11 @@ export default function CommonForm({
   setFormData,
   i,
   handleUpload,
+  disabled = false,
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [otherSelections, setOtherSelections] = useState({});
-  function renderInputsByComponentType(getControlItem, i, formType = null) {
+  function renderInputsByComponentType(getControlItem, index, formType = null) {
     let nameWithIndex = getControlItem.name;
     if (formType === "references" && i >= 0) {
       nameWithIndex = `references.${i}.${getControlItem.name}`;
@@ -125,6 +126,8 @@ export default function CommonForm({
             formData={formData}
             setFormData={setFormData}
             value={value}
+            disabled={disabled}
+            index={index}
           />
         );
       case "select":
@@ -276,6 +279,43 @@ export default function CommonForm({
             }
             className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
           />
+        );
+      case "salary-range":
+        const minSalary =
+          getNestedValue(formData, `${nameWithIndex}.min`) || "";
+        const maxSalary =
+          getNestedValue(formData, `${nameWithIndex}.max`) || "";
+
+        const handleSalaryChange = (type, value) => {
+          let num = value.replace(/\D/g, ""); // Allow only numbers
+          num = num ? Number(num) : "";
+
+          setFormData((prev) => {
+            let updated = { ...prev };
+            updated = setNestedValue(updated, `${nameWithIndex}.${type}`, num);
+            return updated;
+          });
+        };
+
+        return (
+          <div className="flex gap-2">
+            <Input
+              type="number"
+              placeholder="Min Salary"
+              value={minSalary}
+              onChange={(e) => handleSalaryChange("min", e.target.value)}
+              min={0}
+              className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+            />
+            <Input
+              type="number"
+              placeholder="Max Salary"
+              value={maxSalary}
+              onChange={(e) => handleSalaryChange("max", e.target.value)}
+              min={0}
+              className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+            />
+          </div>
         );
 
       case "file":
@@ -465,7 +505,7 @@ export default function CommonForm({
   }
 
   return (
-    <div className="w-full">
+    <div key={i} className="w-full">
       <div className="flex flex-col gap-[18px] max-sm:gap-[10px]">
         {formControls.map((controlItem, index) => {
           const isReferenceForm = formControls === referenceFields;
@@ -484,7 +524,7 @@ export default function CommonForm({
                 key={index}
                 className="flex gap-[8px] flex-wrap justify-end items-end"
               >
-                {controlItem.row.map((item) => (
+                {controlItem.row.map((item, i) => (
                   <div
                     key={item.name}
                     className={`gap-[8px] flex-2/3 lg:flex-1`}
@@ -496,7 +536,7 @@ export default function CommonForm({
                     >
                       {item.label && (
                         <Label className="text-base text-[#20102B] font-semibold">
-                          {i >= 0 ? `${item.label} - ${i + 1}` : item.label}
+                          {item.label}
                         </Label>
                       )}
                       {renderInputsByComponentType(item, i, formType)}
@@ -518,7 +558,7 @@ export default function CommonForm({
                     {controlItem.label}
                   </Label>
                 )}
-                {renderInputsByComponentType(controlItem, i, formType)}
+                {renderInputsByComponentType(controlItem, index, formType)}
               </div>
             );
           }

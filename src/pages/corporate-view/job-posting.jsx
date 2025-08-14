@@ -8,108 +8,144 @@ import { validateFormData } from "../../utils/commonFunctions";
 import { z } from "zod";
 import ButtonComponent from "../../components/common/button";
 
-const formSchema = z.object({
-  jobTitle: z
-    .string({ required_error: "Job title is required" })
-    .min(1, "Job title cannot be empty"),
+const formSchema = z
+  .object({
+    jobTitle: z
+      .string({ required_error: "Job title is required" })
+      .min(1, "Job title cannot be empty"),
 
-  jobType: z.enum(["Full-Time", "Part-Time", "Both", "Night-Time"], {
-    errorMap: () => ({ message: "Select a valid job type" }),
-  }),
+    jobType: z.enum(["Full-Time", "Part-Time", "Both", "Night-Time"], {
+      errorMap: () => ({ message: "Select a valid job type" }),
+    }),
 
-  workingHours: z
-    .string({ required_error: "Working hours are required" })
-    .min(1, "Working hours cannot be empty"),
+    workingHours: z
+      .string({ required_error: "Working hours are required" })
+      .min(1, "Working hours cannot be empty"),
 
-  workingDays: z
-    .string({ required_error: "Working days are required" })
-    .min(1, "Working days cannot be empty"),
+    workingDays: z
+      .string({ required_error: "Working days are required" })
+      .min(1, "Working days cannot be empty"),
 
-  isSundayWorking: z.boolean({
-    required_error: "Please specify if Sunday is working or not",
-  }),
+    isSundayWorking: z.boolean({
+      required_error: "Please specify if Sunday is working or not",
+    }),
 
-  officeLocation: z
-    .string({ required_error: "Office location is required" })
-    .min(1, "Office location cannot be empty"),
+    officeLocation: z
+      .string({ required_error: "Office location is required" })
+      .min(1, "Office location cannot be empty"),
 
-  city: z
-    .string({ required_error: "City is required" })
-    .min(1, "City cannot be empty"),
+    city: z
+      .string({ required_error: "City is required" })
+      .min(1, "City cannot be empty"),
 
-  state: z
-    .string({ required_error: "State is required" })
-    .min(1, "State cannot be empty"),
+    state: z
+      .string({ required_error: "State is required" })
+      .min(1, "State cannot be empty"),
 
-  pincode: z
-    .string({ required_error: "Pincode is required" })
-    .regex(/^\d{6}$/, "Pincode must be a 6-digit number"),
+    pincode: z
+      .string({ required_error: "Pincode is required" })
+      .regex(/^\d{6}$/, "Pincode must be a 6-digit number"),
 
-  modeOfWork: z.enum(["Work from Office", "Work from Home", "Hybrid"], {
-    errorMap: () => ({ message: "Select a valid mode of work" }),
-  }),
+    modeOfWork: z.enum(["Work from Office", "Work from Home", "Hybrid"], {
+      errorMap: () => ({ message: "Select a valid mode of work" }),
+    }),
 
-  experienceLevel: z
-    .string({ required_error: "Experience level is required" })
-    .min(1, "Experience level cannot be empty"),
+    experienceLevel: z
+      .string({ required_error: "Experience level is required" })
+      .min(1, "Experience level cannot be empty"),
 
-  genderPreference: z.enum(["Male", "Female", "Any"], {
-    errorMap: () => ({ message: "Select a valid gender preference" }),
-  }),
+    genderPreference: z.enum(["Male", "Female", "Any"], {
+      errorMap: () => ({ message: "Select a valid gender preference" }),
+    }),
 
-  minimumEducation: z
-    .string({ required_error: "Minimum education is required" })
-    .min(1, "Minimum education cannot be empty"),
+    minimumEducation: z
+      .string({ required_error: "Minimum education is required" })
+      .min(1, "Minimum education cannot be empty"),
 
-  englishLevel: z.enum(["basic", "moderate", "fluent"], {
-    errorMap: () => ({ message: "Select a valid English level" }),
-  }),
+    englishLevel: z.enum(["basic", "moderate", "fluent"], {
+      errorMap: () => ({ message: "Select a valid English level" }),
+    }),
 
-  regionalLanguageRequired: z.boolean({
-    required_error: "Please specify if regional language is required",
-  }),
+    regionalLanguageRequired: z.boolean({
+      required_error: "Please specify if regional language is required",
+    }),
 
-  preferredAgeRange: z
-    .string({ required_error: "Preferred age range is required" })
-    .regex(
-      /^\d{2}-\d{2}$/,
-      "Age range must be in format 'xx-yy' (e.g., 22-35)"
-    ),
+    preferredAgeRange: z
+      .string({ required_error: "Preferred age range is required" })
+      .regex(
+        /^\d{2}-\d{2}$/,
+        "Age range must be in format 'xx-yy' (e.g., 22-35)"
+      ),
 
-  // requiredSkills: z
-  //   .array(z.string().min(1), {
-  //     required_error: "At least one required skill must be selected",
-  //   })
-  //   .min(1, "At least one required skill must be selected"),
+    salaryRange: z
+      .object({
+        min: z.number().min(1, "Minimum salary is required"),
+        max: z.number().min(1, "Maximum salary is required"),
+      })
+      .refine((data) => parseInt(data.min, 10) <= parseInt(data.max, 10), {
+        message: "Minimum salary cannot be greater than maximum salary",
+        path: ["min"],
+      }),
 
-  twoWheelerMandatory: z.boolean({
-    required_error: "Please specify if two-wheeler is mandatory",
-  }),
+    twoWheelerMandatory: z.boolean({
+      required_error: "Please specify if two-wheeler is mandatory",
+    }),
 
-  jobDescription: z
-    .string({ required_error: "Job description is required" })
-    .min(50, "Job description must be at least 50 characters"),
+    jobDescription: z
+      .string({ required_error: "Job description is required" })
+      .min(50, "Job description must be at least 50 characters"),
 
-  isWalkInInterview: z.boolean({
-    required_error: "Please specify if it's a walk-in interview",
-  }),
-  walkInDate: z
-    .string({ required_error: "Date is required" })
-    .min(1, "Date cannot be empty"),
-  walkInTime: z
-    .string({ required_error: "Time is required" })
-    .min(1, "Time cannot be empty"),
-  walkInAddress: z
-    .string({ required_error: "Address is required" })
-    .min(1, "Address cannot be empty"),
-  spocName: z
-    .string({ required_error: "Name is required" })
-    .min(1, "Name cannot be empty"),
-  spocNumber: z
-    .string()
-    .min(1, "Phone number is required")
-    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
-});
+    isWalkInInterview: z.boolean({
+      required_error: "Please specify if it's a walk-in interview",
+    }),
+
+    // These fields are optional by default
+    walkInDate: z.string().optional(),
+    walkInTime: z.string().optional(),
+    walkInAddress: z.string().optional(),
+    spocName: z.string().optional(),
+    spocNumber: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    // Only validate these if isWalkInInterview is true
+    if (data.isWalkInInterview) {
+      if (!data.walkInDate?.trim()) {
+        ctx.addIssue({
+          path: ["walkInDate"],
+          message: "Date is required",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+      if (!data.walkInTime?.trim()) {
+        ctx.addIssue({
+          path: ["walkInTime"],
+          message: "Time is required",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+      if (!data.walkInAddress?.trim()) {
+        ctx.addIssue({
+          path: ["walkInAddress"],
+          message: "Address is required",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+      if (!data.spocName?.trim()) {
+        ctx.addIssue({
+          path: ["spocName"],
+          message: "Name is required",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+      if (!/^\d{10}$/.test(data.spocNumber || "")) {
+        ctx.addIssue({
+          path: ["spocNumber"],
+          message: "Phone number must be exactly 10 digits",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    }
+  });
 
 const JobPosting = () => {
   const [formData, setFormData] = useState({
@@ -130,6 +166,10 @@ const JobPosting = () => {
     regionalLanguageRequired: "",
     preferredAgeRange: "",
     requiredSkills: [],
+    salaryRange: {
+      min: "",
+      max: "",
+    },
     twoWheelerMandatory: "",
     jobDescription: "",
     isWalkInInterview: "",
@@ -192,7 +232,7 @@ const JobPosting = () => {
             <CommonForm
               formControls={jobController1}
               formData={formData}
-              setFormData={setFormData} 
+              setFormData={setFormData}
             />
           </div>
         </div>

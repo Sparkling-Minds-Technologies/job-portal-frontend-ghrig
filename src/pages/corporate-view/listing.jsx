@@ -6,6 +6,7 @@ import JobDescription from "../../components/recruiter-view/job-openings/job-des
 import Navbar from "../../components/recruiter-view/navbar";
 import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "../../hooks/common/useDebounce";
+import { useTraining } from "../../hooks/corporate/useTraining";
 
 const Listing = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,13 +20,14 @@ const Listing = () => {
       page: params.page ? parseInt(params.page) : 1,
       limit: 10,
       search: params.search || "",
-      jobType: params.jobType || "",
+      jobType: params.jobType || "job",
       sortBy: params.sortBy || "",
       jobStatus: params.jobStatus || "",
     };
   });
-  const { data: jobPosts, isLoading: isLoading2 } = useFilteredJobs(filters);
-  
+  const { data: jobPosts, isLoading } = useFilteredJobs(filters);
+  const { data: trainingPosts, isLoading: isLoading2 } = useTraining(filters);
+
   // 👇 Sync filters.search to searchText on mount
   useEffect(() => {
     if (filters?.search && !searchText) {
@@ -66,7 +68,7 @@ const Listing = () => {
       page: 1,
       limit: 10,
       search: "",
-      jobType: "",
+      jobType: "job",
       sortBy: "",
       jobStatus: "",
     }));
@@ -91,7 +93,7 @@ const Listing = () => {
       </Sheet>
       <Navbar onlySupport={false} />
       <CorporateListing
-        jobPosts={jobPosts}
+        jobPosts={filters.jobType === "job" ? jobPosts : trainingPosts}
         formData={filters}
         setFormData={setFilters}
         setOpen={setOpen}

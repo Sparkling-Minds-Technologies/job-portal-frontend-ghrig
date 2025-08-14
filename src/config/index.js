@@ -476,6 +476,12 @@ export const candiadateCreationformControls = [
     showOtherInput: true,
     inlineOther: true,
   },
+  {
+    name: "summary",
+    componentType: "textarea",
+    placeholder: "Write a brief summary about the candidate",
+    label: "Summary",
+  },
 ];
 export const highestQualification = [
   {
@@ -566,6 +572,13 @@ export const workingExperience = [
     name: "companyName",
     label: "Last Organisation",
     placeholder: "e.g Company Name",
+    componentType: "input",
+    type: "text",
+  },
+  {
+    name: "desgination",
+    label: "Designation in Last Organisation",
+    placeholder: "e.g Software Engineer",
     componentType: "input",
     type: "text",
   },
@@ -1315,7 +1328,7 @@ export const jobController1 = [
   },
   {
     name: "workingDays",
-    label: "What are the working days?",
+    label: "What are the working (days)?",
     componentType: "input",
     placeholder: "e.g. Monday to Friday",
     type: "text",
@@ -1405,13 +1418,13 @@ export const jobController1 = [
   },
   {
     name: "genderPreference",
-    label: "Do you have a gender preference?",
+    label: "What's your gender preference?",
     componentType: "select",
     placeholder: "Select gender",
     options: [
       { id: "Male", label: "Male" },
       { id: "Female", label: "Female" },
-      { id: "Any", label: "Any" },
+      { id: "Other", label: "Other" },
     ],
   },
   {
@@ -1459,6 +1472,11 @@ export const jobController2 = [
     label: "Preferred age range (if any)?",
     placeholder: "e.g. 18-50",
     type: "text",
+  },
+  {
+    name: "salaryRange",
+    componentType: "salary-range",
+    label: "Salary Range (In ₹ LPA)",
   },
   {
     name: "requiredSkills",

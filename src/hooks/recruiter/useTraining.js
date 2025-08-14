@@ -8,6 +8,6 @@ export const useFilteredTrainings = (filters) => {
     queryKey: ["filteredTrainings", sanitizedFilters],
     queryFn: getFilteredTrainings,
     keepPreviousData: true, // helpful for pagination
-    enabled: !!sanitizedFilters, // ensure filters is not null
+    enabled: filters?.jobType === "training",
   });
 };
