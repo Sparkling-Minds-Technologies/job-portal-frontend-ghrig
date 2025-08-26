@@ -100,8 +100,8 @@ const formDataSchema = z.object({
     .array(educationSchema)
     .min(1, "At least one education record is required"),
 
-  currentWorkingStatus: z.string().min(1, "Current working status is required"),
-  summary: z.string().min(1, "Summary is Required"),
+  // currentWorkingStatus: z.string().min(1, "Current working status is required"),
+  about: z.string().min(1, "Summary is Required"),
 
   resume: z
     .string()
@@ -125,7 +125,7 @@ const Index = () => {
       pincode: "",
       state: "",
     },
-    summary: "",
+    about: "",
     permanentAddress: {
       address: "",
       city: "",
@@ -143,7 +143,7 @@ const Index = () => {
         endDate: "",
       },
     ],
-    currentWorkingStatus: "",
+    // currentWorkingStatus: "",
     resume: "",
   });
   const [fileName, setFileName] = useState("");

@@ -152,9 +152,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <SearchComponent />
-
         {/* Profile Completion */}
         {!user?.bankDetails && (
           <div className="p-10 bg-white rounded-2xl shadow-sm border border-gray-200 flex gap-12">

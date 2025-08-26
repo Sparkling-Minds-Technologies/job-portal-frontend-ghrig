@@ -46,6 +46,7 @@ import EducationDetails from "./pages/jobSeeker-view/education-details";
 import WorkingDetails from "./pages/jobSeeker-view/working-details";
 import CertificateDetails from "./pages/jobSeeker-view/certificate-details";
 import JobSeekerDashboard from "./pages/jobSeeker-view/dashboard";
+import AdditionalDetails from "./pages/jobSeeker-view/additional-details";
 
 function App() {
   useEffect(() => {
@@ -216,10 +217,22 @@ function App() {
           <Route path="education-details" element={<EducationDetails />} />
           <Route path="working-details" element={<WorkingDetails />} />
           <Route path="certificate-details" element={<CertificateDetails />} />
+          <Route path="additional-details" element={<AdditionalDetails />} />
         </Route>
-
+        <Route
+          path="/job-seeker"
+          element={
+            <CheckAuth
+              // fetchProfileHook={useGetCorporateUserProfile}
+              allowedRoles={["job-seeker"]}
+            >
+              <Layout />
+            </CheckAuth>
+          }
+        >
+          <Route path="dashboard" element={<JobSeekerDashboard />} />
+        </Route>
         {/* Job Seeker Dashboard */}
-        <Route path="/job-seeker/dashboard" element={<JobSeekerDashboard />} />
 
         {/* Congrats fallback route */}
         <Route path="congratulation" element={<DynamicCheckAuthWrapper />} />

@@ -97,7 +97,10 @@ const Layout = () => {
                 </div>
               </div>
               {/* Profile Card */}
-              <div className="self-stretch px-5 py-4 relative bg-[#23344B] rounded-lg inline-flex justify-center items-center gap-4">
+              <Link
+                to={`/${user?.role}/profile`}
+                className="self-stretch px-5 py-4 relative bg-[#23344B] rounded-lg inline-flex justify-center items-center gap-4"
+              >
                 <img
                   className="size-12 rounded-full border border-black object-cover"
                   src={
@@ -105,17 +108,13 @@ const Layout = () => {
                   }
                   alt={user?.name || user?.basicInformation?.companyName}
                 />
-                <div className="flex-1 inline-flex flex-col justify-start items-center gap-1.5">
-                  <div className="self-stretch text-center justify-start text-white text-base font-medium capitalize">
+                <div className="flex-1 inline-flex flex-col justify-center items-center gap-1.5">
+                  <div className="self-stretch text-center justify-start text-white text-md2 font-medium capitalize">
                     {user?.name || user?.basicInformation?.companyName}
                   </div>
-                  <div className="self-stretch text-center justify-start text-neutral-400 text-xs font-medium capitalize">
-                    continue your journey and <br />
-                    achieve Your Target
-                  </div>
                 </div>
-                <div className="size-2.5 left-[52px] top-[55px] absolute bg-lime-600 rounded-full" />
-              </div>
+                <div className="size-2.5 left-[52px] top-[50px] absolute bg-lime-600 rounded-full" />
+              </Link>
               <div className="inline-flex flex-col justify-start items-start gap-2.5">
                 <div className="justify-start text-stone-500 text-xs font-semibold leading-none tracking-widest">
                   MENU

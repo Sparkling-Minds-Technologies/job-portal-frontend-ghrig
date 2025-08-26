@@ -14,6 +14,7 @@ import {
   timeAgo,
 } from "../../../utils/commonFunctions";
 import useJobPostStore from "../../../stores/useJobPostStore";
+import { IndianRupee } from "lucide-react";
 
 const JobCard = ({ setOpen, item }) => {
   const { setJobPost } = useJobPostStore();
@@ -47,7 +48,7 @@ const JobCard = ({ setOpen, item }) => {
             <span className="text-[#7D5AE2] text-xs font-medium py-[2px] px-[6px] rounded-[3px] bg-custom-purple">
               2 Applied
             </span>
-            <div className="flex items-center gap-[14px]">
+            <div className="flex flex-wrap items-center gap-[14px]">
               <div className="flex gap-[6px] items-center">
                 <div className="flex items-center justify-center">
                   <LocationIcon className="h-[16px] w-[16px]" />
@@ -60,13 +61,20 @@ const JobCard = ({ setOpen, item }) => {
                 </div>
                 <div className="text-[#141414] text-sm">{item?.jobType}</div>
               </div>
-
               <div className="flex gap-[6px] items-center">
                 <div className="flex items-center justify-center">
                   <CalenderIcon className="h-[16px] w-[16px]" />
                 </div>
                 <div className="text-[#141414] text-sm">
                   {timeAgo(item?.createdAt)}
+                </div>
+              </div>{" "}
+              <div className="flex gap-[6px] items-center">
+                <div className="flex items-center justify-center">
+                  <IndianRupee width={10} height={10} color="#141414" strokeWidth={1.5} />
+                </div>
+                <div className="text-[#141414] text-sm">
+                  {item?.salaryRange}
                 </div>
               </div>
             </div>

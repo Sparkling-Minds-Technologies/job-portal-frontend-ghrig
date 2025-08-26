@@ -234,20 +234,6 @@ const JobDescription = ({ setOpen1 }) => {
                 </span>
               </div>
               <div className="self-stretch h-0 outline outline-2 outline-offset-[-1px] outline-stone-300" />
-              <div className="inline-flex justify-start items-start gap-4">
-                <img
-                  className="w-7 h-7 rounded-lg"
-                  src="https://placehold.co/28x28"
-                />
-                <img
-                  className="w-7 h-7 rounded-lg"
-                  src="https://placehold.co/28x28"
-                />
-                <img
-                  className="w-7 h-7 rounded-lg"
-                  src="https://placehold.co/28x28"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -461,20 +447,6 @@ const JobDescription = ({ setOpen1 }) => {
               </span>
             </div>
             <div className="self-stretch h-0 outline outline-2 outline-offset-[-1px] outline-stone-300" />
-            <div className="inline-flex justify-start items-start gap-4">
-              <img
-                className="w-7 h-7 rounded-lg"
-                src="https://placehold.co/28x28"
-              />
-              <img
-                className="w-7 h-7 rounded-lg"
-                src="https://placehold.co/28x28"
-              />
-              <img
-                className="w-7 h-7 rounded-lg"
-                src="https://placehold.co/28x28"
-              />
-            </div>
           </div>
         </div>
       </div>

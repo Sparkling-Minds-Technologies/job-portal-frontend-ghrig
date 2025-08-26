@@ -42,7 +42,7 @@ const Profile = () => {
             />
             <div className="size- inline-flex flex-col justify-center items-start gap-2.5">
               <div className="self-stretch px-3 py-2 bg-black rounded-lg inline-flex justify-center items-center gap-1">
-                <div className="justify-start text-white text-xs font-normal leading-tight">
+                <div className="items-center justify-start text-white text-xs font-normal leading-tight">
                   Edit Your Profile
                 </div>
                 <svg

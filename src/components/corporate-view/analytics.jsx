@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Pagination from "../common/pagination";
 const jobTableData = [
   {
     title: "UX Designer",
@@ -73,12 +74,8 @@ const Analytics = () => {
           <div className="justify-start text-gray-900 text-lg font-semibold leading-tight">
             Job Post Performance
           </div>
-          <div className="justify-start text-zinc-500 text-xs font-medium leading-tight">
-            View All
-          </div>
         </div>
         <div className="self-stretch h-0 outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
-        <SearchComponent />
         <div className="self-stretch rounded-lg outline-1 outline-zinc-300 inline-flex justify-start items-start">
           <Table>
             <TableHeader className="[&_th]:font-semibold [&_th]:px-[16px]  [&_th]:py-[4px] [&_th]:text-sm">
@@ -123,18 +120,15 @@ const Analytics = () => {
             </TableBody>
           </Table>
         </div>
+        <Pagination />
       </div>
       <div className="self-stretch p-6 bg-white rounded-lg shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] outline-1 outline-offset-[-1px] outline-zinc-300 flex flex-col justify-start items-start gap-4 overflow-hidden">
         <div className="self-stretch inline-flex justify-between items-center">
           <div className="justify-start text-gray-900 text-lg font-semibold leading-tight">
             Training
           </div>
-          <div className="justify-start text-zinc-500 text-xs font-medium leading-tight">
-            View All
-          </div>
         </div>
         <div className="self-stretch h-0 outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
-        <SearchComponent />
         <div className="self-stretch rounded-lg outline-1 outline-zinc-300 inline-flex justify-start items-start">
           <Table>
             <TableHeader className="[&_th]:font-semibold [&_th]:px-[16px]  [&_th]:py-[4px] [&_th]:text-sm">
@@ -179,6 +173,7 @@ const Analytics = () => {
             </TableBody>
           </Table>
         </div>
+        <Pagination />
       </div>
     </div>
   );
