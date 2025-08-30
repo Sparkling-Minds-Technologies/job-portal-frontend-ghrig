@@ -1,13 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 @theme {
   --font-family-primary: "Plus Jakarta Sans", sans-serif;
-  /* --text-xxs: 14px;
-  --text-xs: 16px;
-  --text-s: 20px;
-  --text-md: 32px;
-  --text-lg: 64px; */
   /* Font Sizes */
   --text-xxs: 0.625rem; /* 10px */
   --text-xs: 0.75rem; /* 12px */
@@ -71,6 +71,11 @@
   font-family: var(--font-family-primary);
   font-size: 15px;
 }
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @media (max-width: 480px) {
   :root {
     font-size: 17px; /* Tablets */
