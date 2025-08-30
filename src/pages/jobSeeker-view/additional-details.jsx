@@ -1,6 +1,17 @@
+import { useState } from "react";
+import CommonForm from "../../components/common/form";
 import Navbar from "../../components/recruiter-view/navbar";
+import {
+  additionalDetailsJobSeeker,
+  additionalDetailsJobSeeker2,
+  additionalDetailsJobSeeker3,
+} from "../../config";
+import { Input } from "../../components/ui/input";
 
 const AdditionalDetails = () => {
+  const [formData, setFormData] = useState({
+    maritalStatus: "",
+  });
   return (
     <div className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-[0px] lg:pb-[32px] inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
       <Navbar onlySupport={true} />
@@ -22,6 +33,45 @@ const AdditionalDetails = () => {
           <div className="flex-1 h-2 bg-zinc-300 rounded-xl" />
           <div className="flex-1 h-2 bg-zinc-300 rounded-xl" />
         </div>
+      </div>
+      <div className="w-full flex flex-col p-6 rounded-lg border-[#DADADA] border-1 shadow-[0_1px_2px_0_rgba(0,0,0,0.03)] gap-[18px]">
+        <div className="justify-start text-gray-900 text-xl font-semibold leading-tight">
+          Additional Information
+        </div>
+        <div className="self-stretch h-0 outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
+        <CommonForm
+          formControls={additionalDetailsJobSeeker}
+          formData={formData}
+          setFormData={setFormData}
+        />
+        {formData?.handleTeam === "yes" && (
+          <div className="self-stretch">
+            <Input
+              className="flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+              type="text"
+              placeholder="Team Handling Experience (in years)"
+            />
+          </div>
+        )}
+        <CommonForm
+          formControls={additionalDetailsJobSeeker2}
+          formData={formData}
+          setFormData={setFormData}
+        />
+        {formData?.medicalProblem === "yes" && (
+          <div className="self-stretch">
+            <Input
+              className="flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+              type="text"
+              placeholder="Enter your Medical Details"
+            />
+          </div>
+        )}
+        <CommonForm
+          formControls={additionalDetailsJobSeeker3}
+          formData={formData}
+          setFormData={setFormData}
+        />
       </div>
     </div>
   );

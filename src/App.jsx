@@ -47,6 +47,7 @@ import WorkingDetails from "./pages/jobSeeker-view/working-details";
 import CertificateDetails from "./pages/jobSeeker-view/certificate-details";
 import JobSeekerDashboard from "./pages/jobSeeker-view/dashboard";
 import AdditionalDetails from "./pages/jobSeeker-view/additional-details";
+import JobDescription from "./pages/jobSeeker-view/job-description";
 
 function App() {
   useEffect(() => {
@@ -222,15 +223,16 @@ function App() {
         <Route
           path="/job-seeker"
           element={
-            <CheckAuth
-              // fetchProfileHook={useGetCorporateUserProfile}
-              allowedRoles={["job-seeker"]}
-            >
-              <Layout />
-            </CheckAuth>
+            // <CheckAuth
+            //   // fetchProfileHook={useGetCorporateUserProfile}
+            //   allowedRoles={["job-seeker"]}
+            // >
+            <Layout />
+            // </CheckAuth>
           }
         >
           <Route path="dashboard" element={<JobSeekerDashboard />} />
+          <Route path="dashboard/:id" element={<JobDescription />} />
         </Route>
         {/* Job Seeker Dashboard */}
 

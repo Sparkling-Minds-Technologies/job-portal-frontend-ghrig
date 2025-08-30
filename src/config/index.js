@@ -1932,3 +1932,117 @@ export const certificateFormControls = [
     ],
   },
 ];
+export const additionalDetailsJobSeeker = [
+  {
+    name: "maritalStatus",
+    label: "Marital Status",
+    componentType: "selection",
+    options: [
+      { id: "single", label: "Single" },
+      { id: "married", label: "Married" },
+      { id: "divorced", label: "Divorced" },
+      { id: "widowed", label: "Widowed" },
+      { id: "separated", label: "Separated" },
+      { id: "other", label: "Other" },
+    ],
+  },
+  {
+    name: "handleTeam",
+    label: "Have you handled a team?",
+    componentType: "selection",
+    options: [
+      { id: "yes", label: "Yes" },
+      { id: "no", label: "No" },
+    ],
+  },
+];
+export const additionalDetailsJobSeeker2 = [
+  {
+    name: "willingTo6DayWork",
+    label: "Are you willing to work 6 days a week?",
+    componentType: "selection",
+    options: [
+      {
+        id: "yes",
+        label: "Yes",
+      },
+      { id: "no", label: "No" },
+    ],
+  },
+  {
+    name: "willingToRelocate",
+    label: "Are you willing to relocate from your current location?",
+    componentType: "selection",
+    options: [
+      {
+        id: "yes",
+        label: "Yes",
+      },
+      { id: "no", label: "No" },
+    ],
+  },
+  {
+    name: "relocationPreferences",
+    componentType: "multi-select",
+    options: [],
+    placeholder: "Select your relocation preferences",
+  },
+  {
+    name: "earlyStageStartup",
+    componentType: "selection",
+    label: "Are you open to joining an early-stage startup?",
+    options: [
+      {
+        id: "yes",
+        label: "Yes",
+      },
+      { id: "no", label: "No" },
+    ],
+  },
+  {
+    name: "differentlyAbled",
+    componentType: "selection",
+    label: "Are you Differently Abled?",
+    options: [
+      {
+        id: "yes",
+        label: "Yes",
+      },
+      { id: "no", label: "No" },
+    ],
+  },
+  {
+    name: "medicalProblem",
+    componentType: "selection",
+    label: "Are you suffering from any medical problem?",
+    options: [
+      {
+        id: "yes",
+        label: "Yes",
+      },
+      { id: "no", label: "No" },
+    ],
+  },
+];
+export const additionalDetailsJobSeeker3 = [
+  {
+    name: "willingToTravel",
+    label: "Willingness to Travel",
+    componentType: "selection",
+    placeholder: "Select",
+    options: [
+      {
+        id: "yes",
+        label: "Yes",
+      },
+      { id: "no", label: "No" },
+    ],
+  },
+  {
+    name: "languages",
+    label: "Languages",
+    componentType: "multi-select",
+    options: [],
+    placeholder: "Select all the languages you speak",
+  },
+];

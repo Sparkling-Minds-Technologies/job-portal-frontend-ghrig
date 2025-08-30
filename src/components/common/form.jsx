@@ -26,7 +26,6 @@ import {
   workingExperience,
 } from "../../config";
 import MonthYearPicker from "./monthYearCalendar";
-import { Checkbox } from "../ui/checkbox";
 import { X } from "lucide-react";
 
 export default function CommonForm({
@@ -69,6 +68,47 @@ export default function CommonForm({
     };
 
     switch (getControlItem.componentType) {
+      case "selection":
+        return (
+          <div className="flex justify-between items-center gap-2">
+            {getControlItem.options.map((item) => (
+              <div
+                key={item.id}
+                className="w-full h-11 px-4 py-2.5 bg-white rounded-sm outline-1 outline-neutral-200 inline-flex justify-center items-center gap-2 cursor-pointer"
+                onClick={() => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    [getControlItem.name]: item.id,
+                  }));
+                }}
+              >
+                <div className="w-full self-stretch flex justify-center items-center gap-2.5">
+                  {item.id === value && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                    >
+                      <circle
+                        cx="6"
+                        cy="6"
+                        r="4"
+                        fill="white"
+                        stroke="#6945ED"
+                        stroke-width="4"
+                      />
+                    </svg>
+                  )}
+                  <div className="justify-start text-neutral-400 text-sm font-normal">
+                    {item.label}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
       case "phone":
         const phoneObject = getNestedValue(formData, nameWithIndex) || {
           number: "",
@@ -496,6 +536,7 @@ export default function CommonForm({
                 setNestedValue(prev, getControlItem.name, updatedItems)
               )
             }
+            placeholder={getControlItem.placeholder || "Select options..."}
           />
         );
 
