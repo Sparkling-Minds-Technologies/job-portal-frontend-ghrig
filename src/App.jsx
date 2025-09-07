@@ -57,6 +57,9 @@ import TrainerEducation from "./pages/trainner-view/education-details";
 import TrainerWorking from "./pages/trainner-view/working-details";
 import TrainerCertificate from "./pages/trainner-view/certificate-details";
 import TrainerAdditional from "./pages/trainner-view/additional-details";
+import TrainerDashboard from "./pages/trainner-view/dashboard";
+import TrainerJobDescription from "./pages/trainner-view/job-description";
+import TrainerSearch from "./pages/trainner-view/search";
 
 function App() {
   useEffect(() => {
@@ -268,8 +271,9 @@ function App() {
             // </CheckAuth>
           }
         >
-          <Route path="dashboard" element={<JobSeekerDashboard />} />
-          <Route path="dashboard/:id" element={<JobDescription />} />
+          <Route path="dashboard" element={<TrainerDashboard />} />
+          <Route path="dashboard/:id" element={<TrainerJobDescription />} />
+          <Route path="search" element={<TrainerSearch />} />
           <Route path="faq" element={<Faq />} />
         </Route>
 
