@@ -908,7 +908,6 @@ export const CandidatesFilters = [
     placeholder: "Application Date",
     name: "sortBy",
   },
-  ,
   {
     label: "Designation",
     componentType: "multi-select",

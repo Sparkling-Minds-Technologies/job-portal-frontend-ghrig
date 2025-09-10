@@ -9,7 +9,6 @@ import ProfileSetupLayout from "./components/recruiter-view/profile-setup-layout
 
 import { useGetUserProfile as useGetRecruiterUserProfile } from "./hooks/recruiter/useProfile";
 import { useGetCorporateUserProfile } from "./hooks/corporate/useProfile";
-import { useGetUserProfile as useGetSuperAdminUserProfile } from "./hooks/superAdmin/useProfile";
 
 import useAuthStore from "./stores/useAuthStore";
 
@@ -70,6 +69,7 @@ import SuperAdminAnalytics from "./pages/superAdmin-view/analytics";
 import SuperAdminProfile from "./pages/superAdmin-view/profile";
 import SuperAdminBasicDetails from "./pages/superAdmin-view/basic-details";
 import SuperAdminLayout from "./components/superAdmin-view/layout";
+import SuperAdminDatabasePage from "./pages/superAdmin-view/database";
 
 function App() {
   useEffect(() => {
@@ -287,17 +287,17 @@ function App() {
         </Route>
 
         {/* Super Admin Auth and Setup */}
-        <Route path="/superAdmin/log-in" element={<SuperAdminLogin />} />
+        <Route path="/super-admin/log-in" element={<SuperAdminLogin />} />
 
         <Route
-          path="/superAdmin/profile-setup"
+          path="/super-admin/profile-setup"
           element={<ProfileSetupLayout />}
         >
           <Route path="basic-details" element={<SuperAdminBasicDetails />} />
         </Route>
 
         {/* Super Admin Main Dashboard */}
-        <Route path="/superAdmin" element={<SuperAdminLayout />}>
+        <Route path="/super-admin" element={<SuperAdminLayout />}>
           <Route index element={<SuperAdminDashboard />} />
           <Route path="dashboard" element={<SuperAdminDashboard />} />
           <Route path="users" element={<SuperAdminUsers />} />
@@ -306,6 +306,7 @@ function App() {
           <Route path="settings" element={<SuperAdminSettings />} />
           <Route path="analytics" element={<SuperAdminAnalytics />} />
           <Route path="profile" element={<SuperAdminProfile />} />
+          <Route path="database" element={<SuperAdminDatabasePage />} />
         </Route>
 
         {/* Congrats fallback route */}
