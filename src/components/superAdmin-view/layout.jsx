@@ -19,38 +19,35 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { BriefcaseIcon } from "lucide-react";
 
 const dashboardMenuSuperAdmin = [
   {
     name: "Dashboard",
     link: "/super-admin/dashboard",
-    icon: <Cubed className="h-[20px] w-[20px]" />,
+    icon: <BriefcaseIcon className="h-5 w-5 text-white" />,
   },
   {
     name: "Database",
     link: "/super-admin/database",
-    icon: <PostJobIcon className="h-[20px] w-[20px]" />,
+    icon: <BriefcaseIcon className="h-5 w-5 text-white" />,
   },
   {
     name: "Jobs/Training",
     link: "/super-admin/jobs-and-trainings",
-    icon: <PostJobIcon className="h-[20px] w-[20px]" />,
+    icon: <BriefcaseIcon className="h-5 w-5 text-white" />,
   },
   {
     name: "Approvals",
     link: "/super-admin/approvals",
-    icon: <BookIcon className="h-[20px] w-[20px]" />,
+    icon: <BriefcaseIcon className="h-5 w-5 text-white" />,
   },
   {
     name: "Admin Management",
     link: "/super-admin/admin-management",
-    icon: <CursorIcon className="h-[20px] w-[20px]" />,
+    icon: <BriefcaseIcon className="h-5 w-5 text-white" />,
   },
 ];
 

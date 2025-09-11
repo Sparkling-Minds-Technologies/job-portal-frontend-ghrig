@@ -1,5 +1,11 @@
-const SuperAdminAdminManagement = () => {
-  return <div>SuperAdminAdminManagement</div>;
+import SuperAdminAdminManagement from "@/components/superAdmin-view/admin-management";
+
+const SuperAdminAdminManagementPage = () => {
+  return (
+    <div>
+      <SuperAdminAdminManagement />
+    </div>
+  );
 };
 
-export default SuperAdminAdminManagement;
+export default SuperAdminAdminManagementPage;

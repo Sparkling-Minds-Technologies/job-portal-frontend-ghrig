@@ -66,7 +66,7 @@ import SuperAdminLayout from "./components/superAdmin-view/layout";
 import SuperAdminDatabasePage from "./pages/superAdmin-view/database";
 import SuperAdminJobsAndTrainingsPage from "./pages/superAdmin-view/jobs-and-trainings/jobs-and-trainings";
 import SuperAdminApprovals from "./pages/superAdmin-view/approvals";
-import SuperAdminAdminManagement from "./pages/superAdmin-view/admin-management";
+import SuperAdminAdminManagementPage from "./pages/superAdmin-view/admin-management";
 import SuperAdminCandidates from "./components/superAdmin-view/jobs-and-trainings/candidates/Candidates";
 
 function App() {
@@ -304,7 +304,7 @@ function App() {
           <Route path="approvals" element={<SuperAdminApprovals />} />
           <Route
             path="admin-management"
-            element={<SuperAdminAdminManagement />}
+            element={<SuperAdminAdminManagementPage />}
           />
         </Route>
 
