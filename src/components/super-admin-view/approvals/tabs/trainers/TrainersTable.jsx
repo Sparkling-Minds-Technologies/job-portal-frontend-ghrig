@@ -12,11 +12,23 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 import { useState } from "react";
 import TrainerDetails from "@/components/super-admin-view/database/tabs/trainers/TrainerDetails";
+import { useGetTrainerById } from "@/hooks/superAdmin/useTrainers";
 
 const TrainersTable = ({ paginatedTrainers }) => {
   const [selectedTrainerId, setSelectedTrainerId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [selectedTrainerForDetails, setSelectedTrainerForDetails] =
+    useState(null);
+
+  // Fetch detailed trainer data when a trainer is selected for details
+  const {
+    data: trainerDetails,
+    isLoading: isLoadingDetails,
+    error: detailsError,
+  } = useGetTrainerById(selectedTrainerForDetails?._id, {
+    enabled: !!selectedTrainerForDetails?._id,
+  });
 
   const handleSelectTrainer = (trainerId) => {
     setSelectedTrainerId(trainerId);
@@ -29,6 +41,7 @@ const TrainersTable = ({ paginatedTrainers }) => {
     }
 
     setSelectedTrainer(trainer);
+    setSelectedTrainerForDetails(trainer);
     setDrawerOpen(true);
   };
 
@@ -70,7 +83,7 @@ const TrainersTable = ({ paginatedTrainers }) => {
                 {paginatedTrainers.length > 0 ? (
                   paginatedTrainers.map((trainer) => (
                     <TableRow
-                      key={trainer.id}
+                      key={trainer._id}
                       onClick={(e) => handleRowClick(trainer, e)}
                       className="cursor-pointer hover:bg-gray-50 transition-colors"
                     >
@@ -78,42 +91,44 @@ const TrainersTable = ({ paginatedTrainers }) => {
                         <input
                           type="radio"
                           name="selectTrainer"
-                          checked={selectedTrainerId === trainer.id}
-                          onChange={() => handleSelectTrainer(trainer.id)}
-                          aria-label={`Select trainer ${trainer.name}`}
+                          checked={selectedTrainerId === trainer._id}
+                          onChange={() => handleSelectTrainer(trainer._id)}
+                          aria-label={`Select trainer ${trainer.firstName} ${trainer.lastName}`}
                           className="w-4 h-4 text-primary-purple border-2 border-gray-300 focus:ring-2 focus:ring-primary-purple/50 focus:ring-offset-0 cursor-pointer appearance-none rounded-full checked:bg-primary-purple checked:border-primary-purple relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:transform before:-translate-x-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-white before:rounded-full before:opacity-0 checked:before:opacity-100"
                         />
                       </TableCell>
-                      <TableCell>{trainer.id}</TableCell>
+                      <TableCell>{trainer._id}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          {/* {trainer.avatar ? (
+                          {trainer.profileImage ? (
                             <img
-                              src={trainer.avatar}
-                              alt={`${trainer.name} avatar`}
+                              src={trainer.profileImage}
+                              alt={`${trainer.firstName} ${trainer.lastName} avatar`}
                               className="w-10 h-10 rounded-full object-cover"
                             />
-                          ) : ( */}
-                          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                            <User className="h-5 w-5 text-gray-400" />
-                          </div>
-                          {/* )} */}
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                              <User className="h-5 w-5 text-gray-400" />
+                            </div>
+                          )}
                           <div className="flex flex-col">
                             <span className="font-medium text-gray-900">
-                              {trainer.name}
+                              {trainer.firstName} {trainer.lastName}
                             </span>
                             <span className="text-sm text-gray-500">
-                              {trainer.title}
+                              {trainer.email}
                             </span>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{trainer.expertise}</TableCell>
-                      <TableCell>{trainer.specialization}</TableCell>
-                      <TableCell>{trainer.experience}</TableCell>
-                      <TableCell>{trainer.lastUpdated}</TableCell>
+                      <TableCell>N/A</TableCell>
+                      <TableCell>N/A</TableCell>
+                      <TableCell>N/A</TableCell>
                       <TableCell>
-                        <StatusBadge status={trainer.approvalStatus} />
+                        {new Date(trainer.updatedAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={trainer.status} />
                       </TableCell>
                     </TableRow>
                   ))
@@ -147,8 +162,10 @@ const TrainersTable = ({ paginatedTrainers }) => {
         >
           <div className="bg-white rounded-2xl w-full h-full">
             <TrainerDetails
-              trainer={selectedTrainer}
+              trainer={trainerDetails?.data?.data || selectedTrainer}
               areApprovalBtnsVisible={true}
+              isLoading={isLoadingDetails}
+              error={detailsError}
             />
           </div>
         </SheetContent>

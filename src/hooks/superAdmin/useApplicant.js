@@ -5,7 +5,8 @@ import {
   createApplicant,
   updateApplicant,
   deleteApplicant,
-} from "../../api/superAdmin/applicant";
+} from "../../api/super-admin/applicant";
+import { getCandidateDetails } from "../../api/super-admin/user";
 import { toast } from "sonner";
 
 export const useGetAllApplicants = (params = {}) => {
@@ -72,5 +73,16 @@ export const useDeleteApplicant = () => {
         error.response?.data?.message || "Failed to delete applicant"
       );
     },
+  });
+};
+
+export const useGetCandidateDetails = (
+  jobseekerId,
+  { enabled = true } = {}
+) => {
+  return useQuery({
+    queryKey: ["superAdmin-candidate-details", jobseekerId],
+    queryFn: ({ signal }) => getCandidateDetails(jobseekerId, { signal }),
+    enabled: enabled && !!jobseekerId,
   });
 };

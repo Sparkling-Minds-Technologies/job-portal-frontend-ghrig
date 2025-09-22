@@ -5,7 +5,7 @@ import {
   createTraining,
   updateTraining,
   deleteTraining,
-} from "../../api/superAdmin/training";
+} from "../../api/super-admin/training";
 import { toast } from "sonner";
 
 export const useGetAllTrainings = (params = {}) => {

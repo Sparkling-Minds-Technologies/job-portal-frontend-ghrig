@@ -48,7 +48,7 @@ const jobsFilters = [
   },
 ];
 
-const JobsApplied = () => {
+const JobsApplied = ({ candidate }) => {
   const [filters, setFilters] = useState({
     skills: "",
     industry: "all",

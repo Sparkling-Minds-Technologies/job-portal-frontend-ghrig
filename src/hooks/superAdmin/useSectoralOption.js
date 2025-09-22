@@ -4,7 +4,7 @@ import {
   createSectoralOption,
   updateSectoralOption,
   deleteSectoralOption,
-} from "../../api/superAdmin/sectoralOption";
+} from "../../api/super-admin/sectoralOption";
 import { toast } from "sonner";
 
 export const useGetSectoralOptions = ({ enabled = true } = {}) => {

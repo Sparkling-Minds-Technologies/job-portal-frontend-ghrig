@@ -1,11 +1,11 @@
 import React from "react";
-import { useGetUserProfile } from "../../hooks/superAdmin/useProfile";
 import { useGetAllApplicants } from "../../hooks/superAdmin/useApplicant";
 import { useGetAllJobs } from "../../hooks/superAdmin/useJob";
 import { useGetAllTrainings } from "../../hooks/superAdmin/useTraining";
+import useAuthStore from "../../stores/useAuthStore";
 
 const SuperAdminDashboard = () => {
-  const { data: userProfile } = useGetUserProfile();
+  const { user } = useAuthStore();
   const { data: applicants } = useGetAllApplicants({ page: 1, limit: 5 });
   const { data: jobs } = useGetAllJobs({ page: 1, limit: 5 });
   const { data: trainings } = useGetAllTrainings({ page: 1, limit: 5 });
@@ -46,7 +46,10 @@ const SuperAdminDashboard = () => {
             Super Admin Dashboard
           </h1>
           <p className="text-gray-600 mt-1">
-            Welcome back, {userProfile?.data?.name || "Administrator"}
+            Welcome back,{" "}
+            {user?.firstName
+              ? `${user.firstName} ${user.lastName}`
+              : "Administrator"}
           </p>
         </div>
         <div className="text-sm text-gray-500">

@@ -6,7 +6,7 @@ import {
   updateJob,
   deleteJob,
   getJobApplications,
-} from "../../api/superAdmin/job";
+} from "../../api/super-admin/job";
 import { toast } from "sonner";
 
 export const useGetAllJobs = (params = {}) => {

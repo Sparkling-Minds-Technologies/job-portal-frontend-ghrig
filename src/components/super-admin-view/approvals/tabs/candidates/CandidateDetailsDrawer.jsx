@@ -3,12 +3,25 @@ import { useState } from "react";
 import JobsApplied from "./tabs/JobsApplied";
 import AboutCandidate from "./tabs/AboutCandidate";
 import { Button } from "@/components/ui/button";
+import { useGetCandidateDetails } from "@/hooks/superAdmin/useApplicant";
 
 const CandidateDetailsDrawer = ({
   candidate,
   areApprovalBtnsVisible = false,
 }) => {
   const [activeTab, setActiveTab] = useState("aboutCandidate");
+
+  // Fetch detailed candidate data
+  const {
+    data: candidateDetails,
+    isLoading: isLoadingDetails,
+    error: detailsError,
+  } = useGetCandidateDetails(candidate?._id || candidate?.id, {
+    enabled: !!(candidate?._id || candidate?.id),
+  });
+
+  // Use detailed data if available, otherwise fall back to basic candidate data
+  const displayCandidate = candidateDetails?.data?.data || candidate;
 
   const tabs = [
     {
@@ -32,16 +45,51 @@ const CandidateDetailsDrawer = ({
     );
   }
 
+  if (isLoadingDetails) {
+    return (
+      <div className="w-full h-full p-10 bg-white rounded-l-2xl inline-flex flex-col justify-center items-center">
+        <div className="text-center">
+          <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-500">Loading candidate details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (detailsError) {
+    return (
+      <div className="w-full h-full p-10 bg-white rounded-l-2xl inline-flex flex-col justify-center items-center">
+        <div className="text-center">
+          <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-500">Error loading candidate details</p>
+          <p className="text-red-500 text-sm">{detailsError.message}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full bg-white rounded-l-2xl inline-flex flex-col gap-8 overflow-y-auto">
       <img src="/Group_1000005865.jpg" className="w-full object-contain" />
 
       <div className="bg-white p-6 w-[800px] mx-auto rounded-lg shadow-md -mt-20 flex items-center gap-6">
-        <User className="h-6 w-6 text-gray-400 mx-auto mb-4" />
+        {displayCandidate.profilePicture ? (
+          <img
+            src={displayCandidate.profilePicture}
+            alt={`${displayCandidate.name} avatar`}
+            className="w-16 h-16 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+            <User className="h-8 w-8 text-gray-400" />
+          </div>
+        )}
         <div className="flex-1">
-          <h3 className="font-semibold">Margaret Thetcher</h3>
+          <h3 className="font-semibold">{displayCandidate.name || "N/A"}</h3>
           <p className="text-gray1">
-            I am a Product Designer Based in Bengaluru
+            {displayCandidate.education?.length > 0
+              ? `${displayCandidate.education[0].degree} - ${displayCandidate.education[0].institution}`
+              : "Profile information not available"}
           </p>
         </div>
 
@@ -73,9 +121,13 @@ const CandidateDetailsDrawer = ({
 
         {/* Tab Content */}
         <div className="py-6">
-          {activeTab === "jobsApplied" && <JobsApplied />}
+          {activeTab === "jobsApplied" && (
+            <JobsApplied candidate={displayCandidate} />
+          )}
 
-          {activeTab === "aboutCandidate" && <AboutCandidate />}
+          {activeTab === "aboutCandidate" && (
+            <AboutCandidate candidate={displayCandidate} />
+          )}
         </div>
       </div>
     </div>

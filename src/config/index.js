@@ -195,6 +195,7 @@ export const LoginFields = [
     type: "password",
   },
 ];
+
 export const sectoralFieldsForm = [
   {
     name: "sectorSpecialization",

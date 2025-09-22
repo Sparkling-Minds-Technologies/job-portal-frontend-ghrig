@@ -1,17 +1,10 @@
 import CommonForm from "../../common/form";
 import { LoginFields } from "../../../config";
 import { Button } from "../../ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
-const Index = ({
-  formData,
-  setFormData,
-  handleSubmit,
-  isPending,
-  signUpLink,
-}) => {
+const Index = ({ formData, setFormData, handleSubmit, isPending }) => {
   return (
     <div className="flex max-sm:flex-col max-sm:gap-[40px] justify-between p-[20px] pt-[60px] max-sm:p-[24px] max-sm:pt-[100px] w-full pb-[90px] items-center">
       <div className="w-1/2 max-sm:w-full lg:flex lg:items-center lg:justify-end lg:pr-[100px]">
@@ -31,25 +24,7 @@ const Index = ({
                 setFormData={setFormData}
               />
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[6px]">
-                <div className="flex items-center justify-center">
-                  <Checkbox
-                    checked={formData.rememberme}
-                    onCheckedChange={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        rememberme: !prev.rememberme,
-                      }))
-                    }
-                    id="terms"
-                    className="cursor-pointer w-[20px] h-[20px]"
-                  />
-                </div>
-                <label htmlFor="terms" className="text-base text-black">
-                  Remember me
-                </label>
-              </div>
+            <div className="flex items-center justify-end">
               <Link className="text-[#424242] text-base font-medium">
                 Forget Password?
               </Link>

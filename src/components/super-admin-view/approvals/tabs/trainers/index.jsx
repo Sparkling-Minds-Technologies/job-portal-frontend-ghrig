@@ -3,25 +3,63 @@ import Pagination from "../../../../common/pagination";
 import SearchComponent from "@/components/common/searchComponent";
 import FilterComponent from "../../../../common/filterComponent";
 import { trainersFilters } from "./utils";
-import useTrainersStore from "./zustand";
+import { useState } from "react";
+import { useGetAllTrainers } from "@/hooks/superAdmin/useTrainers";
 
 const TrainersTab = () => {
-  const {
-    filters,
-    currentPage,
-    setFormData,
-    clearAllFilters,
-    setCurrentPage,
-    handleDeleteTrainer,
-    getPaginatedTrainers,
-    getTotalPages,
-    getFilteredCount,
-  } = useTrainersStore();
+  // Local state for filters and pagination
+  const [filters, setFilters] = useState({
+    search: "",
+    skills: [],
+    industry: [],
+    experience: [],
+    location: [],
+    status: "pending", // For approvals, we want pending trainers by default
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  // Get computed data
-  const paginatedTrainers = getPaginatedTrainers();
-  const totalPages = getTotalPages();
-  const filteredCount = getFilteredCount();
+  // Fetch trainers data directly from API
+  const { data, isLoading, error } = useGetAllTrainers();
+
+  // Get trainers and pagination data from API response
+  const trainers = data?.data?.data?.trainers || [];
+  const totalCount = data?.data?.data?.pagination?.totalTrainers || 0;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  // Handle filter updates
+  const setFormData = (newFormData) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      ...(typeof newFormData === "function"
+        ? newFormData(prevFilters)
+        : newFormData),
+    }));
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setFilters({
+      search: "",
+      skills: [],
+      industry: [],
+      experience: [],
+      location: [],
+      status: "pending",
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    });
+    setCurrentPage(1);
+  };
+
+  // Handle delete trainer (placeholder - implement actual delete logic)
+  const handleDeleteTrainer = (trainer) => {
+    console.log("Delete trainer:", trainer);
+    // TODO: Implement actual delete logic here
+  };
 
   return (
     <div className="space-y-6">
@@ -67,14 +105,26 @@ const TrainersTab = () => {
 
           {/* Trainers Table Container with horizontal scroll */}
           <div className="min-w-0 overflow-x-auto">
-            <TrainersTable
-              paginatedTrainers={paginatedTrainers}
-              handleDeleteTrainer={handleDeleteTrainer}
-            />
+            {isLoading ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="text-gray-500">Loading trainers...</div>
+              </div>
+            ) : error ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="text-red-500">
+                  Error loading trainers: {error.message}
+                </div>
+              </div>
+            ) : (
+              <TrainersTable
+                paginatedTrainers={trainers}
+                handleDeleteTrainer={handleDeleteTrainer}
+              />
+            )}
           </div>
 
           {/* Pagination */}
-          {filteredCount > 0 && (
+          {totalCount > 0 && (
             <div className="flex justify-center">
               <Pagination
                 currentPage={currentPage}

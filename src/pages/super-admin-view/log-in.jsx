@@ -7,16 +7,13 @@ import { validateFormData } from "../../utils/commonFunctions";
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
   password: z.string().min(1, "Password is Required"),
-  rememberme: z.boolean(),
 });
 
 const SuperAdminLogin = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    rememberme: false,
   });
-  const signUpLink = "/superAdmin/profile-setup/basic-details";
   const { mutate, isPending, isError, error } = useLogin();
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,7 +28,6 @@ const SuperAdminLogin = () => {
         handleSubmit={handleSubmit}
         setFormData={setFormData}
         isPending={isPending}
-        signUpLink={signUpLink}
       />
     </div>
   );

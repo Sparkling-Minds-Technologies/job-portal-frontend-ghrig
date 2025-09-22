@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import CandidatesTable from "./CandidatesTable";
 import Pagination from "@/components/common/pagination";
 import SearchComponent from "@/components/common/searchComponent";
@@ -9,6 +10,8 @@ const CandidatesTab = () => {
   const {
     filters,
     currentPage,
+    loading,
+    error,
     setFormData,
     clearAllFilters,
     setCurrentPage,
@@ -16,7 +19,13 @@ const CandidatesTab = () => {
     getPaginatedCandidates,
     getTotalPages,
     getFilteredCount,
+    fetchCandidates,
   } = useCandidatesStore();
+
+  // Fetch candidates on component mount
+  useEffect(() => {
+    fetchCandidates();
+  }, [fetchCandidates]);
 
   // Get computed data
   const paginatedCandidates = getPaginatedCandidates();
@@ -26,6 +35,16 @@ const CandidatesTab = () => {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Candidates</h1>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="text-red-800 font-medium">
+            Error loading candidates
+          </div>
+          <div className="text-red-600 text-sm">{error}</div>
+        </div>
+      )}
 
       {/* Main Content Layout */}
       <div className="flex flex-col lg:flex-row gap-6">
@@ -63,14 +82,23 @@ const CandidatesTab = () => {
             />
           </div>
 
+          {/* Loading State */}
+          {loading && (
+            <div className="flex justify-center items-center py-8">
+              <div className="text-gray-500">Loading candidates...</div>
+            </div>
+          )}
+
           {/* Candidates Table */}
-          <CandidatesTable
-            paginatedCandidates={paginatedCandidates}
-            handleDeleteCandidate={handleDeleteCandidate}
-          />
+          {!loading && (
+            <CandidatesTable
+              paginatedCandidates={paginatedCandidates}
+              handleDeleteCandidate={handleDeleteCandidate}
+            />
+          )}
 
           {/* Pagination */}
-          {filteredCount > 0 && (
+          {!loading && filteredCount > 0 && (
             <div className="flex justify-center">
               <Pagination
                 currentPage={currentPage}
