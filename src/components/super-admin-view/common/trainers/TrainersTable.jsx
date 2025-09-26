@@ -52,7 +52,7 @@ const TrainersTable = ({
   return (
     <>
       <div className="bg-white rounded-lg border overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-w-[900px]">
           <div className={showStatusColumn ? "min-w-[1000px]" : ""}>
             <Table>
               <TableHeader>

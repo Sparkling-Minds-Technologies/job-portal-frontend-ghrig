@@ -40,7 +40,7 @@ const CandidatesTable = ({ paginatedCandidates }) => {
   return (
     <>
       <div className="bg-white rounded-lg border overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-w-[900px]">
           <Table>
             <TableHeader>
               <TableRow>

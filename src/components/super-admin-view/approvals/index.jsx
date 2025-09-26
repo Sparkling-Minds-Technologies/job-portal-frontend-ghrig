@@ -24,15 +24,15 @@ const Approvals = () => {
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 min-w-0">
       {/* Tab Navigation */}
-      <div className="grid grid-cols-6">
-        <div className="col-span-4 flex p-1">
+      <div className="flex items-center justify-between min-w-0">
+        <div className="flex p-1 min-w-0 overflow-x-auto flex-1 lg:max-w-3xl">
           {databaseTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-4 py-2 transition-colors font-medium border-b-[1px] cursor-pointer ${
+              className={`flex items-center px-4 py-2 transition-colors font-medium border-b-[1px] cursor-pointer whitespace-nowrap ${
                 activeTab === tab.id
                   ? "border-b-primary-purple text-primary-purple"
                   : "text-gray1 border-b-gray1"
@@ -44,13 +44,13 @@ const Approvals = () => {
           ))}
         </div>
 
-        <div className="col-span-2 flex justify-end items-center space-x-4">
+        <div className="flex justify-end items-center space-x-4 ml-4">
           {/* --- Right Action buttons */}
         </div>
       </div>
 
       {/* Tab Content */}
-      <div>{renderTabContent()}</div>
+      <div className="min-w-0">{renderTabContent()}</div>
     </div>
   );
 };
