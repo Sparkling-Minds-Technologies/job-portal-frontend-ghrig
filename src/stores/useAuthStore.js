@@ -30,8 +30,6 @@ export const useAuthStore = create((set) => ({
       return { isAuthenticated };
     }),
 
-  setRefetchProfile: (value) => set({ refetchProfile: value }),
-
   logout: () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
@@ -39,7 +37,6 @@ export const useAuthStore = create((set) => ({
       token: null,
       user: null,
       isAuthenticated: false,
-      refetchProfile: false,
       tokenInitialized: true, // ✅ make sure to reset this
     });
   },
