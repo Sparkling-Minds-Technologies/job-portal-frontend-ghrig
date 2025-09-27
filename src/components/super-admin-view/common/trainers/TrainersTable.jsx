@@ -12,7 +12,6 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 import { useState } from "react";
 import TrainerDetails from "./TrainerDetails";
-import { useGetTrainerById } from "@/hooks/superAdmin/useTrainers";
 
 const TrainersTable = ({
   paginatedTrainers,
@@ -22,17 +21,6 @@ const TrainersTable = ({
   const [selectedTrainerId, setSelectedTrainerId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
-  const [selectedTrainerForDetails, setSelectedTrainerForDetails] =
-    useState(null);
-
-  // Fetch detailed trainer data when a trainer is selected for details
-  const {
-    data: trainerDetails,
-    isLoading: isLoadingDetails,
-    error: detailsError,
-  } = useGetTrainerById(selectedTrainerForDetails?._id, {
-    enabled: !!selectedTrainerForDetails?._id,
-  });
 
   const handleSelectTrainer = (trainerId) => {
     setSelectedTrainerId(trainerId);
@@ -45,7 +33,6 @@ const TrainersTable = ({
     }
 
     setSelectedTrainer(trainer);
-    setSelectedTrainerForDetails(trainer);
     setDrawerOpen(true);
   };
 
@@ -117,23 +104,32 @@ const TrainersTable = ({
                           )}
                           <div className="flex flex-col">
                             <span className="font-medium text-gray-900">
-                              {trainer.firstName} {trainer.lastName}
+                              {trainer.name ||
+                                `${trainer.firstName || ""} ${
+                                  trainer.lastName || ""
+                                }`.trim() ||
+                                "N/A"}
                             </span>
                             <span className="text-sm text-gray-500">
-                              {trainer.email}
+                              {trainer.email || "N/A"}
                             </span>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>N/A</TableCell>
-                      <TableCell>N/A</TableCell>
-                      <TableCell>N/A</TableCell>
+                      <TableCell>{trainer.contact || "N/A"}</TableCell>
+                      <TableCell>{trainer.skills || "N/A"}</TableCell>
+                      <TableCell>{trainer.industry || "N/A"}</TableCell>
                       <TableCell>
-                        {new Date(trainer.updatedAt).toLocaleDateString()}
+                        {trainer.lastUpdated ||
+                          (trainer.updatedAt
+                            ? new Date(trainer.updatedAt).toLocaleDateString()
+                            : "N/A")}
                       </TableCell>
                       {showStatusColumn && (
                         <TableCell>
-                          <StatusBadge status={trainer.status} />
+                          <StatusBadge
+                            status={trainer.approvalStatus || trainer.status}
+                          />
                         </TableCell>
                       )}
                     </TableRow>
@@ -175,10 +171,8 @@ const TrainersTable = ({
             } w-full h-full`}
           >
             <TrainerDetails
-              trainer={trainerDetails?.data?.data || selectedTrainer}
+              trainer={selectedTrainer}
               areApprovalBtnsVisible={areApprovalBtnsVisible}
-              isLoading={isLoadingDetails}
-              error={detailsError}
             />
           </div>
         </SheetContent>

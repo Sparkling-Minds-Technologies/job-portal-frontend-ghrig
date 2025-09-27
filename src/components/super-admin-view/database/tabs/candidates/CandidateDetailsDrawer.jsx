@@ -1,4 +1,4 @@
-import { User, Briefcase, FileText } from "lucide-react";
+import { User } from "lucide-react";
 import { useState } from "react";
 import JobsApplied from "./tabs/JobsApplied";
 import AboutCandidate from "./tabs/AboutCandidate";

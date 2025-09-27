@@ -13,4 +13,7 @@ export const getJobseekersList = (params = {}) =>
   api.get("/api/v1/admin/jobseekers/list", { params });
 
 export const getCandidateDetails = (jobseekerId) =>
-  api.get(`/api/v1/jobseeker/${jobseekerId}`);
+  api.get(`/api/v1/admin/jobseekers/${jobseekerId}`);
+
+export const getRecruiterDetails = (recruiterId) =>
+  api.get(`/api/v1/admin/recruiters/${recruiterId}`);

@@ -51,40 +51,56 @@ const TrainersTab = () => {
       const response = await getApprovalsList("trainer", params);
 
       // Parse the API response structure
-      const trainersData = response.data?.data?.trainers || [];
+      const approvals = response.data?.data?.approvals || [];
       const pagination = response.data?.data?.pagination || {};
 
       // Map API data to component expected format
-      const mappedTrainers = trainersData.map((trainer) => ({
-        id: trainer._id,
-        name: trainer.name || "N/A",
-        email: trainer.email || "N/A",
-        contact: trainer.phone
-          ? `${trainer.phone.countryCode} ${trainer.phone.number}`
-          : "N/A",
-        skills: trainer.skills?.length > 0 ? trainer.skills.join(", ") : "N/A",
-        industry: trainer.industry || "N/A",
-        experience: trainer.experience || "N/A",
-        location: trainer.location || "N/A",
-        status: trainer.status || "pending",
-        rating: trainer.rating || 0,
-        totalStudents: trainer.totalStudents || 0,
-        coursesCompleted: trainer.coursesCompleted || 0,
-        joinedDate: trainer.createdAt
-          ? new Date(trainer.createdAt).toISOString().split("T")[0]
-          : "N/A",
-        lastUpdated: trainer.updatedAt
-          ? new Date(trainer.updatedAt).toISOString().split("T")[0]
-          : "N/A",
-        // Additional API fields
-        _id: trainer._id,
-        phone: trainer.phone,
-        createdAt: trainer.createdAt,
-        updatedAt: trainer.updatedAt,
-      }));
+      const mappedTrainers = approvals.map((approval) => {
+        const trainer = approval.data || {};
+        return {
+          id: approval._id,
+          name:
+            trainer.firstName && trainer.lastName
+              ? `${trainer.firstName} ${trainer.lastName}`
+              : trainer.name || "N/A",
+          email: trainer.email || "N/A",
+          contact: trainer.phoneNumber || "N/A",
+          skills:
+            trainer.skills?.length > 0 ? trainer.skills.join(", ") : "N/A",
+          industry: trainer.industry || "N/A",
+          experience: trainer.experience || "N/A",
+          location: trainer.location || "N/A",
+          status: approval.status || "pending",
+          rating: trainer.rating || 0,
+          totalStudents: trainer.totalStudents || 0,
+          coursesCompleted: trainer.coursesCompleted || 0,
+          joinedDate: approval.createdAt
+            ? new Date(approval.createdAt).toISOString().split("T")[0]
+            : "N/A",
+          lastUpdated: approval.updatedAt
+            ? new Date(approval.updatedAt).toISOString().split("T")[0]
+            : "N/A",
+          // Additional API fields
+          _id: approval._id,
+          phone: trainer.phoneNumber,
+          createdAt: approval.createdAt,
+          updatedAt: approval.updatedAt,
+          // Approval specific fields
+          approvalStatus: approval.status,
+          applicantId: approval.applicantId,
+          applicantType: approval.applicantType,
+          submittedAt: approval.submittedAt,
+          version: approval.version,
+          isActive: approval.isActive,
+          // Trainer data fields
+          firstName: trainer.firstName,
+          lastName: trainer.lastName,
+          phoneNumber: trainer.phoneNumber,
+        };
+      });
 
       setTrainers(mappedTrainers);
-      setTotalCount(pagination.totalTrainers || mappedTrainers.length);
+      setTotalCount(pagination.totalApprovals || mappedTrainers.length);
     } catch (error) {
       console.error("Error fetching trainers:", error);
       setError(error.response?.data?.message || "Failed to fetch trainers");
@@ -124,11 +140,6 @@ const TrainersTab = () => {
       sortOrder: "desc",
     });
     setCurrentPage(1);
-  };
-
-  // Handle delete trainer (placeholder - implement actual delete logic)
-  const handleDeleteTrainer = (trainer) => {
-    // TODO: Implement actual delete logic here
   };
 
   return (

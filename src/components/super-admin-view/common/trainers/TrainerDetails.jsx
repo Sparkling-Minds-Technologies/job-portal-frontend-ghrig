@@ -9,14 +9,15 @@ import {
   SquarePenIcon,
   UserIcon,
 } from "lucide-react";
-import { useApprovals } from "@/hooks/superAdmin/useApprovals";
+import { useState } from "react";
+import {
+  useApprovals,
+  useGetApprovalDetails,
+} from "@/hooks/superAdmin/useApprovals";
 
-const TrainerDetails = ({
-  trainer,
-  areApprovalBtnsVisible = false,
-  isLoading = false,
-  error = null,
-}) => {
+const TrainerDetails = ({ trainer, areApprovalBtnsVisible = false }) => {
+  const [hasApprovalAction, setHasApprovalAction] = useState(false);
+
   const {
     isLoading: isApprovalLoading,
     approveApplication,
@@ -24,30 +25,44 @@ const TrainerDetails = ({
     holdApplication,
   } = useApprovals();
 
+  // Fetch detailed trainer data using unified approval endpoint
+  const {
+    data: approvalDetails,
+    isLoading: isLoadingDetails,
+    error: detailsError,
+  } = useGetApprovalDetails(trainer?._id || trainer?.id, {
+    enabled: !!(trainer?._id || trainer?.id),
+  });
+
+  // Use detailed data if available, otherwise fall back to basic trainer data
+  const displayTrainer = approvalDetails?.data?.data || trainer;
+  const isLoading = isLoadingDetails;
+  const error = detailsError;
+
   const handleApprove = async () => {
     try {
-      await approveApplication(trainer._id);
-      // Optionally refresh the trainer data or close the drawer
+      await approveApplication(displayTrainer._id);
+      setHasApprovalAction(true);
     } catch (error) {
-      console.error("Failed to approve trainer:", error);
+      console.error("Failed to approve displayTrainer:", error);
     }
   };
 
   const handleReject = async () => {
     try {
-      await rejectApplication(trainer._id);
-      // Optionally refresh the trainer data or close the drawer
+      await rejectApplication(displayTrainer._id);
+      setHasApprovalAction(true);
     } catch (error) {
-      console.error("Failed to reject trainer:", error);
+      console.error("Failed to reject displayTrainer:", error);
     }
   };
 
   const handleHold = async () => {
     try {
-      await holdApplication(trainer._id);
-      // Optionally refresh the trainer data or close the drawer
+      await holdApplication(displayTrainer._id);
+      // Optionally refresh the displayTrainer data or close the drawer
     } catch (error) {
-      console.error("Failed to hold trainer:", error);
+      console.error("Failed to hold displayTrainer:", error);
     }
   };
 
@@ -57,7 +72,7 @@ const TrainerDetails = ({
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-purple mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading trainer details...</p>
+          <p className="text-gray-600">Loading displayTrainer details...</p>
         </div>
       </div>
     );
@@ -83,7 +98,9 @@ const TrainerDetails = ({
               />
             </svg>
           </div>
-          <p className="text-red-600 mb-2">Failed to load trainer details</p>
+          <p className="text-red-600 mb-2">
+            Failed to load displayTrainer details
+          </p>
           <p className="text-gray-500 text-sm">
             {error.message || "Something went wrong"}
           </p>
@@ -92,21 +109,21 @@ const TrainerDetails = ({
     );
   }
 
-  // Handle no trainer data
-  if (!trainer) {
+  // Handle no displayTrainer data
+  if (!displayTrainer) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">No trainer data available</p>
+          <p className="text-gray-600">No displayTrainer data available</p>
         </div>
       </div>
     );
   }
 
   const pdfObject = {
-    Resume: trainer?.resume || "",
-    "Relieving Letter": trainer?.relievingLetter || "",
-    Certificates: trainer?.certificates || "",
+    Resume: displayTrainer?.resume || "",
+    "Relieving Letter": displayTrainer?.relievingLetter || "",
+    Certificates: displayTrainer?.certificates || "",
   };
 
   const pdfFiles = Object.entries(pdfObject).reduce(
@@ -124,8 +141,8 @@ const TrainerDetails = ({
       <div className="h-[186px] w-full bg-[url('/Group_1000005865.jpg')] bg-cover bg-center rounded-tl-2xl" />
       <div className="w-4xl mx-auto flex items-center rounded-xl bg-white border border-gray2 p-4 -mt-8 shadow-lg relative">
         <img
-          src={trainer?.profileImage || "/person.png"}
-          alt={`${trainer?.firstName} ${trainer?.lastName}`}
+          src={displayTrainer?.profileImage || "/person.png"}
+          alt={`${displayTrainer?.firstName} ${displayTrainer?.lastName}`}
           className="w-28 h-auto aspect-square object-cover rounded-full absolute -top-[30%] left-[3%]"
         />
         <SquarePenIcon
@@ -135,11 +152,11 @@ const TrainerDetails = ({
         <div className="ml-36 flex items-center justify-between w-full">
           <div>
             <h1 className="text-xl font-semibold">
-              {trainer?.firstName} {trainer?.lastName}
+              {displayTrainer?.firstName} {displayTrainer?.lastName}
             </h1>
-            <p className="text-sm text-gray-600">{trainer?.email}</p>
+            <p className="text-sm text-gray-600">{displayTrainer?.email}</p>
           </div>
-          {areApprovalBtnsVisible && (
+          {areApprovalBtnsVisible && !hasApprovalAction && (
             <div className="flex items-center gap-4">
               <Button
                 variant={"purple"}
@@ -177,7 +194,7 @@ const TrainerDetails = ({
               Experience
             </div>
             <span className="text-gray1/50">
-              {trainer?.experience || "Not specified"}
+              {displayTrainer?.experience || "Not specified"}
             </span>
           </div>
 
@@ -187,11 +204,11 @@ const TrainerDetails = ({
               Expertise
             </div>
             <div className="text-gray1/50">
-              {trainer?.expertise && trainer.expertise.length > 0
-                ? trainer.expertise.map((skill, index) => (
+              {displayTrainer?.expertise && displayTrainer.expertise.length > 0
+                ? displayTrainer.expertise.map((skill, index) => (
                     <span key={index} className="inline-block">
                       {skill}
-                      {index < trainer.expertise.length - 1 && <br />}
+                      {index < displayTrainer.expertise.length - 1 && <br />}
                     </span>
                   ))
                 : "Not specified"}
@@ -205,12 +222,12 @@ const TrainerDetails = ({
             </div>
             <span className="text-gray1/50 inline-flex items-center gap-2">
               <PhoneCallIcon className="w-4" />
-              {trainer?.phone || "Not provided"}
+              {displayTrainer?.phone || "Not provided"}
             </span>
             <span className="text-gray1/50 inline-flex items-center gap-2">
               <MailIcon className="w-4" />
               <span className="truncate w-40">
-                {trainer?.email || "Not provided"}
+                {displayTrainer?.email || "Not provided"}
               </span>
             </span>
           </div>
@@ -221,7 +238,9 @@ const TrainerDetails = ({
               Address
             </div>
             <span className="text-gray1/50">
-              {trainer?.address || trainer?.location || "Not specified"}
+              {displayTrainer?.address ||
+                displayTrainer?.location ||
+                "Not specified"}
             </span>
           </div>
         </div>
@@ -303,7 +322,7 @@ const TrainerDetails = ({
                   Specialization
                 </span>
                 <span className="font-medium">
-                  {trainer?.specialization || "Not specified"}
+                  {displayTrainer?.specialization || "Not specified"}
                 </span>
               </div>
               <div className="flex gap-8 border-b border-gray2 py-2 text-sm">
@@ -311,7 +330,7 @@ const TrainerDetails = ({
                   Industry
                 </span>
                 <span className="font-medium">
-                  {trainer?.industry || "Not specified"}
+                  {displayTrainer?.industry || "Not specified"}
                 </span>
               </div>
               <div className="flex gap-8 border-b border-gray2 py-2 text-sm">
@@ -319,7 +338,7 @@ const TrainerDetails = ({
                   Status
                 </span>
                 <span className="font-medium">
-                  {trainer?.status || "Active"}
+                  {displayTrainer?.status || "Active"}
                 </span>
               </div>
               <div className="flex gap-8 border-b border-gray2 py-2 text-sm">
@@ -327,8 +346,8 @@ const TrainerDetails = ({
                   Created
                 </span>
                 <span className="font-medium">
-                  {trainer?.createdAt
-                    ? new Date(trainer.createdAt).toLocaleDateString()
+                  {displayTrainer?.createdAt
+                    ? new Date(displayTrainer.createdAt).toLocaleDateString()
                     : "Not specified"}
                 </span>
               </div>
@@ -339,9 +358,9 @@ const TrainerDetails = ({
             <div>
               <h2 className="text-lg font-semibold mt-4">Certifications</h2>
               <div className="flex gap-3 items-center flex-wrap mt-3">
-                {trainer?.certifications &&
-                trainer.certifications.length > 0 ? (
-                  trainer.certifications.map((cert, i) => (
+                {displayTrainer?.certifications &&
+                displayTrainer.certifications.length > 0 ? (
+                  displayTrainer.certifications.map((cert, i) => (
                     <Badge
                       key={i}
                       className="flex justify-between border-b border-gray2 text-gray1 py-2 px-4 text-sm rounded-2xl"
@@ -360,9 +379,9 @@ const TrainerDetails = ({
             <div>
               <h2 className="text-lg font-semibold mt-4">Training Images</h2>
               <div className="flex flex-wrap gap-3 mt-2">
-                {trainer?.trainingImages &&
-                trainer.trainingImages.length > 0 ? (
-                  trainer.trainingImages.map((img, i) => (
+                {displayTrainer?.trainingImages &&
+                displayTrainer.trainingImages.length > 0 ? (
+                  displayTrainer.trainingImages.map((img, i) => (
                     <img
                       key={i}
                       src={img}

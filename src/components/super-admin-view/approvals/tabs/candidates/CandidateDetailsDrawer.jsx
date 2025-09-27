@@ -3,8 +3,10 @@ import { useState } from "react";
 import JobsApplied from "./tabs/JobsApplied";
 import AboutCandidate from "./tabs/AboutCandidate";
 import { Button } from "@/components/ui/button";
-import { useGetCandidateDetails } from "@/hooks/superAdmin/useApplicant";
-import { useApprovals } from "@/hooks/superAdmin/useApprovals";
+import {
+  useApprovals,
+  useGetApprovalDetails,
+} from "@/hooks/superAdmin/useApprovals";
 
 const CandidateDetailsDrawer = ({
   candidate,
@@ -14,17 +16,17 @@ const CandidateDetailsDrawer = ({
   const { isLoading, approveApplication, rejectApplication, holdApplication } =
     useApprovals();
 
-  // Fetch detailed candidate data
+  // Fetch detailed candidate data using unified approval endpoint
   const {
-    data: candidateDetails,
+    data: approvalDetails,
     isLoading: isLoadingDetails,
     error: detailsError,
-  } = useGetCandidateDetails(candidate?._id || candidate?.id, {
+  } = useGetApprovalDetails(candidate?._id || candidate?.id, {
     enabled: !!(candidate?._id || candidate?.id),
   });
 
   // Use detailed data if available, otherwise fall back to basic candidate data
-  const displayCandidate = candidateDetails?.data?.data || candidate;
+  const displayCandidate = approvalDetails?.data?.data || candidate;
 
   const handleApprove = async () => {
     try {

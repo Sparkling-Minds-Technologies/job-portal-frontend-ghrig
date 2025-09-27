@@ -114,20 +114,20 @@ const RecruitersTable = ({ paginatedRecruiters = [] }) => {
                       <TableCell className="text-gray-700">
                         {recruiter.phone?.countryCode && recruiter.phone?.number
                           ? `${recruiter.phone.countryCode} ${recruiter.phone.number}`
-                          : recruiter.phone || "N/A"}
+                          : recruiter.contact || "N/A"}
                       </TableCell>
                       <TableCell className="text-gray-700">
-                        {recruiter.company ||
-                          recruiter.lastOrganization?.name ||
-                          "N/A"}
+                        {recruiter.company || "N/A"}
                       </TableCell>
                       <TableCell className="text-gray-700">
-                        {recruiter.candidatesCount ||
-                          recruiter.candidates?.length ||
-                          0}
+                        {recruiter.candidatesCount || 0}
                       </TableCell>
                       <TableCell>
-                        <StatusBadge status={recruiter.approvalStatus} />
+                        <StatusBadge
+                          status={
+                            recruiter.approvalStatus || recruiter.jobStatus
+                          }
+                        />
                       </TableCell>
                     </TableRow>
                   ))

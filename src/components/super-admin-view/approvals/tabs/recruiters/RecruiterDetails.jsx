@@ -2,36 +2,57 @@ import { Button } from "@/components/ui/button";
 import { getValue } from "@/utils/commonFunctions";
 import { DownloadIcon, YourImageIcon, YourPdfIcon } from "@/utils/icon";
 import { Link } from "react-router-dom";
-import { useApprovals } from "@/hooks/superAdmin/useApprovals";
+import {
+  useApprovals,
+  useGetApprovalDetails,
+} from "@/hooks/superAdmin/useApprovals";
 
 const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
-  const { isLoading, approveApplication, rejectApplication, holdApplication } =
-    useApprovals();
+  const {
+    isLoading: isApprovalLoading,
+    approveApplication,
+    rejectApplication,
+    holdApplication,
+  } = useApprovals();
+
+  // Fetch detailed recruiter data using unified approval endpoint
+  const {
+    data: approvalDetails,
+    isLoading: isLoadingDetails,
+    error: detailsError,
+  } = useGetApprovalDetails(recruiter?._id || recruiter?.id, {
+    enabled: !!(recruiter?._id || recruiter?.id),
+  });
+
+  // Use detailed data if available, otherwise fall back to basic recruiter data
+  const displayRecruiter = approvalDetails?.data?.data || recruiter;
+  const isLoading = isLoadingDetails;
+  const error = detailsError;
 
   const handleApprove = async () => {
     try {
-      await approveApplication(recruiter.id);
-      // Optionally refresh the recruiter data or close the drawer
+      await approveApplication(displayRecruiter.id || displayRecruiter._id);
+      // Optionally refresh the displayRecruiter data or close the drawer
     } catch (error) {
-      console.error("Failed to approve recruiter:", error);
+      console.error("Failed to approve displayRecruiter:", error);
     }
   };
 
   const handleReject = async () => {
     try {
-      await rejectApplication(recruiter.id);
-      // Optionally refresh the recruiter data or close the drawer
+      await rejectApplication(displayRecruiter.id || displayRecruiter._id);
+      // Optionally refresh the displayRecruiter data or close the drawer
     } catch (error) {
-      console.error("Failed to reject recruiter:", error);
+      console.error("Failed to reject displayRecruiter:", error);
     }
   };
 
   const handleHold = async () => {
     try {
-      await holdApplication(recruiter.id);
-      // Optionally refresh the recruiter data or close the drawer
+      await holdApplication(displayRecruiter.id || displayRecruiter._id);
+      // Optionally refresh the displayRecruiter data or close the drawer
     } catch (error) {
-      console.error("Failed to hold recruiter:", error);
+      console.error("Failed to hold displayRecruiter:", error);
     }
   };
 
@@ -45,12 +66,52 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
   };
   const pdfFiles = Object.entries(pdfObject).reduce(
     (acc, [customKey, path]) => {
-      // acc[customKey] = getValue(recruiter, path);
+      // acc[customKey] = getValue(displayRecruiter, path);
       acc[customKey] = "test.pdf";
       return acc;
     },
     {}
   );
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex flex-col w-full gap-[24px] p-8">
+        <div className="flex justify-center items-center">
+          <div className="text-gray-500">
+            Loading displayRecruiter details...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex flex-col w-full gap-[24px] p-8">
+        <div className="flex justify-center items-center">
+          <div className="text-red-500">
+            Error loading displayRecruiter details:{" "}
+            {error.message || "Unknown error"}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show no data state
+  if (!displayRecruiter) {
+    return (
+      <div className="flex flex-col w-full gap-[24px] p-8">
+        <div className="flex justify-center items-center">
+          <div className="text-gray-500">
+            No displayRecruiter data available
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col w-full gap-[24px]">
       <div className="relative flex w-full bg-white pt-[120px] px-[48px] pb-[47px] rounded-t-[16px] overflow-hidden ">
@@ -59,13 +120,13 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
           <div className="self-stretch pl-52 pr-10 py-5 relative bg-white rounded-2xl shadow-[6px_6px_54px_0px_rgba(0,0,0,0.05)] outline-1 outline-offset-[-1px] outline-neutral-300 inline-flex justify-start items-center gap-2.5">
             <div className="flex-1 inline-flex flex-col justify-start items-start gap-1.5">
               <div className="text-center justify-start text-black text-xl font-semibold leading-tight">
-                {recruiter?.name}
+                {displayRecruiter?.name}
               </div>
             </div>
             <img
               className="size-28 left-[42px] top-[-21px] absolute object-cover rounded-full outline-2 outline-white"
-              src={recruiter?.profileImage || "/person.png"}
-              alt={recruiter?.name}
+              src={displayRecruiter?.profileImage || "/person.png"}
+              alt={displayRecruiter?.name}
             />
             <div className="size- inline-flex flex-col justify-center items-start gap-2.5">
               {areApprovalBtnsVisible ? (
@@ -173,7 +234,7 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                   </div>
                 </div>
                 <div className="text-[#61758A] text-base font-normal">
-                  {recruiter?.totalExperience} YOE
+                  {displayRecruiter?.totalExperience} YOE
                 </div>
               </div>
               <div className="max-w-[237px] w-full h-[125px] flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px]">
@@ -242,7 +303,8 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                     </svg>
                   </div>
                   <div>
-                    {recruiter?.phone?.countryCode} {recruiter?.phone?.number}
+                    {displayRecruiter?.phone?.countryCode}{" "}
+                    {displayRecruiter?.phone?.number}
                   </div>
                 </div>
                 <div className="text-[#61758A] text-base font-normal flex items-center gap-2">
@@ -268,7 +330,7 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                       />
                     </svg>
                   </div>
-                  <div>{recruiter?.email}</div>
+                  <div>{displayRecruiter?.email}</div>
                 </div>
               </div>
               <div className="max-w-[237px] w-full h-[125px] flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px]">
@@ -294,7 +356,7 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                   </div>
                 </div>
                 <div className="text-[#61758A] text-base font-normal leading-tight line-clamp-2">
-                  {`${recruiter?.currentAddress?.address}, ${recruiter?.currentAddress?.city}, ${recruiter?.currentAddress?.state}`}
+                  {`${displayRecruiter?.currentAddress?.address}, ${displayRecruiter?.currentAddress?.city}, ${displayRecruiter?.currentAddress?.state}`}
                 </div>
               </div>
             </div>
@@ -381,9 +443,9 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                     Sectoral Specialization
                   </div>
                   <div className="w-48 justify-start text-neutral-900 text-sm font-normal leading-tight">
-                    {recruiter?.sectorSpecialization
-                      .map((item) => item.name)
-                      .join(", ")}
+                    {displayRecruiter?.sectorSpecialization
+                      ?.map((item) => item.name)
+                      ?.join(", ") || "Not specified"}
                   </div>
                 </div>
                 <div className="self-stretch py-4 border-t border-b border-gray-200 inline-flex justify-start items-center gap-28">
@@ -391,12 +453,12 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                     LinkedIn
                   </div>
                   <Link
-                    to={recruiter?.linkedinProfile}
+                    to={displayRecruiter?.linkedinProfile}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-48 justify-start text-neutral-900 text-sm font-normal leading-tight truncate"
                   >
-                    {recruiter?.linkedinProfile}
+                    {displayRecruiter?.linkedinProfile}
                   </Link>
                 </div>
                 <div className="self-stretch py-4 border-t border-b border-gray-200 inline-flex justify-start items-center gap-28">
@@ -404,7 +466,8 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                     Experience In
                   </div>
                   <div className="w-48 justify-start text-neutral-900 text-sm font-normal leading-tight">
-                    {recruiter?.experienceLevel?.join(", ") || "Not Specified"}
+                    {displayRecruiter?.experienceLevel?.join(", ") ||
+                      "Not Specified"}
                   </div>
                 </div>
                 <div className="self-stretch py-4 border-t border-b border-gray-200 inline-flex justify-start items-center gap-28">
@@ -412,7 +475,8 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                     Last Organization Name
                   </div>
                   <div className="w-48 justify-start text-neutral-900 text-sm font-normal leading-tight">
-                    {recruiter?.lastOrganization?.name || "Not Specified"}
+                    {displayRecruiter?.lastOrganization?.name ||
+                      "Not Specified"}
                   </div>
                 </div>
                 <div className="self-stretch py-4 border-t border-b border-gray-200 inline-flex justify-start items-center gap-28">
@@ -420,7 +484,8 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                     Designation in last Organization
                   </div>
                   <div className="w-48 justify-start text-neutral-900 text-sm font-normal leading-tight">
-                    {recruiter?.lastOrganization?.position || "Not Specified"}
+                    {displayRecruiter?.lastOrganization?.position ||
+                      "Not Specified"}
                   </div>
                 </div>
               </div>
@@ -452,7 +517,7 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                       Father’s Name
                     </div>
                     <div className="font-normal text-base text-[#61758A]">
-                      {recruiter?.fatherName}
+                      {displayRecruiter?.fatherName}
                     </div>
                   </div>
                 </div>
@@ -478,7 +543,7 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                       Mother's Name
                     </div>
                     <div className="font-normal text-base text-[#61758A]">
-                      {recruiter?.motherName}
+                      {displayRecruiter?.motherName}
                     </div>
                   </div>
                 </div>
@@ -530,9 +595,9 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                       Medical Problems
                     </div>
                     <div className="font-normal text-base text-[#61758A]">
-                      {recruiter?.medicalProblemDetails === ""
+                      {displayRecruiter?.medicalProblemDetails === ""
                         ? "None"
-                        : recruiter?.medicalProblemDetails}
+                        : displayRecruiter?.medicalProblemDetails}
                     </div>
                   </div>
                 </div>

@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-  submitCorporateApproval,
-  submitJobSeekerApproval,
-  submitRecruiterApproval,
-  submitTrainerApproval,
   reviewApproval,
+  getApprovalDetails,
 } from "../../api/super-admin/approvals";
+import { useQuery } from "@tanstack/react-query";
 
 export const useApprovals = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,38 +26,6 @@ export const useApprovals = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const submitCorporateApprovalAction = async (corporateId) => {
-    return handleApiCall(
-      () => submitCorporateApproval(corporateId),
-      "Corporate approval submitted successfully",
-      "Failed to submit corporate approval"
-    );
-  };
-
-  const submitJobSeekerApprovalAction = async (jobSeekerId) => {
-    return handleApiCall(
-      () => submitJobSeekerApproval(jobSeekerId),
-      "Job seeker approval submitted successfully",
-      "Failed to submit job seeker approval"
-    );
-  };
-
-  const submitRecruiterApprovalAction = async (recruiterId) => {
-    return handleApiCall(
-      () => submitRecruiterApproval(recruiterId),
-      "Recruiter approval submitted successfully",
-      "Failed to submit recruiter approval"
-    );
-  };
-
-  const submitTrainerApprovalAction = async (trainerId) => {
-    return handleApiCall(
-      () => submitTrainerApproval(trainerId),
-      "Trainer approval submitted successfully",
-      "Failed to submit trainer approval"
-    );
   };
 
   // Review approval functions
@@ -99,12 +65,17 @@ export const useApprovals = () => {
   return {
     isLoading,
     error,
-    submitCorporateApprovalAction,
-    submitJobSeekerApprovalAction,
-    submitRecruiterApprovalAction,
-    submitTrainerApprovalAction,
     approveApplication,
     rejectApplication,
     holdApplication,
   };
+};
+
+// Hook to get approval details by ID (unified for all types)
+export const useGetApprovalDetails = (approvalId, { enabled = true } = {}) => {
+  return useQuery({
+    queryKey: ["superAdmin-approval-details", approvalId],
+    queryFn: ({ signal }) => getApprovalDetails(approvalId, { signal }),
+    enabled: enabled && !!approvalId,
+  });
 };

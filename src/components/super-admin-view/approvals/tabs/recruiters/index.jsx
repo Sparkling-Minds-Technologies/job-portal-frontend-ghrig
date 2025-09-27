@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import RecruiterDetails from "./RecruiterDetails";
-
 import RecruitersTable from "./RecruitersTable";
 import Pagination from "../../../../common/pagination";
 import SearchComponent from "@/components/common/searchComponent";

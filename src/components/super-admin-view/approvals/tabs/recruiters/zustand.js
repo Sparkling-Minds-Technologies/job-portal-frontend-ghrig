@@ -128,37 +128,60 @@ const useRecruitersStore = create((set, get) => ({
       const response = await getApprovalsList("recruiter", params);
 
       // Parse the API response structure
-      const recruiters = response.data?.data?.recruiters || [];
+      const approvals = response.data?.data?.approvals || [];
       const pagination = response.data?.data?.pagination || {};
 
       // Map API data to component expected format
-      const recruitersData = recruiters.map((recruiter) => ({
-        id: recruiter._id,
-        name: recruiter.name || "N/A",
-        email: recruiter.email || "N/A",
-        contact: recruiter.phone
-          ? `${recruiter.phone.countryCode} ${recruiter.phone.number}`
-          : "N/A",
-        company: recruiter.company || "N/A",
-        designation: recruiter.designation || "N/A",
-        industry: recruiter.industry || "N/A",
-        location: recruiter.location || "N/A",
-        jobStatus: recruiter.jobStatus || "pending",
-        candidatesCount: recruiter.candidatesCount || 0,
-        postedDate: recruiter.createdAt
-          ? new Date(recruiter.createdAt).toISOString().split("T")[0]
-          : "N/A",
-        lastUpdated: recruiter.updatedAt
-          ? new Date(recruiter.updatedAt).toISOString().split("T")[0]
-          : "N/A",
-        // Additional API fields
-        _id: recruiter._id,
-        phone: recruiter.phone,
-        createdAt: recruiter.createdAt,
-        updatedAt: recruiter.updatedAt,
-      }));
+      const recruitersData = approvals.map((approval) => {
+        const recruiter = approval.data || {};
+        return {
+          id: approval._id,
+          name: recruiter.name || "N/A",
+          email: recruiter.email || "N/A",
+          contact: recruiter.phone
+            ? `${recruiter.phone.countryCode} ${recruiter.phone.number}`
+            : "N/A",
+          company: recruiter.company || "N/A",
+          designation: recruiter.designation || "N/A",
+          industry: recruiter.industry || "N/A",
+          location: recruiter.currentAddress?.city || "N/A",
+          jobStatus: approval.status || "pending",
+          candidatesCount: recruiter.candidatesCount || 0,
+          postedDate: approval.createdAt
+            ? new Date(approval.createdAt).toISOString().split("T")[0]
+            : "N/A",
+          lastUpdated: approval.updatedAt
+            ? new Date(approval.updatedAt).toISOString().split("T")[0]
+            : "N/A",
+          // Additional API fields
+          _id: approval._id,
+          phone: recruiter.phone,
+          createdAt: approval.createdAt,
+          updatedAt: approval.updatedAt,
+          // Approval specific fields
+          approvalStatus: approval.status,
+          applicantId: approval.applicantId,
+          applicantType: approval.applicantType,
+          submittedAt: approval.submittedAt,
+          version: approval.version,
+          isActive: approval.isActive,
+          // Recruiter data fields
+          recruiterId: recruiter.recruiterId,
+          currentAddress: recruiter.currentAddress,
+          resume: recruiter.resume,
+          sectorSpecialization: recruiter.sectorSpecialization,
+          experienceLevel: recruiter.experienceLevel,
+          isVerified: recruiter.isVerified,
+          signupProgress: recruiter.signupProgress,
+          completedStages: recruiter.completedStages,
+          currentStage: recruiter.currentStage,
+          status: recruiter.status,
+          references: recruiter.references,
+          kycDetails: recruiter.kycDetails,
+        };
+      });
 
-      const total = pagination.totalRecruiters || recruitersData.length;
+      const total = pagination.totalApprovals || recruitersData.length;
 
       set({
         recruiters: recruitersData,
