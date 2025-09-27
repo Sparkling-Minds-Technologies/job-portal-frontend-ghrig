@@ -12,8 +12,9 @@ import RecruiterDetails from "./RecruiterDetails";
 import StatusBadge from "../../../../common/StatusBadge";
 
 import { useState } from "react";
+import AdminStatusBadge from "@/components/super-admin-view/shared/AdminStatusBadge";
 
-const RecruitersTable = ({ paginatedRecruiters = [] }) => {
+const RecruitersTable = ({ paginatedRecruiters = [], onRevalidate }) => {
   const [selectedRecruiterId, setSelectedRecruiterId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRecruiter, setSelectedRecruiter] = useState(null);
@@ -123,7 +124,7 @@ const RecruitersTable = ({ paginatedRecruiters = [] }) => {
                         {recruiter.candidatesCount || 0}
                       </TableCell>
                       <TableCell>
-                        <StatusBadge
+                        <AdminStatusBadge
                           status={
                             recruiter.approvalStatus || recruiter.jobStatus
                           }
@@ -164,6 +165,8 @@ const RecruitersTable = ({ paginatedRecruiters = [] }) => {
             <RecruiterDetails
               recruiter={selectedRecruiter}
               areApprovalBtnsVisible={true}
+              onClose={() => setDrawerOpen(false)}
+              onRevalidate={onRevalidate}
             />
           </div>
         </SheetContent>

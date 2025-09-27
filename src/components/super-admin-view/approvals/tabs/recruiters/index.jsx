@@ -97,6 +97,7 @@ const RecruitersTab = () => {
               <RecruitersTable
                 paginatedRecruiters={paginatedRecruiters}
                 handleDeleteRecruiter={handleDeleteRecruiter}
+                onRevalidate={fetchRecruiters}
               />
             </div>
           )}

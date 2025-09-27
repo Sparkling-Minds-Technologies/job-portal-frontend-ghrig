@@ -9,11 +9,11 @@ import {
 import { Sheet, SheetContent } from "../../../../ui/sheet";
 import { Building2 } from "lucide-react";
 import CompanyApprovalDetailsDrawer from "./CompanyApprovalDetailsDrawer";
-import StatusBadge from "../../../../common/StatusBadge";
+import AdminStatusBadge from "@/components/super-admin-view/shared/AdminStatusBadge";
 
 import { useState } from "react";
 
-const CompaniesTable = ({ paginatedCompanies }) => {
+const CompaniesApprovalTable = ({ paginatedCompanies, onRevalidate }) => {
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -85,16 +85,15 @@ const CompaniesTable = ({ paginatedCompanies }) => {
                       <TableCell>{company.name}</TableCell>
                       <TableCell>{company.industry}</TableCell>
                       <TableCell>{company.contact}</TableCell>
-                      <TableCell>-</TableCell>
-                      <TableCell>{company.lastUpdated}</TableCell>
+                      <TableCell>{company.lastUpdated || "-"}</TableCell>
                       <TableCell>
-                        <StatusBadge status={company.approvalStatus} />
+                        <AdminStatusBadge status={company.approvalStatus} />
                       </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8">
+                    <TableCell colSpan={7} className="text-center py-8">
                       <div className="flex flex-col items-center justify-center space-y-2">
                         <Building2 className="h-8 w-8 text-gray-400" />
                         <span className="text-gray-500">
@@ -125,6 +124,8 @@ const CompaniesTable = ({ paginatedCompanies }) => {
             <CompanyApprovalDetailsDrawer
               company={selectedCompany}
               areApprovalBtnsVisible
+              onClose={() => setDrawerOpen(false)}
+              onRevalidate={onRevalidate}
             />
           </div>
         </SheetContent>
@@ -133,4 +134,4 @@ const CompaniesTable = ({ paginatedCompanies }) => {
   );
 };
 
-export default CompaniesTable;
+export default CompaniesApprovalTable;

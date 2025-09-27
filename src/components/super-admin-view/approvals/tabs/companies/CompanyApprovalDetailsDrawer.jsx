@@ -14,6 +14,8 @@ import { toast } from "sonner";
 const CompanyApprovalDetailsDrawer = ({
   company,
   areApprovalBtnsVisible = false,
+  onClose,
+  onRevalidate,
 }) => {
   const [activeTab, setActiveTab] = useState("details");
   const { isLoading, approveApplication, rejectApplication, holdApplication } =
@@ -36,7 +38,14 @@ const CompanyApprovalDetailsDrawer = ({
   const handleApprove = async () => {
     try {
       await approveApplication(company?._id || company?.id);
-      // Optionally refresh the company data or close the drawer
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful approval and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to approve company:", error);
     }
@@ -45,7 +54,14 @@ const CompanyApprovalDetailsDrawer = ({
   const handleReject = async () => {
     try {
       await rejectApplication(company?._id || company?.id);
-      // Optionally refresh the company data or close the drawer
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful rejection and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to reject company:", error);
     }

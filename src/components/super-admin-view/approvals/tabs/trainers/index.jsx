@@ -209,6 +209,7 @@ const TrainersTab = () => {
                 paginatedTrainers={trainers}
                 showStatusColumn={true}
                 areApprovalBtnsVisible={true}
+                onRevalidate={fetchTrainers}
               />
             )}
           </div>

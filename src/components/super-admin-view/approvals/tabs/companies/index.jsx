@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import CompaniesTable from "./CompaniesTable";
+import CompaniesApprovalTable from "./CompaniesApprovalTable";
 import Pagination from "../../../../common/pagination";
 import SearchComponent from "@/components/common/searchComponent";
 import FilterComponent from "../../../../common/filterComponent";
@@ -94,9 +94,10 @@ const CompaniesTab = () => {
           {/* Companies Table Container with horizontal scroll */}
           {!loading && (
             <div className="min-w-0 overflow-x-auto">
-              <CompaniesTable
+              <CompaniesApprovalTable
                 paginatedCompanies={paginatedCompanies}
                 handleDeleteCompany={handleDeleteCompany}
+                onRevalidate={fetchCompanies}
               />
             </div>
           )}

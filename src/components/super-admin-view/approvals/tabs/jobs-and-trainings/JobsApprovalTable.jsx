@@ -11,8 +11,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import StatusBadge from "@/components/common/StatusBadge";
+import { Badge } from "@/components/ui/badge";
+import AdminStatusBadge from "@/components/super-admin-view/shared/AdminStatusBadge";
 
-const JobsApprovalTable = ({ paginatedJobs, handleDeleteJob }) => {
+const JobsApprovalTable = ({
+  paginatedJobs,
+  handleDeleteJob,
+  onRevalidate,
+}) => {
   const [selectedJobId, setSelectedJobId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -107,15 +113,12 @@ const JobsApprovalTable = ({ paginatedJobs, handleDeleteJob }) => {
                   <TableCell>{job.experience}</TableCell>
                   <TableCell>{formatDate(job.postedDate)}</TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(job.approvalStatus)}
-                      <StatusBadge status={job.approvalStatus} />
-                    </div>
+                    <AdminStatusBadge status={job.approvalStatus} />
                   </TableCell>
                   <TableCell className="text-center">
                     <button
                       onClick={(e) => handleViewDetails(job, e)}
-                      className="view-details-btn inline-flex items-center px-3 py-1 text-sm text-primary-purple hover:text-primary-purple-dark transition-colors"
+                      className="view-details-btn inline-flex items-center px-3 py-1 text-sm cursor-pointer text-primary-purple hover:text-primary-purple-dark transition-colors"
                     >
                       <Eye className="h-4 w-4 mr-1" />
                       View Details
@@ -155,6 +158,8 @@ const JobsApprovalTable = ({ paginatedJobs, handleDeleteJob }) => {
           <JobApprovalDetailsDrawer
             jobId={selectedJobId}
             areApprovalBtnsVisible={true}
+            onClose={() => setDrawerOpen(false)}
+            onRevalidate={onRevalidate}
           />
         </SheetContent>
       </Sheet>

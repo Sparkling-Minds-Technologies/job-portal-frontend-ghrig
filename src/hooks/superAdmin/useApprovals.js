@@ -55,9 +55,9 @@ export const useApprovals = () => {
     return handleApiCall(
       () =>
         reviewApproval(approvalId, {
-          status: "pending",
+          status: "hold",
         }),
-      "Application held for review successfully",
+      "Application put on hold successfully",
       "Failed to hold application"
     );
   };

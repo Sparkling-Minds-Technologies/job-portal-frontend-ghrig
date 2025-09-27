@@ -94,6 +94,7 @@ const JobApprovalTab = () => {
                 <JobsApprovalTable
                   paginatedJobs={paginatedJobs}
                   handleDeleteJob={handleDeleteJob}
+                  onRevalidate={fetchJobs}
                 />
               </div>
             </div>

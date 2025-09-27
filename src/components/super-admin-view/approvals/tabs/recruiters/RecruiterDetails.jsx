@@ -1,13 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { getValue } from "@/utils/commonFunctions";
 import { DownloadIcon, YourImageIcon, YourPdfIcon } from "@/utils/icon";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import {
   useApprovals,
   useGetApprovalDetails,
 } from "@/hooks/superAdmin/useApprovals";
+import AdminStatusBadge from "@/components/super-admin-view/shared/AdminStatusBadge";
 
-const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
+const RecruiterDetails = ({
+  recruiter,
+  areApprovalBtnsVisible = false,
+  onClose,
+  onRevalidate,
+}) => {
   const {
     isLoading: isApprovalLoading,
     approveApplication,
@@ -32,7 +38,14 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
   const handleApprove = async () => {
     try {
       await approveApplication(displayRecruiter.id || displayRecruiter._id);
-      // Optionally refresh the displayRecruiter data or close the drawer
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful approval and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to approve displayRecruiter:", error);
     }
@@ -41,19 +54,21 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
   const handleReject = async () => {
     try {
       await rejectApplication(displayRecruiter.id || displayRecruiter._id);
-      // Optionally refresh the displayRecruiter data or close the drawer
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful rejection and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to reject displayRecruiter:", error);
     }
   };
 
   const handleHold = async () => {
-    try {
-      await holdApplication(displayRecruiter.id || displayRecruiter._id);
-      // Optionally refresh the displayRecruiter data or close the drawer
-    } catch (error) {
-      console.error("Failed to hold displayRecruiter:", error);
-    }
+    toast.info("Recruiter is on hold");
   };
 
   const pdfObject = {
@@ -131,7 +146,7 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
             <div className="size- inline-flex flex-col justify-center items-start gap-2.5">
               {/* Show approval buttons only when status is pending */}
               {areApprovalBtnsVisible &&
-              displayRecruiter?.data?.approvalStatus === "pending" ? (
+              displayRecruiter.status === "pending" ? (
                 <div className="flex items-center gap-4">
                   <Button
                     variant={"purple"}
@@ -156,26 +171,7 @@ const RecruiterDetails = ({ recruiter, areApprovalBtnsVisible = false }) => {
                   </Button>
                 </div>
               ) : (
-                <div className="self-stretch px-3 py-2 bg-black rounded-lg inline-flex justify-center items-center gap-1">
-                  <div className="items-center justify-start text-white text-xs font-normal leading-tight">
-                    Edit Your Profile
-                  </div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                  >
-                    <path
-                      d="M6 12L10 8L6 4"
-                      stroke="white"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
+                <AdminStatusBadge status={displayRecruiter?.status} />
               )}
             </div>
             <div className="size- p-2 left-[123px] top-[66px] absolute bg-white rounded-lg flex justify-start items-center gap-2.5">

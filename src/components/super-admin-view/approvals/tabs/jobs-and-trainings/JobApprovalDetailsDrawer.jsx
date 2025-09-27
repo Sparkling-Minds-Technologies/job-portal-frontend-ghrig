@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LocationIcon } from "@/utils/icon";
+import { toast } from "sonner";
 import {
   ClockIcon,
   DollarSignIcon,
@@ -21,6 +22,8 @@ import {
 const JobApprovalDetailsDrawer = ({
   jobId: approvalId, // This is actually the approval ID
   areApprovalBtnsVisible = false,
+  onClose,
+  onRevalidate,
 }) => {
   const {
     isLoading: isLoadingApprovals,
@@ -33,7 +36,14 @@ const JobApprovalDetailsDrawer = ({
   const handleApprove = async () => {
     try {
       await approveApplication(approvalId);
-      // Optionally refresh the job data or close the drawer
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful approval and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to approve job:", error);
     }
@@ -42,19 +52,21 @@ const JobApprovalDetailsDrawer = ({
   const handleReject = async () => {
     try {
       await rejectApplication(approvalId);
-      // Optionally refresh the job data or close the drawer
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful rejection and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to reject job:", error);
     }
   };
 
   const handleHold = async () => {
-    try {
-      await holdApplication(approvalId);
-      // Optionally refresh the job data or close the drawer
-    } catch (error) {
-      console.error("Failed to hold job:", error);
-    }
+    toast.info("Job is on hold");
   };
 
   if (isLoading) {

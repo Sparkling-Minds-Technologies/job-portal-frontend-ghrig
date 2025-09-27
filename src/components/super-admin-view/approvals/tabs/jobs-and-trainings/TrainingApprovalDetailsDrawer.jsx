@@ -1,37 +1,43 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, CheckCircle, XCircle, Clock } from "lucide-react";
-import { Fragment, useState } from "react";
-import TrainingDetailsTab from "./tabs/TrainingDetailsTab";
-import TrainingEnrollmentsTab from "./tabs/TrainingEnrollmentsTab";
+import { LocationIcon } from "@/utils/icon";
+import { toast } from "sonner";
+import { ClockIcon, CalendarIcon } from "lucide-react";
 import {
   useApprovals,
   useGetApprovalDetails,
-} from "@/hooks/superAdmin/useApprovals";
+} from "../../../../../hooks/superAdmin/useApprovals";
 
 const TrainingApprovalDetailsDrawer = ({
   training,
   areApprovalBtnsVisible = false,
+  onClose,
+  onRevalidate,
 }) => {
-  const [activeTab, setActiveTab] = useState("details");
-  const { isLoading, approveApplication, rejectApplication, holdApplication } =
-    useApprovals();
-
-  // Fetch detailed training data using unified approval endpoint
   const {
-    data: approvalDetails,
-    isLoading: isLoadingDetails,
-    error: detailsError,
+    isLoading: isLoadingApprovals,
+    approveApplication,
+    rejectApplication,
+  } = useApprovals();
+  const {
+    data: trainingData,
+    isLoading,
+    error,
   } = useGetApprovalDetails(training?._id || training?.id, {
     enabled: !!(training?._id || training?.id),
   });
 
-  // Use detailed data if available, otherwise fall back to basic training data
-  const displayTraining = approvalDetails?.data?.data || training;
-
   const handleApprove = async () => {
     try {
-      await approveApplication(displayTraining.id || displayTraining._id);
-      // Optionally refresh the training data or close the drawer
+      await approveApplication(training?._id || training?.id);
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful approval and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to approve training:", error);
     }
@@ -39,165 +45,394 @@ const TrainingApprovalDetailsDrawer = ({
 
   const handleReject = async () => {
     try {
-      await rejectApplication(displayTraining.id || displayTraining._id);
-      // Optionally refresh the training data or close the drawer
+      await rejectApplication(training?._id || training?.id);
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful rejection and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to reject training:", error);
     }
   };
 
   const handleHold = async () => {
-    try {
-      await holdApplication(displayTraining.id || displayTraining._id);
-      // Optionally refresh the training data or close the drawer
-    } catch (error) {
-      console.error("Failed to hold training:", error);
-    }
+    toast.info("Training is on hold");
   };
 
-  // Handle loading state
-  if (isLoadingDetails) {
+  if (isLoading) {
     return (
-      <div className="w-full h-full p-10 bg-white rounded-l-2xl inline-flex flex-col justify-center items-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-purple mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading training details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Handle error state
-  if (detailsError) {
-    return (
-      <div className="w-full h-full p-10 bg-white rounded-l-2xl inline-flex flex-col justify-center items-center">
-        <div className="text-center">
-          <div className="text-red-500 mb-4">
-            <svg
-              className="w-12 h-12 mx-auto"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
+      <div className="min-h-full flex flex-col bg-white p-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-lg text-gray-500">
+            Loading training details...
           </div>
-          <p className="text-red-600 mb-2">Failed to load training details</p>
-          <p className="text-gray-500 text-sm">
-            {detailsError.message || "Something went wrong"}
-          </p>
         </div>
       </div>
     );
   }
 
-  if (!displayTraining) {
+  if (error) {
     return (
-      <div className="w-full h-full p-10 bg-white rounded-l-2xl inline-flex flex-col justify-center items-center">
-        <div className="text-center">
-          <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">No training selected</p>
+      <div className="min-h-full flex flex-col bg-white p-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-lg text-red-500">
+            Error loading training details: {error.message}
+          </div>
         </div>
       </div>
     );
   }
 
-  const tabs = [
-    {
-      id: "details",
-      label: "Training Details",
-      icon: GraduationCap,
-    },
-    {
-      id: "enrollments",
-      label: "Enrollments",
-      icon: null,
-    },
-  ];
+  if (!training && !trainingData?.data?.data) {
+    return (
+      <div className="min-h-full flex flex-col bg-white p-6">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-lg text-gray-500">No training details found</div>
+        </div>
+      </div>
+    );
+  }
+
+  const approvalData = trainingData?.data;
+  const detailedTraining = approvalData?.data;
+  const applicant = approvalData?.applicant;
+
+  // Mock data for testing when API data is not available
+  const mockTraining = {
+    trainingTitle: "Advanced React Development",
+    trainingType: "Full-time",
+    workingHours: "9 AM - 6 PM",
+    workingDays: "Monday to Friday",
+    officeLocation: "Tech Park, Sector 5",
+    city: "Bangalore",
+    state: "Karnataka",
+    pincode: "560001",
+    modeOfTraining: "Hybrid",
+    experienceLevel: "3-5 years",
+    genderPreference: "No Preference",
+    minimumEducation: "Bachelor of Technology",
+    englishLevel: "Fluent",
+    preferredAgeRange: "25-35 years",
+    trainingDescription:
+      "We are looking for a Senior Software Engineer with strong experience in JavaScript and React. The ideal candidate should have 3-5 years of experience in full-stack development and be comfortable working in a fast-paced environment.",
+    twoWheelerMandatory: false,
+    isWalkInInterview: false,
+    requiredSkills: ["JavaScript", "React", "Node.js", "MongoDB"],
+    createdAt: new Date().toISOString(),
+    salary: "₹8,00,000 - ₹12,00,000",
+    company: "TechCorp Solutions",
+    companyLogo: null,
+    responsibilities: [
+      "Develop and maintain web applications using React and Node.js",
+      "Collaborate with cross-functional teams to deliver high-quality software",
+      "Write clean, maintainable, and efficient code",
+      "Participate in code reviews and technical discussions",
+    ],
+    contactEmail: "hr@techcorp.com",
+    skills: ["JavaScript", "React", "Node.js", "MongoDB", "Express", "Git"],
+  };
+
+  const mockApplicant = {
+    name: "John Doe",
+    email: "john.doe@email.com",
+    type: "training",
+    status: "active",
+  };
+
+  const mockApprovalData = {
+    submittedAt: new Date().toISOString(),
+    status: "pending",
+  };
+
+  // Use detailed data if available, otherwise fall back to basic training data or mock data
+  const displayTraining = detailedTraining || training || mockTraining;
+  const displayApplicant = applicant || mockApplicant;
+  const displayApprovalData = approvalData || mockApprovalData;
+  console.log(displayApprovalData);
 
   return (
-    <div className="w-full h-full bg-white rounded-l-2xl flex flex-col">
+    <div className="min-h-full flex flex-col bg-white p-6">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-primary-purple/10 rounded-lg">
-              <GraduationCap className="h-6 w-6 text-primary-purple" />
+      <div className="flex justify-between gap-4 p-6 border-1 border-gray2 rounded-lg">
+        {displayTraining.companyLogo ? (
+          <img
+            src={displayTraining.companyLogo}
+            alt={displayTraining.company || displayApplicant.name}
+            className="h-10 w-10 rounded-md"
+          />
+        ) : (
+          <img
+            src="/google.png"
+            alt="Company Logo"
+            className="h-6 w-6 text-gray-400"
+          />
+        )}
+        <div className="flex-1">
+          <p>{displayTraining?.company || "Google"}</p>
+          <div className="flex items-center gap-4">
+            <p className="text-xl font-medium">
+              {displayTraining.trainingTitle ||
+                displayTraining.jobTitle ||
+                "Data Engineer"}
+            </p>
+
+            <Badge className="text-primary-purple bg-light-purple text-xs">
+              {displayTraining.applicationsCount ||
+                displayTraining.candidates ||
+                2}{" "}
+              Applied
+            </Badge>
+          </div>
+          <div className="text-gray1 flex items-center gap-6 mt-2">
+            <div className="flex items-center gap-2">
+              <LocationIcon className="h-4 w-4 text-gray1" />
+              {displayTraining.officeLocation || "Mumbai, India"}
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">
-                {displayTraining.title || "Training Details"}
-              </h2>
-              <p className="text-sm text-gray-500">
-                ID: {displayTraining.id || displayTraining._id}
-              </p>
+
+            <div className="flex items-center gap-2">
+              <ClockIcon className="h-4 w-4 text-gray1" />
+              {displayTraining.trainingType ||
+                displayTraining.jobType ||
+                "Full-time"}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {displayTraining.salary || "$80K - $120K"}
             </div>
           </div>
-          {areApprovalBtnsVisible && (
-            <div className="flex space-x-2">
-              <Button
-                onClick={handleApprove}
-                disabled={isLoading}
-                className="bg-green-600 hover:bg-green-700 text-white"
-              >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Approve
-              </Button>
-              <Button
-                onClick={handleReject}
-                disabled={isLoading}
-                variant="destructive"
-              >
-                <XCircle className="h-4 w-4 mr-2" />
-                Reject
-              </Button>
-              <Button
-                onClick={handleHold}
-                disabled={isLoading}
-                variant="outline"
-              >
-                <Clock className="h-4 w-4 mr-2" />
-                Hold
-              </Button>
+
+          {displayTraining.createdAt && (
+            <div className="text-gray1 flex items-center gap-2 mt-2">
+              <CalendarIcon className="h-4 w-4 text-gray1" />
+              {new Date(displayTraining.createdAt).toLocaleDateString()}
             </div>
           )}
         </div>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="px-6 border-b border-gray-200">
-        <nav className="flex space-x-8">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === tab.id
-                  ? "border-primary-purple text-primary-purple"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
+        {/* Show approval buttons only when status is pending */}
+        {areApprovalBtnsVisible &&
+        displayApprovalData?.data?.status === "pending" ? (
+          <div className="flex flex-col gap-2">
+            <Button
+              variant={"purple"}
+              onClick={handleApprove}
+              disabled={isLoadingApprovals}
             >
-              {tab.icon && <tab.icon className="h-4 w-4 mr-2 inline" />}
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+              Approve Training
+            </Button>
+            <Button
+              variant={"destructive"}
+              onClick={handleReject}
+              disabled={isLoadingApprovals}
+            >
+              Reject Training
+            </Button>
+            <Button
+              variant={"black"}
+              onClick={handleHold}
+              disabled={isLoadingApprovals}
+            >
+              Hold Training
+            </Button>
+          </div>
+        ) : (
+          <Badge
+            className={`${
+              displayApprovalData?.data?.status === "approved"
+                ? "bg-green-100 text-green-800 hover:bg-green-200"
+                : "bg-red-100 text-red-800 hover:bg-red-200"
+            } text-sm h-fit capitalize`}
+          >
+            {displayApprovalData?.data?.status}
+          </Badge>
+        )}
       </div>
 
-      {/* Tab Content */}
-      <div className="flex-1 overflow-y-auto">
-        {activeTab === "details" && (
-          <TrainingDetailsTab training={displayTraining} />
-        )}
-        {activeTab === "enrollments" && (
-          <TrainingEnrollmentsTab training={displayTraining} />
-        )}
+      {/* Content */}
+      <div className="p-6 border-1 border-gray2 rounded-lg mt-6">
+        <div>
+          <h3 className="text-lg font-semibold">About the training</h3>
+          <div className="text-gray1 mt-4 space-y-2">
+            {/* {displayTraining.trainingDescription && ( */}
+            <>
+              <h4 className="font-semibold">Training Description</h4>
+              <p>
+                {displayTraining.trainingDescription ||
+                  displayTraining.jobDescription}{" "}
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet
+                distinctio similique voluptatum accusamus, eos aperiam rerum
+                harum ab molestiae porro atque illo, sint numquam. Officiis, a
+                quas molestias deserunt dicta impedit? Assumenda culpa
+                cupiditate, autem facilis neque quisquam quis sed recusandae!
+                Porro autem aliquid doloremque assumenda sequi quidem tenetur
+                molestiae.
+              </p>
+            </>
+            {/* )} */}
+
+            {displayTraining.responsibilities && (
+              <>
+                <h4 className="font-semibold">Key Responsibilities</h4>
+                <ul className="list-disc list-inside">
+                  {Array.isArray(displayTraining.responsibilities) ? (
+                    displayTraining.responsibilities.map((resp, index) => (
+                      <li key={index}>{resp}</li>
+                    ))
+                  ) : (
+                    <li>{displayTraining.responsibilities}</li>
+                  )}
+                </ul>
+              </>
+            )}
+
+            {displayTraining.requiredSkills && (
+              <>
+                <h4 className="font-semibold">Required Skills</h4>
+                <ul className="list-disc list-inside">
+                  {Array.isArray(displayTraining.requiredSkills) ? (
+                    displayTraining.requiredSkills.map((skill, index) => (
+                      <li key={index}>{skill}</li>
+                    ))
+                  ) : (
+                    <li>{displayTraining.requiredSkills}</li>
+                  )}
+                </ul>
+              </>
+            )}
+
+            {displayTraining.minimumEducation && (
+              <>
+                <h4 className="font-semibold">Education</h4>
+                <p>{displayTraining.minimumEducation}</p>
+              </>
+            )}
+
+            {(displayTraining.experienceLevel ||
+              displayTraining.officeLocation ||
+              displayTraining.salary ||
+              displayTraining.trainingType ||
+              displayTraining.modeOfTraining) && (
+              <>
+                <h4 className="font-semibold">Other Details</h4>
+                <ul className="list-disc list-inside">
+                  {displayTraining.experienceLevel && (
+                    <li>Experience: {displayTraining.experienceLevel}</li>
+                  )}
+                  {displayTraining.officeLocation && (
+                    <li>
+                      Location: {displayTraining.officeLocation},{" "}
+                      {displayTraining.city}, {displayTraining.state}
+                    </li>
+                  )}
+                  {displayTraining.salary && (
+                    <li>Salary: {displayTraining.salary}</li>
+                  )}
+                  {(displayTraining.trainingType ||
+                    displayTraining.jobType) && (
+                    <li>
+                      Training Type:{" "}
+                      {displayTraining.trainingType || displayTraining.jobType}
+                    </li>
+                  )}
+                  {(displayTraining.modeOfTraining ||
+                    displayTraining.modeOfWork) && (
+                    <li>
+                      Mode of Training:{" "}
+                      {displayTraining.modeOfTraining ||
+                        displayTraining.modeOfWork}
+                    </li>
+                  )}
+                  {displayTraining.workingHours && (
+                    <li>Working Hours: {displayTraining.workingHours}</li>
+                  )}
+                  {displayTraining.workingDays && (
+                    <li>Working Days: {displayTraining.workingDays}</li>
+                  )}
+                  {displayTraining.genderPreference && (
+                    <li>
+                      Gender Preference: {displayTraining.genderPreference}
+                    </li>
+                  )}
+                  {displayTraining.preferredAgeRange && (
+                    <li>
+                      Preferred Age Range: {displayTraining.preferredAgeRange}
+                    </li>
+                  )}
+                  {displayTraining.englishLevel && (
+                    <li>English Level: {displayTraining.englishLevel}</li>
+                  )}
+                  {displayTraining.twoWheelerMandatory !== undefined && (
+                    <li>
+                      Two Wheeler Mandatory:{" "}
+                      {displayTraining.twoWheelerMandatory ? "Yes" : "No"}
+                    </li>
+                  )}
+                  {displayTraining.isWalkInInterview !== undefined && (
+                    <li>
+                      Walk-in Interview:{" "}
+                      {displayTraining.isWalkInInterview ? "Yes" : "No"}
+                    </li>
+                  )}
+                </ul>
+              </>
+            )}
+
+            {displayTraining.contactEmail && (
+              <p>
+                For additional information, you can reach out to me at{" "}
+                {displayTraining.contactEmail}
+              </p>
+            )}
+
+            {displayTraining.skills && (
+              <div className="flex items-center gap-2 mt-4">
+                {Array.isArray(displayTraining.skills) ? (
+                  displayTraining.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="inline-block px-2 py-1 text-xs font-medium border-1 rounded-full"
+                    >
+                      {skill}
+                    </span>
+                  ))
+                ) : (
+                  <span className="inline-block px-2 py-1 text-xs font-medium border-1 rounded-full">
+                    {displayTraining.skills}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Applicant Information */}
+      {displayApplicant && (
+        <div className="p-6 border-1 border-gray2 rounded-lg mt-6">
+          <h4>About the Applicant</h4>
+          <div className="text-gray1 mt-4 space-y-2">
+            <p>
+              <strong>Name:</strong> {displayApplicant.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {displayApplicant.email}
+            </p>
+            <p>
+              <strong>Type:</strong> {displayApplicant.type}
+            </p>
+            <p>
+              <strong>Status:</strong> {displayApplicant.status}
+            </p>
+            <p>
+              <strong>Applied On:</strong>{" "}
+              {new Date(displayApprovalData.submittedAt).toLocaleDateString()}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { GraduationCap, Eye, CheckCircle, XCircle, Clock } from "lucide-react";
+import { GraduationCap, Eye } from "lucide-react";
 import TrainingApprovalDetailsDrawer from "./TrainingApprovalDetailsDrawer";
 import {
   Table,
@@ -10,11 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import StatusBadge from "@/components/common/StatusBadge";
+import AdminStatusBadge from "@/components/super-admin-view/shared/AdminStatusBadge";
 
 const TrainingsApprovalTable = ({
   paginatedTrainings,
   handleDeleteTraining,
+  onRevalidate,
 }) => {
   const [selectedTrainingId, setSelectedTrainingId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -49,19 +50,6 @@ const TrainingsApprovalTable = ({
       month: "short",
       day: "numeric",
     });
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      case "pending":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-500" />;
-    }
   };
 
   return (
@@ -110,10 +98,7 @@ const TrainingsApprovalTable = ({
                   <TableCell>{training.level}</TableCell>
                   <TableCell>{formatDate(training.postedDate)}</TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(training.approvalStatus)}
-                      <StatusBadge status={training.approvalStatus} />
-                    </div>
+                    <AdminStatusBadge status={training.approvalStatus} />
                   </TableCell>
                   <TableCell className="text-center">
                     <button
@@ -147,10 +132,19 @@ const TrainingsApprovalTable = ({
 
       {/* Training Details Drawer */}
       <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <SheetContent side="right" className="w-full lg:w-1/2 xl:w-2/5">
+        <SheetContent
+          side="right"
+          className="w-full h-screen 
+            lg:max-w-[900px] 
+            md:max-w-full
+            sm:max-w-full 
+            overflow-y-auto border-transparent [&>button.absolute]:hidden"
+        >
           <TrainingApprovalDetailsDrawer
             training={selectedTraining}
             areApprovalBtnsVisible={true}
+            onClose={() => setDrawerOpen(false)}
+            onRevalidate={onRevalidate}
           />
         </SheetContent>
       </Sheet>

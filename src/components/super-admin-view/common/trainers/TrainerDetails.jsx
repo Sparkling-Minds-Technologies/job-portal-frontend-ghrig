@@ -10,12 +10,18 @@ import {
   UserIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   useApprovals,
   useGetApprovalDetails,
 } from "@/hooks/superAdmin/useApprovals";
 
-const TrainerDetails = ({ trainer, areApprovalBtnsVisible = false }) => {
+const TrainerDetails = ({
+  trainer,
+  areApprovalBtnsVisible = false,
+  onClose,
+  onRevalidate,
+}) => {
   const [hasApprovalAction, setHasApprovalAction] = useState(false);
 
   const {
@@ -43,6 +49,14 @@ const TrainerDetails = ({ trainer, areApprovalBtnsVisible = false }) => {
     try {
       await approveApplication(displayTrainer._id);
       setHasApprovalAction(true);
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful approval and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to approve displayTrainer:", error);
     }
@@ -52,18 +66,22 @@ const TrainerDetails = ({ trainer, areApprovalBtnsVisible = false }) => {
     try {
       await rejectApplication(displayTrainer._id);
       setHasApprovalAction(true);
+      // Revalidate the list data before closing
+      if (onRevalidate) {
+        await onRevalidate();
+      }
+      // Close the drawer after successful rejection and revalidation
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
       console.error("Failed to reject displayTrainer:", error);
     }
   };
 
-  const handleHold = async () => {
-    try {
-      await holdApplication(displayTrainer._id);
-      // Optionally refresh the displayTrainer data or close the drawer
-    } catch (error) {
-      console.error("Failed to hold displayTrainer:", error);
-    }
+  const handleHold = () => {
+    // Show toast notification without API call
+    toast.info("Trainer is on hold");
   };
 
   // Handle loading state

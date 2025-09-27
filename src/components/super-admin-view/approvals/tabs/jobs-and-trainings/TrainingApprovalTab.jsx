@@ -96,6 +96,7 @@ const TrainingApprovalTab = () => {
                 <TrainingsApprovalTable
                   paginatedTrainings={paginatedTrainings}
                   handleDeleteTraining={handleDeleteTraining}
+                  onRevalidate={fetchTrainings}
                 />
               </div>
             </div>

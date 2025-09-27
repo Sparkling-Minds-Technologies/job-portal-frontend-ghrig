@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { User } from "lucide-react";
-import StatusBadge from "@/components/common/StatusBadge";
+import AdminStatusBadge from "../../shared/AdminStatusBadge";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 import { useState } from "react";
@@ -17,6 +17,7 @@ const TrainersTable = ({
   paginatedTrainers,
   showStatusColumn = false,
   areApprovalBtnsVisible = false,
+  onRevalidate,
 }) => {
   const [selectedTrainerId, setSelectedTrainerId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -127,7 +128,7 @@ const TrainersTable = ({
                       </TableCell>
                       {showStatusColumn && (
                         <TableCell>
-                          <StatusBadge
+                          <AdminStatusBadge
                             status={trainer.approvalStatus || trainer.status}
                           />
                         </TableCell>
@@ -173,6 +174,8 @@ const TrainersTable = ({
             <TrainerDetails
               trainer={selectedTrainer}
               areApprovalBtnsVisible={areApprovalBtnsVisible}
+              onClose={() => setDrawerOpen(false)}
+              onRevalidate={onRevalidate}
             />
           </div>
         </SheetContent>
