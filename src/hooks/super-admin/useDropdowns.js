@@ -3,6 +3,8 @@ import {
   getDropdowns,
   getDropdownValues,
   createDropdownValue,
+  updateDropdownValue,
+  deleteDropdownValue,
 } from "../../api/super-admin/dropdowns";
 
 export const useGetDropdowns = () => {
@@ -29,6 +31,32 @@ export const useCreateDropdownValue = (dropdownId) => {
 
   return useMutation({
     mutationFn: (payload) => createDropdownValue(dropdownId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["dropdownValues", dropdownId],
+      });
+    },
+  });
+};
+
+export const useUpdateDropdownValue = (dropdownId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload) => updateDropdownValue(dropdownId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["dropdownValues", dropdownId],
+      });
+    },
+  });
+};
+
+export const useDeleteDropdownValue = (dropdownId) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (value) => deleteDropdownValue(dropdownId, value),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["dropdownValues", dropdownId],

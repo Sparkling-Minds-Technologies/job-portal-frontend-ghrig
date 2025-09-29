@@ -27,18 +27,41 @@ export const getDropdownValues = async ({ queryKey, signal }) => {
 
 export const createDropdownValue = async (dropdownId, payload) => {
   try {
-    console.log("Creating dropdown value with dropdownId:", dropdownId);
-    console.log("Payload:", payload);
-
-    const url = `/api/v1/admin/dropdowns/${dropdownId}/values`;
-    console.log("API URL:", url);
-
-    const response = await api.post(url, payload);
-    console.log("API response:", response.data);
+    const response = await api.post(
+      `/api/v1/admin/dropdowns/${dropdownId}/values`,
+      payload
+    );
     return response.data;
   } catch (error) {
     console.error("Create dropdown value API error:", error);
-    console.error("Error details:", error.response?.data);
+    throw error;
+  }
+};
+
+export const updateDropdownValue = async (dropdownId, payload) => {
+  try {
+    const response = await api.put(
+      `/api/v1/admin/dropdowns/${dropdownId}/values`,
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Update dropdown value API error:", error);
+    throw error;
+  }
+};
+
+export const deleteDropdownValue = async (dropdownId, value) => {
+  try {
+    const response = await api.delete(
+      `/api/v1/admin/dropdowns/${dropdownId}/values`,
+      {
+        data: { value },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Delete dropdown value API error:", error);
     throw error;
   }
 };

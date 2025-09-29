@@ -2,9 +2,15 @@ import { useState } from "react";
 import { useGetDropdownValues } from "../../../../hooks/super-admin/useDropdowns";
 import { Button } from "../../../ui/button";
 import AddValueModal from "./AddValueModal";
+import EditValueModal from "./EditValueModal";
+import DeleteValueModal from "./DeleteValueModal";
+import { PencilIcon, Trash2Icon, TrashIcon } from "lucide-react";
 
 const DynamicDropdownTab = ({ dropdown }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(null);
 
   const {
     data: valuesData,
@@ -22,7 +28,7 @@ const DynamicDropdownTab = ({ dropdown }) => {
 
   return (
     <div className="w-full">
-      <div className="mt-6">
+      <div className="mt-6 w-full">
         {valuesLoading ? (
           <div className="flex justify-center items-center h-32">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-purple"></div>
@@ -33,16 +39,19 @@ const DynamicDropdownTab = ({ dropdown }) => {
             <p className="text-red-600 text-sm mt-1">{valuesError.message}</p>
           </div>
         ) : valuesData?.data?.values ? (
-          <div className="space-y-4">
+          <div className="space-y-4 w-full">
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden w-full">
-              <table className="w-full divide-y divide-gray-200">
+              <table className="w-full divide-y divide-gray-200 table-fixed">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
                       Value
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
                       Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -52,17 +61,36 @@ const DynamicDropdownTab = ({ dropdown }) => {
                       key={value._id || index}
                       className="hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap w-1/3">
                         <div className="flex items-center">
                           <span className="text-sm font-medium text-gray-900">
                             {value.value}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 w-1/3">
                         <span className="text-sm text-gray-600">
                           {value.description || "-"}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap w-1/3">
+                        <div className="flex space-x-6">
+                          <PencilIcon
+                            className="size-4 cursor-pointer"
+                            onClick={() => {
+                              setSelectedValue(value);
+                              setIsEditModalOpen(true);
+                            }}
+                          />
+
+                          <Trash2Icon
+                            className="size-4 text-danger1 cursor-pointer"
+                            onClick={() => {
+                              setSelectedValue(value);
+                              setIsDeleteModalOpen(true);
+                            }}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -71,7 +99,7 @@ const DynamicDropdownTab = ({ dropdown }) => {
             </div>
             <div className="flex justify-end">
               <Button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsAddModalOpen(true)}
                 className="bg-primary-purple hover:bg-primary-purple/90 text-white cursor-pointer"
               >
                 Add Value
@@ -87,7 +115,7 @@ const DynamicDropdownTab = ({ dropdown }) => {
             </div>
             <div className="flex justify-end">
               <Button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsAddModalOpen(true)}
                 className="bg-primary-purple hover:bg-primary-purple/90 text-white cursor-pointer"
               >
                 Add Value
@@ -97,9 +125,21 @@ const DynamicDropdownTab = ({ dropdown }) => {
         )}
       </div>
       <AddValueModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         dropdownId={dropdown?.dropdownId}
+      />
+      <EditValueModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        dropdownId={dropdown?.dropdownId}
+        value={selectedValue}
+      />
+      <DeleteValueModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        dropdownId={dropdown?.dropdownId}
+        value={selectedValue}
       />
     </div>
   );
