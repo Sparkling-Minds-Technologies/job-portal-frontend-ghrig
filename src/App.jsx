@@ -62,6 +62,7 @@ import TrainerDashboard from "./pages/trainner-view/dashboard";
 import TrainerJobDescription from "./pages/trainner-view/job-description";
 import TrainerSearch from "./pages/trainner-view/search";
 import { useGetTrainerProfile } from "./hooks/trainer/useProfile";
+import Congratulation from "./pages/common/congratulation";
 
 function App() {
   useEffect(() => {
@@ -109,12 +110,6 @@ function App() {
               fetchProfileHook={useGetRecruiterUserProfile}
               allowedRoles={["recruiter"]}
               userRole={"recruiter"}
-              lockedPages={{
-                "/recruiter/profile-setup/basic-details": "page1",
-                "/recruiter/profile-setup/kyc-verification": "page2",
-                "/recruiter/profile-setup/sectoral-details": "page3",
-                "/recruiter/profile-setup/qualification-details": "page4",
-              }}
             >
               <ProfileSetupLayout />
             </CheckAuth>
@@ -323,7 +318,7 @@ function App() {
         </Route>
 
         {/* Congrats fallback route */}
-        <Route path="congratulation" element={<DynamicCheckAuthWrapper />} />
+        <Route path="congratulation" element={<Congratulation />} />
       </Routes>
     </div>
   );
