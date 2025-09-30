@@ -668,7 +668,7 @@ export const basicInformationControls = [
     options: [
       { id: "privateCompany", label: "Private company" },
       { id: "proprietorship", label: "Proprietorship" },
-      { id: "individual", label: "Individual" },
+      { id: "lld", label: "LLD" },
     ],
   },
 ];
@@ -1186,8 +1186,6 @@ export const trainingController2 = [
       { id: "moderate", label: "Moderate" },
     ],
   },
-];
-export const trainingController3 = [
   {
     name: "qualificationsRequired",
     label: "What qualifications are preferred or required?",
@@ -1195,14 +1193,39 @@ export const trainingController3 = [
     componentType: "input",
     type: "text",
   },
+];
+export const trainingController3 = [
+  {
+    name: "budgetPerSession",
+    label: "What is the budget per session",
+    placeholder: "Enter Budget",
+    componentType: "input",
+    type: "text",
+  },
+  {
+    label: "Would you like the trainer to upload any certifications?",
+    componentType: "select",
+    placeholder: "Select",
+    name: "certificationUploadRequired",
+    options: [
+      {
+        id: "yes",
+        label: "Yes",
+      },
+      { id: "no", label: "No" },
+    ],
+  },
+];
+export const certificationUpload = [
   {
     name: "certificationUpload",
-    label: "Would you like the trainer to upload any certifications?",
     placeholder: "Upload Certificate",
     componentType: "file",
     type: "file",
     accept: "image",
   },
+];
+export const trainingController4 = [
   {
     name: "sessionsExpected",
     label: " How many sessions are expected in total?",
@@ -1474,6 +1497,13 @@ export const jobController2 = [
       },
       { id: "no", label: "No" },
     ],
+  },
+  {
+    name: "noOfPositions",
+    componentType: "input",
+    label: "No of positions for this job",
+    placeholder: "e.g. 15",
+    type: "text",
   },
   {
     name: "preferredAgeRange",
