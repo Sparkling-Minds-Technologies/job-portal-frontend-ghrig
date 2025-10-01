@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { GraduationCap, Eye } from "lucide-react";
-import UnifiedTrainingDetailsDrawer from "../../../common/trainings/UnifiedTrainingDetailsDrawer";
+import TrainingDetailsDrawer from "../../../common/trainings/TrainingDetailsDrawer";
 import {
   Table,
   TableBody,
@@ -140,7 +140,7 @@ const TrainingsApprovalTable = ({
             sm:max-w-full 
             overflow-y-auto border-transparent [&>button.absolute]:hidden bg-white"
         >
-          <UnifiedTrainingDetailsDrawer
+          <TrainingDetailsDrawer
             training={selectedTraining}
             context="approvals"
             areApprovalBtnsVisible={true}

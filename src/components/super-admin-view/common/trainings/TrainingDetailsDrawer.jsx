@@ -17,7 +17,7 @@ import {
 import RejectionReasonModal from "@/components/common/RejectionReasonModal";
 import EditTrainingDrawer from "./EditTrainingDrawer";
 
-const UnifiedTrainingDetailsDrawer = ({
+const TrainingDetailsDrawer = ({
   trainingId,
   training, // For approvals context
   context = "default", // "jobs-and-trainings", "approvals", "default"
@@ -203,15 +203,24 @@ const UnifiedTrainingDetailsDrawer = ({
         );
       } else {
         return (
-          <Badge
-            className={`${
-              displayApprovalData?.status === "approved"
-                ? "bg-green-100 text-green-800 hover:bg-green-200"
-                : "bg-red-100 text-red-800 hover:bg-red-200"
-            } text-sm h-fit capitalize`}
-          >
-            {displayApprovalData?.status}
-          </Badge>
+          <div className="flex flex-col gap-2">
+            <Badge
+              className={`${
+                displayApprovalData?.status === "approved"
+                  ? "bg-green-100 text-green-800 hover:bg-green-200"
+                  : "bg-red-100 text-red-800 hover:bg-red-200"
+              } text-sm h-fit capitalize`}
+            >
+              {displayApprovalData?.status}
+            </Badge>
+            {displayApprovalData?.status === "rejected" &&
+              displayApprovalData?.rejectionReason && (
+                <div className="text-xs text-red-600 bg-red-50 p-2 rounded border max-w-xs">
+                  <strong>Rejection Reason:</strong>{" "}
+                  {displayApprovalData.rejectionReason}
+                </div>
+              )}
+          </div>
         );
       }
     }
@@ -670,4 +679,4 @@ const UnifiedTrainingDetailsDrawer = ({
   );
 };
 
-export default UnifiedTrainingDetailsDrawer;
+export default TrainingDetailsDrawer;

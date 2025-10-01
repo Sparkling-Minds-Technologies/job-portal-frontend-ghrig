@@ -1,6 +1,6 @@
 import { Sheet, SheetContent } from "../../../../ui/sheet";
 import { Briefcase, MoveUpRightIcon } from "lucide-react";
-import UnifiedJobDetailsDrawer from "../../../common/jobs/UnifiedJobDetailsDrawer";
+import JobDetailsDrawer from "../../../common/jobs/JobDetailsDrawer";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getJobApplications } from "../../../../../api/super-admin/jobsAndTrainings";
@@ -220,7 +220,7 @@ const JobsTable = ({ paginatedJobs, onRevalidate }) => {
             overflow-y-auto border-transparent [&>button.absolute]:hidden"
         >
           <div className="w-full h-full">
-            <UnifiedJobDetailsDrawer
+            <JobDetailsDrawer
               jobId={selectedJob}
               context="edit"
               onRevalidate={onRevalidate}

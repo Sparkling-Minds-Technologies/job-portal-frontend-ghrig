@@ -197,17 +197,26 @@ const CompanyDetailsDrawer = ({
         );
       } else {
         return (
-          <Badge
-            className={`${
-              displayApprovalData?.data?.status === "approved"
-                ? "bg-success2 text-success1"
-                : displayApprovalData?.data?.status === "rejected"
-                ? "bg-danger2 text-danger1"
-                : "bg-gray2 text-gray1"
-            } text-sm capitalize`}
-          >
-            {displayApprovalData?.data?.status}
-          </Badge>
+          <div className="flex flex-col gap-2">
+            <Badge
+              className={`${
+                displayApprovalData?.data?.status === "approved"
+                  ? "bg-success2 text-success1"
+                  : displayApprovalData?.data?.status === "rejected"
+                  ? "bg-danger2 text-danger1"
+                  : "bg-gray2 text-gray1"
+              } text-sm capitalize`}
+            >
+              {displayApprovalData?.data?.status}
+            </Badge>
+            {displayApprovalData?.data?.status === "rejected" &&
+              displayApprovalData?.data?.rejectionReason && (
+                <div className="text-xs text-red-600 bg-red-50 p-2 rounded border max-w-xs">
+                  <strong>Rejection Reason:</strong>{" "}
+                  {displayApprovalData.data.rejectionReason}
+                </div>
+              )}
+          </div>
         );
       }
     }

@@ -196,7 +196,18 @@ const TrainerDetailsDrawer = ({
         displayTrainer?.approvalStatus || displayTrainer?.status;
 
       if (approvalStatus !== "pending") {
-        return <AdminStatusBadge status={approvalStatus} />;
+        return (
+          <div className="flex flex-col gap-2">
+            <AdminStatusBadge status={approvalStatus} />
+            {approvalStatus === "rejected" &&
+              displayTrainer?.rejectionReason && (
+                <div className="text-xs text-red-600 bg-red-50 p-2 rounded border max-w-xs">
+                  <strong>Rejection Reason:</strong>{" "}
+                  {displayTrainer.rejectionReason}
+                </div>
+              )}
+          </div>
+        );
       }
 
       // Show approval buttons only for pending trainers and if no action has been taken

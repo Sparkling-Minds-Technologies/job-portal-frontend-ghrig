@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Briefcase, Eye, CheckCircle, XCircle, Clock } from "lucide-react";
-import UnifiedJobDetailsDrawer from "../../../common/jobs/UnifiedJobDetailsDrawer";
+import JobDetailsDrawer from "../../../common/jobs/JobDetailsDrawer";
 import {
   Table,
   TableBody,
@@ -155,7 +155,7 @@ const JobsApprovalTable = ({
             sm:max-w-full 
             overflow-y-auto border-transparent [&>button.absolute]:hidden"
         >
-          <UnifiedJobDetailsDrawer
+          <JobDetailsDrawer
             jobId={selectedJobId}
             context="approval"
             onClose={() => setDrawerOpen(false)}

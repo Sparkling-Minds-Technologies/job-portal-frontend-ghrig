@@ -181,7 +181,16 @@ const RecruiterDetails = ({
                   </Button>
                 </div>
               ) : (
-                <AdminStatusBadge status={displayRecruiter?.status} />
+                <div className="flex flex-col gap-2">
+                  <AdminStatusBadge status={displayRecruiter?.status} />
+                  {displayRecruiter?.status === "rejected" &&
+                    displayRecruiter?.rejectionReason && (
+                      <div className="text-xs text-red-600 bg-red-50 p-2 rounded border max-w-xs">
+                        <strong>Rejection Reason:</strong>{" "}
+                        {displayRecruiter.rejectionReason}
+                      </div>
+                    )}
+                </div>
               )}
             </div>
             <div className="size- p-2 left-[123px] top-[66px] absolute bg-white rounded-lg flex justify-start items-center gap-2.5">
