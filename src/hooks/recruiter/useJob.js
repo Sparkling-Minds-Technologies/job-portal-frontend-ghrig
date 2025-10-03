@@ -46,10 +46,10 @@ export const useBulkApplySingle = () => {
     onSuccess: (data) => {
       if (data.data.failed > 0) {
         toast.error(data.data.message);
-        queryClient.invalidateQueries({ queryKey: ["applicants"] });
       } else {
         toast.success(data.data.message);
       }
+      queryClient.invalidateQueries({ queryKey: ["applicants"] });
     },
     onError: (error) => {
       console.log(error);
