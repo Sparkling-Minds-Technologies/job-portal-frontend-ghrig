@@ -29,6 +29,7 @@ const ApplicationsTab = ({
     getTotalPages,
     getFilteredCount,
     fetchApplications,
+    refetchApplications,
     setCurrentJobId,
   } = useApplicationsStore();
 
@@ -117,6 +118,7 @@ const ApplicationsTab = ({
               <ApplicationsTable
                 paginatedApplications={paginatedApplications}
                 handleDeleteApplication={handleDeleteApplication}
+                onRevalidate={refetchApplications}
               />
             </div>
           )}

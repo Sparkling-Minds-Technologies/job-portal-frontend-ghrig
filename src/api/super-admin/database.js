@@ -37,4 +37,4 @@ export const getCandidateById = ({ signal, id }) =>
   api.get(`/admin/jobseekers/${id}`, { signal });
 
 export const updateTrainer = ({ id, data }) =>
-  api.put(`/admin/trainers/${id}`, data);
+  api.put(`/trainer/profile`, data);

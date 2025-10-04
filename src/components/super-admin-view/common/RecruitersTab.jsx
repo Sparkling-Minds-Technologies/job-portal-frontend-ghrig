@@ -58,7 +58,7 @@ const RecruitersTab = ({ context = "database" }) => {
   // Process the data based on context
   const paginatedRecruiters =
     context === "approvals"
-      ? data?.data?.approvals?.map((approval) => {
+      ? data?.data?.data?.approvals?.map((approval) => {
           const recruiter = approval.data || {};
           return {
             id: approval._id,
@@ -104,7 +104,7 @@ const RecruitersTab = ({ context = "database" }) => {
             profileImage: recruiter.profileImage,
           };
         }) || []
-      : data?.data?.recruiters || [];
+      : data || [];
 
   const totalCount =
     context === "approvals"

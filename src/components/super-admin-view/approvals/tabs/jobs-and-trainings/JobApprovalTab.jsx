@@ -40,9 +40,10 @@ const JobApprovalTab = ({ onError }) => {
   // Use query hook for data fetching
   const { data, isLoading, error, refetch } = useGetApprovalsJobs(queryParams);
 
+  console.log("data", data);
   // Process the data
   const jobs =
-    data?.data?.approvals?.map((approval) => {
+    data?.data?.data?.approvals?.map((approval) => {
       const job = approval.data || {};
       return {
         id: approval._id,

@@ -114,8 +114,8 @@ export const useApprovals = () => {
   const queryClient = useQueryClient();
 
   const reviewApprovalMutation = useMutation({
-    mutationFn: ({ approvalId, action, reason }) =>
-      reviewApproval(approvalId, { action, reason }),
+    mutationFn: ({ approvalId, status, reviewerNotes }) =>
+      reviewApproval(approvalId, { status, reviewerNotes }),
     onSuccess: () => {
       // Invalidate relevant queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["approvals-"] });
@@ -126,23 +126,23 @@ export const useApprovals = () => {
   const approveApplication = async (approvalId) => {
     return reviewApprovalMutation.mutateAsync({
       approvalId,
-      action: "approved",
+      status: "approved",
     });
   };
 
-  const rejectApplication = async (approvalId, reason = "") => {
+  const rejectApplication = async (approvalId, reviewerNotes = "") => {
     return reviewApprovalMutation.mutateAsync({
       approvalId,
-      action: "rejected",
-      reason,
+      status: "rejected",
+      reviewerNotes,
     });
   };
 
-  const holdApplication = async (approvalId, reason = "") => {
+  const holdApplication = async (approvalId, reviewerNotes = "") => {
     return reviewApprovalMutation.mutateAsync({
       approvalId,
-      action: "hold",
-      reason,
+      status: "hold",
+      reviewerNotes,
     });
   };
 
