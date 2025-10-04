@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useGetTrainingDetails } from "../../../../hooks/super-admin/useTraining";
+import { formatApiError } from "../../../../utils/commonFunctions";
 import {
   useApprovals,
   useGetApprovalDetails,
@@ -107,9 +108,7 @@ const TrainingDetailsDrawer = ({
     return (
       <div className="min-h-screen flex flex-col bg-white p-6">
         <div className="flex justify-center items-center h-64">
-          <div className="text-lg text-red-500">
-            Error loading training details: {error.message}
-          </div>
+          <div className="text-lg text-red-500">{formatApiError(error)}</div>
         </div>
       </div>
     );

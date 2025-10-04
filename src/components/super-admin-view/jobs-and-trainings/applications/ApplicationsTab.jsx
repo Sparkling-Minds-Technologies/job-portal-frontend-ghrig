@@ -6,7 +6,8 @@ import FilterComponent from "@/components/common/filterComponent";
 import { applicationsFilters } from "./utils";
 import useApplicationsStore from "./zustand";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChevronLeft, MoveLeftIcon } from "lucide-react";
+import { MoveLeftIcon } from "lucide-react";
+import ErrorDisplay from "@/components/common/ErrorDisplay";
 
 const ApplicationsTab = ({
   title = "Applications",
@@ -62,12 +63,7 @@ const ApplicationsTab = ({
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="text-red-800 font-medium">
-            Error loading applications
-          </div>
-          <div className="text-red-600 text-sm">{error}</div>
-        </div>
+        <ErrorDisplay error={error} title="Error loading applications" />
       )}
 
       {/* Main Content Layout */}

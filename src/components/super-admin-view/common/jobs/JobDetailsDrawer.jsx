@@ -12,6 +12,7 @@ import { useState } from "react";
 import EditJobDrawer from "./EditJobDrawer";
 import RejectionReasonModal from "@/components/common/RejectionReasonModal";
 import { useGetJobDetails } from "../../../../hooks/super-admin/useJob";
+import { formatApiError } from "../../../../utils/commonFunctions";
 import {
   useApprovals,
   useGetApprovalDetails,
@@ -93,9 +94,7 @@ const JobDetailsDrawer = ({
     return (
       <div className="min-h-full flex flex-col bg-white p-6">
         <div className="flex justify-center items-center h-64">
-          <div className="text-lg text-red-500">
-            Error loading job details: {error.message}
-          </div>
+          <div className="text-lg text-red-500">{formatApiError(error)}</div>
         </div>
       </div>
     );
