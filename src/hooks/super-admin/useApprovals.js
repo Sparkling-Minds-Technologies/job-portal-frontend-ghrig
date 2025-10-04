@@ -6,10 +6,13 @@ import {
 } from "../../api/super-admin/approvals";
 
 export const useGetApprovalsCompanies = (params = {}) => {
+  const token = localStorage.getItem("token");
+
   return useQuery({
-    queryKey: ["approvals-companies", params],
+    queryKey: ["approvals-companies", token, params],
     queryFn: ({ signal }) =>
       getApprovalsList("corporate", { signal, ...params }),
+    enabled: !!token,
     keepPreviousData: true,
     retry: (failureCount, error) => {
       // Don't retry on 401 errors (permission denied)
@@ -23,9 +26,12 @@ export const useGetApprovalsCompanies = (params = {}) => {
 };
 
 export const useGetApprovalsTrainers = (params = {}) => {
+  const token = localStorage.getItem("token");
+
   return useQuery({
-    queryKey: ["approvals-trainers", params],
+    queryKey: ["approvals-trainers", token, params],
     queryFn: ({ signal }) => getApprovalsList("trainer", { signal, ...params }),
+    enabled: !!token,
     keepPreviousData: true,
     retry: (failureCount, error) => {
       if (error?.response?.status === 401 || error?.status === 401) {
@@ -37,10 +43,13 @@ export const useGetApprovalsTrainers = (params = {}) => {
 };
 
 export const useGetApprovalsRecruiters = (params = {}) => {
+  const token = localStorage.getItem("token");
+
   return useQuery({
-    queryKey: ["approvals-recruiters", params],
+    queryKey: ["approvals-recruiters", token, params],
     queryFn: ({ signal }) =>
       getApprovalsList("recruiter", { signal, ...params }),
+    enabled: !!token,
     keepPreviousData: true,
     retry: (failureCount, error) => {
       if (error?.response?.status === 401 || error?.status === 401) {
@@ -52,9 +61,12 @@ export const useGetApprovalsRecruiters = (params = {}) => {
 };
 
 export const useGetApprovalsJobs = (params = {}) => {
+  const token = localStorage.getItem("token");
+
   return useQuery({
-    queryKey: ["approvals-jobs", params],
+    queryKey: ["approvals-jobs", token, params],
     queryFn: ({ signal }) => getApprovalsList("job", { signal, ...params }),
+    enabled: !!token,
     keepPreviousData: true,
     retry: (failureCount, error) => {
       if (error?.response?.status === 401 || error?.status === 401) {
@@ -66,10 +78,13 @@ export const useGetApprovalsJobs = (params = {}) => {
 };
 
 export const useGetApprovalsTrainings = (params = {}) => {
+  const token = localStorage.getItem("token");
+
   return useQuery({
-    queryKey: ["approvals-trainings", params],
+    queryKey: ["approvals-trainings", token, params],
     queryFn: ({ signal }) =>
       getApprovalsList("training", { signal, ...params }),
+    enabled: !!token,
     keepPreviousData: true,
     retry: (failureCount, error) => {
       if (error?.response?.status === 401 || error?.status === 401) {
@@ -81,10 +96,13 @@ export const useGetApprovalsTrainings = (params = {}) => {
 };
 
 export const useGetApprovalsJobsAndTrainings = (params = {}) => {
+  const token = localStorage.getItem("token");
+
   return useQuery({
-    queryKey: ["approvals-jobs-trainings", params],
+    queryKey: ["approvals-jobs-trainings", token, params],
     queryFn: ({ signal }) =>
       getApprovalsList("job-training", { signal, ...params }),
+    enabled: !!token,
     keepPreviousData: true,
     retry: (failureCount, error) => {
       if (error?.response?.status === 401 || error?.status === 401) {

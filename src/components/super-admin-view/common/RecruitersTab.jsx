@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import RecruitersTable from "./RecruitersTable";
 import Pagination from "../../common/pagination";
 import SearchComponent from "@/components/common/searchComponent";
@@ -104,7 +104,7 @@ const RecruitersTab = ({ context = "database" }) => {
             profileImage: recruiter.profileImage,
           };
         }) || []
-      : data || [];
+      : data?.data?.data?.recruiters || [];
 
   const totalCount =
     context === "approvals"
