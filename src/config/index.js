@@ -482,6 +482,13 @@ export const candiadateCreationformControls = [
     placeholder: "Write a brief summary about the candidate",
     label: "Summary",
   },
+  {
+    name: "skills",
+    label: "Skills",
+    componentType: "multi-select",
+    max: 30,
+    options: [],
+  },
 ];
 export const highestQualification = [
   {
@@ -754,6 +761,7 @@ export const corporateFormControls = [
         placeholder: "Upload PAN",
         componentType: "file",
         formats: "JPG, PNG, PDF.",
+        accept: "image",
       },
     ],
   },
@@ -794,6 +802,7 @@ export const formControlsBankDetails = [
     placeholder: "Upload Cheque / Statement",
     componentType: "file",
     formats: "JPG, PNG, PDF.",
+    accept: "image",
   },
 ];
 export const formControlsForIndividual = [
@@ -850,6 +859,7 @@ export const formControlsForIndividual = [
     placeholder: "Upload PAN",
     componentType: "file",
     formats: "JPG, PNG, PDF.",
+    accept: "image",
   },
   {
     label: "Aadhar Card No.",
@@ -865,6 +875,7 @@ export const formControlsForIndividual = [
     placeholder: "Upload Aadhar",
     componentType: "file",
     formats: "JPG, PNG, PDF.",
+    accept: "image",
   },
 ];
 export const jobOpeningFilters = [
