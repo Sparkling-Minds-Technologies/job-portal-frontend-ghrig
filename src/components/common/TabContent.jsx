@@ -4,7 +4,7 @@ const TabContent = ({
   activeTab,
   tabComponents,
   defaultTab,
-  className = "min-w-0 w-full",
+  className = "min-w-0",
 }) => {
   const renderTabContent = () => {
     const Component = tabComponents[activeTab];
