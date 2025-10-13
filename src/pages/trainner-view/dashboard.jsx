@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/recruiter-view/navbar";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import HeroProfile from "../../components/recruiter-view/common/hero-profile";
 import Pagination from "../../components/common/pagination";
 import SearchComponent from "../../components/common/searchComponent";
@@ -9,17 +9,29 @@ import {
   useApplyForTraining,
   useGetAllTrainings,
 } from "@/hooks/trainer/useTrainings";
-import { timeAgo } from "@/utils/commonFunctions";
 import useAuthStore from "@/stores/useAuthStore";
 import PendingApprove from "@/components/common/pending-approve";
+import JobCard from "@/components/trainer-view/jobCard";
+import { useDebounce } from "@/hooks/common/useDebounce";
 
 const JobSeekerDashboard = () => {
-  const [formData, setFormData] = useState({});
   const { user } = useAuthStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchText, setSearchText] = useState("");
+  const [filters, setFilters] = useState(() => {
+    // Restore from URL on first render
+    const params = Object.fromEntries([...searchParams]);
+    return {
+      page: params.page ? parseInt(params.page) : 1,
+      limit: 10,
+      search: params.search || "",
+    };
+  });
   const { data: trainerProgressData } = useGetTrainerProgress();
-  const { data: allTrainingsData } = useGetAllTrainings();
+  const { data: allTrainingsData } = useGetAllTrainings(filters);
   const { mutate: applyForTraining } = useApplyForTraining();
   console.log(allTrainingsData);
+  const debouncedSearch = useDebounce(searchText, 500);
   const nextStagePath =
     trainerProgressData?.data?.currentStage === 2
       ? "/trainer/profile-setup/education-details"
@@ -28,7 +40,6 @@ const JobSeekerDashboard = () => {
       : trainerProgressData?.data?.currentStage === 4
       ? "/trainer/profile-setup/certificate-details"
       : "/trainer/dashboard";
-  console.log(trainerProgressData);
   const handleApply = (e, trainingId) => {
     e.preventDefault();
     e.stopPropagation();
@@ -36,6 +47,33 @@ const JobSeekerDashboard = () => {
       trainingId: trainingId,
     });
     console.log(`Applied to training with ID: ${trainingId}`);
+  };
+
+  useEffect(() => {
+    if (filters?.search && !searchText) {
+      setSearchText(filters.search);
+    }
+  }, [filters.search]);
+  useEffect(() => {
+    setFilters((prev) => {
+      if (prev.search === debouncedSearch) return prev;
+      return {
+        ...prev,
+        search: debouncedSearch,
+        page: 1,
+      };
+    });
+  }, [debouncedSearch]);
+  useEffect(() => {
+    const updatedParams = {};
+
+    for (const key in filters) {
+      if (filters[key]) updatedParams[key] = filters[key];
+    }
+    setSearchParams(updatedParams);
+  }, [filters]);
+  const handleSearch = (e) => {
+    setSearchText(e);
   };
   return (
     <div className="w-full flex flex-col gap-[30px] ">
@@ -126,7 +164,7 @@ const JobSeekerDashboard = () => {
                 Search your job here
               </div>
             </div> */}
-            <SearchComponent />
+            <SearchComponent value={searchText} handleSearch={handleSearch} />
             {/* <div className="w-44 px-4 py-5 bg-color-gray-10 rounded-xl outline outline-1 outline-offset-[-1px] outline-stone-300/80 flex justify-center items-center gap-2.5">
               <div className="size-4 relative overflow-hidden">
                 <svg
@@ -165,7 +203,7 @@ const JobSeekerDashboard = () => {
             </div> */}
           </div>
           <div className="size- inline-flex justify-start items-start gap-8">
-            <div className="size- px-5 py-2.5 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-400 flex justify-center items-center gap-2.5">
+            <div className="size- px-5 py-2.5 rounded-3xl outline-1 outline-offset-[-1px] outline-neutral-400 flex justify-center items-center gap-2.5">
               <div className="justify-start text-neutral-400 text-sm font-medium capitalize">
                 Applied Jobs
               </div>
@@ -180,104 +218,17 @@ const JobSeekerDashboard = () => {
             Recommended jobs
           </div>
           {allTrainingsData?.data?.trainings?.map((item) => (
-            <Link
-              to={`/trainer/dashboard/${item._id}`}
-              key={item._id}
-              className="self-stretch p-6 bg-white rounded-lg shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] outline outline-1 outline-offset-[-1px] outline-zinc-300 inline-flex justify-start items-start gap-6"
-            >
-              <img
-                className="size-16 relative rounded-sm"
-                src={item.company.companyLogo}
-                alt={item.company.companyName}
-              />
-              <div className="flex-1 inline-flex flex-col justify-start items-start gap-3">
-                <div className="self-stretch flex flex-col justify-start items-start gap-1.5">
-                  <div className="size- flex flex-col justify-start items-start gap-1">
-                    <div className="size- inline-flex justify-start items-center gap-3">
-                      <div className="justify-start text-neutral-900 text-lg font-normal leading-relaxed">
-                        {item.company.companyName}
-                      </div>
-                    </div>
-                    <div className="size- inline-flex justify-center items-center gap-3">
-                      <div className="justify-start text-neutral-900 text-2xl font-medium leading-9">
-                        {item.title}
-                      </div>
-                      <div className="size- px-1.5 py-0.5 bg-violet-500/10 rounded-[3px] flex justify-start items-center gap-1 overflow-hidden">
-                        <div className="justify-start text-violet-500 text-xs font-medium leading-none">
-                          2 applied
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="size- py-0.5 inline-flex justify-center items-center gap-6">
-                    <div className="size- flex justify-start items-center gap-1.5">
-                      <div className="size-4 relative">
-                        <div className="w-2.5 h-px left-[3px] top-[14px] absolute bg-neutral-900/70" />
-                        <div className="size-[5px] left-[5.50px] top-[4px] absolute bg-neutral-900/70" />
-                        <div className="w-2.5 h-3.5 left-[2.50px] top-[1px] absolute bg-neutral-900/70" />
-                      </div>
-                      <div className="justify-start text-neutral-900/70 text-base font-normal leading-normal">
-                        Brussels
-                      </div>
-                    </div>
-                    <div className="size-0.5 bg-neutral-900/70 rounded-full" />
-                    <div className="size- flex justify-start items-center gap-1.5">
-                      <div className="size-4 relative">
-                        <div className="size-3 left-[1.50px] top-[1.50px] absolute bg-neutral-900/70" />
-                        <div className="size-1 left-[7.50px] top-[4px] absolute bg-neutral-900/70" />
-                      </div>
-                      <div className="justify-start text-neutral-900/70 text-base font-normal leading-normal">
-                        Full time
-                      </div>
-                    </div>
-                    <div className="size-0.5 bg-neutral-900/70 rounded-full" />
-                    <div className="size- flex justify-start items-center gap-1.5">
-                      <div className="size-4 relative">
-                        <div className="w-px h-3.5 left-[7.50px] top-[1px] absolute bg-neutral-900/70" />
-                        <div className="w-2 h-2.5 left-[3.50px] top-[2.50px] absolute bg-neutral-900/70" />
-                      </div>
-                      <div className="justify-start text-neutral-900/70 text-base font-normal leading-normal">
-                        50-55k
-                      </div>
-                    </div>
-                    <div className="size-0.5 bg-neutral-900/70 rounded-full" />
-                    <div className="size- flex justify-start items-center gap-1.5">
-                      <div className="size-4 relative">
-                        <div className="size-3 left-[2px] top-[2px] absolute bg-neutral-900/70" />
-                        <div className="w-px h-[3px] left-[10.50px] top-[1px] absolute bg-neutral-900/70" />
-                        <div className="w-px h-[3px] left-[4.50px] top-[1px] absolute bg-neutral-900/70" />
-                        <div className="w-3 h-px left-[2px] top-[5px] absolute bg-neutral-900/70" />
-                      </div>
-                      <div className="justify-start text-neutral-900/70 text-base font-normal leading-normal">
-                        {timeAgo(item.createdAt)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="self-stretch justify-start text-neutral-900/70 text-base font-normal leading-normal">
-                  {item.description}
-                </div>
-                <div
-                  onClick={(e) => handleApply(e, item._id)}
-                  className="size- px-5 py-2.5 bg-gray-900 rounded-3xl inline-flex justify-center items-center gap-2.5"
-                >
-                  <div className="justify-start text-white text-sm font-medium capitalize">
-                    Apply Now
-                  </div>
-                </div>
-              </div>
-              <div className="size- pl-3.5 pr-5 py-2.5 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-400 flex justify-center items-center gap-2.5">
-                <div className="size-4 relative overflow-hidden">
-                  <div className="w-2.5 h-3 left-[3.33px] top-[2px] absolute outline outline-[1.50px] outline-offset-[-0.75px] outline-neutral-400" />
-                </div>
-                <div className="justify-start text-neutral-400 text-sm font-medium capitalize">
-                  Save
-                </div>
-              </div>
-            </Link>
+            <JobCard key={item._id} item={item} handleApply={handleApply} />
           ))}
 
-          <Pagination />
+          <Pagination
+            range={2}
+            currentPage={filters.page}
+            totalPages={allTrainingsData?.data?.pagination?.totalPages}
+            onPageChange={(page) =>
+              setFilters((prev) => ({ ...prev, page: page }))
+            }
+          />
           {/* <div className="justify-start text-neutral-900 text-lg font-semibold leading-tight">
             Top companies hiring
           </div> */}

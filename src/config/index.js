@@ -1844,6 +1844,7 @@ export const jobSeekerEducationFormControls = [
       { id: "bachelor_of_science", label: "Bachelor of Science" },
       { id: "other", label: "Other" },
     ],
+    required: true,
   },
   {
     row: [
@@ -1869,6 +1870,7 @@ export const jobSeekerEducationFormControls = [
     placeholder: "Upload Profile Picture",
     componentType: "file",
     accept: "image", // only allow images
+    required: true,
   },
 ];
 export const workExperienceFormControls = [
@@ -2016,7 +2018,6 @@ export const certificateFormControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter the title",
-    required: true,
   },
   {
     name: "organisation",
@@ -2024,7 +2025,6 @@ export const certificateFormControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter the issuing organization",
-    required: true,
   },
   {
     row: [
@@ -2033,14 +2033,12 @@ export const certificateFormControls = [
         label: "Issue Date",
         componentType: "monthYear",
         placeholder: "Select Issue Date",
-        required: true,
       },
       {
         name: "expiryDate",
         label: "Expiry Date",
         componentType: "monthYear",
         placeholder: "Select Expiry Date",
-        required: true,
       },
     ],
   },
@@ -2170,6 +2168,7 @@ export const trainerFormControls1 = [
         placeholder: "e.g. Jason Wild",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "profilePicture",
@@ -2185,6 +2184,7 @@ export const trainerFormControls1 = [
     label: "Contact Number",
     placeholder: "Ex. XXXXX XXXXX",
     componentType: "phone",
+    required: true,
   },
   {
     name: "email",
@@ -2192,6 +2192,7 @@ export const trainerFormControls1 = [
     placeholder: "Enter your email",
     componentType: "input",
     type: "email",
+    required: true,
   },
   {
     name: "password",
@@ -2199,6 +2200,7 @@ export const trainerFormControls1 = [
     placeholder: "Enter your Password",
     componentType: "input",
     type: "password",
+    required: true,
   },
   {
     name: "confirmPassword",
@@ -2206,6 +2208,7 @@ export const trainerFormControls1 = [
     placeholder: "Enter your Password",
     componentType: "input",
     type: "password",
+    required: true,
   },
   {
     row: [
@@ -2213,8 +2216,10 @@ export const trainerFormControls1 = [
         name: "currentAddress.address",
         label: "Current Address",
         placeholder: "Enter Current Address",
-        componentType: "input",
+        componentType: "textarea",
         type: "text",
+        width: "full",
+        required: true,
       },
     ],
   },
@@ -2225,18 +2230,21 @@ export const trainerFormControls1 = [
         placeholder: "Enter City",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "currentAddress.state",
         placeholder: "Enter State",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "currentAddress.pincode",
         placeholder: "Enter Pincode",
         componentType: "input",
         type: "text",
+        required: true,
       },
     ],
   },
@@ -2250,6 +2258,7 @@ export const kycBankFormControls = [
     placeholder: "Upload Aadhar Card",
     componentType: "file",
     accept: "image",
+    required: true,
   },
   {
     name: "aadharDetails.number",
@@ -2257,6 +2266,7 @@ export const kycBankFormControls = [
     placeholder: "Enter Adhar Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "panDetails.image",
@@ -2264,6 +2274,7 @@ export const kycBankFormControls = [
     placeholder: "Upload PAN Card",
     componentType: "file",
     accept: "image",
+    required: true,
   },
   {
     name: "panDetails.number",
@@ -2271,6 +2282,7 @@ export const kycBankFormControls = [
     placeholder: "Enter PAN Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "bankDetails.accountNumber",
@@ -2278,6 +2290,7 @@ export const kycBankFormControls = [
     placeholder: "Enter Account Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "bankDetails.accountHolderName",
@@ -2285,6 +2298,7 @@ export const kycBankFormControls = [
     placeholder: "Enter Account Holder's name",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     row: [
@@ -2294,6 +2308,7 @@ export const kycBankFormControls = [
         placeholder: "Branch Name",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "bankDetails.ifscCode",
@@ -2301,6 +2316,7 @@ export const kycBankFormControls = [
         placeholder: "IFSC Code",
         componentType: "input",
         type: "text",
+        required: true,
       },
     ],
   },
@@ -2310,6 +2326,7 @@ export const kycBankFormControls = [
     placeholder: "",
     componentType: "file",
     accept: "image", // you can also use "pdf" if needed
+    required: true,
   },
 ];
 // experienceFormControls.js
@@ -2326,6 +2343,7 @@ export const experienceFormControls = [
       { id: "expert", label: "Senior-Level Hirings" },
     ],
     max: 2,
+    required: true,
   },
   {
     row: [
@@ -2338,6 +2356,7 @@ export const experienceFormControls = [
           id: i.toString(),
           label: `${i} Years`,
         })),
+        required: true,
       },
       {
         name: "totalMonthsExperience",
@@ -2348,6 +2367,7 @@ export const experienceFormControls = [
           id: i.toString(),
           label: `${i} Months`,
         })),
+        required: true,
       },
     ],
   },
@@ -2357,6 +2377,7 @@ export const experienceFormControls = [
     placeholder: "Enter URL",
     componentType: "input",
     type: "url",
+    required: true,
   },
 
   {
@@ -2365,6 +2386,7 @@ export const experienceFormControls = [
     placeholder: "Enter Name",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "WorkingDetails.designation",
@@ -2372,6 +2394,7 @@ export const experienceFormControls = [
     placeholder: "Enter Position",
     componentType: "input",
     type: "text",
+    required: true,
   },
 
   {

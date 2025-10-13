@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ButtonComponent from "../../components/common/button";
 import CommonForm from "../../components/common/form";
 import Navbar from "../../components/recruiter-view/navbar";
@@ -11,49 +11,21 @@ import { z } from "zod";
 // ✅ helper regex: matches "8/23", "08/23", "12/25", etc.
 const monthYearRegex = /^(0?[1-9]|1[0-2])\/\d{2}$/;
 
-export const certificatesSchema = z.object({
+const certificatesSchema = z.object({
   certificates: z
     .array(
-      z
-        .object({
-          title: z.string().min(1, "Certificate title is required"),
-          organisation: z.string().min(1, "Organisation name is required"),
-          issueDate: z
-            .string()
-            .min(1, "Issue date is required")
-            .regex(monthYearRegex, "Issue date must be in MM/YY format"),
-          expiryDate: z
-            .string()
-            .optional()
-            .refine(
-              (val) => !val || monthYearRegex.test(val),
-              "Expiry date must be in MM/YY format"
-            ),
-        })
-        // 🧠 optional refinement: ensure expiry is after issue
-        .refine(
-          (data) => {
-            if (!data.expiryDate) return true;
-            const [issueMonth, issueYear] = data.issueDate
-              .split("/")
-              .map((x) => parseInt(x));
-            const [expMonth, expYear] = data.expiryDate
-              .split("/")
-              .map((x) => parseInt(x));
-            const issueTotal = issueYear * 12 + issueMonth;
-            const expTotal = expYear * 12 + expMonth;
-            return expTotal >= issueTotal;
-          },
-          {
-            path: ["expiryDate"],
-            message: "Expiry date must be after issue date",
-          }
-        )
+      z.object({
+        title: z.string().optional(),
+        organisation: z.string().optional(),
+        issueDate: z.string().optional(),
+        expiryDate: z.string().optional(),
+      })
     )
-    .min(1, "At least one certificate is required"),
+    .optional(),
 });
 
 const CertificateDetails = () => {
+  const [errorMessage, setErrorMessage] = useState({});
   const [formData, setFormData] = useState({
     certificates: [
       { title: "", organisation: "", issueDate: "", expiryDate: "" },
@@ -63,8 +35,13 @@ const CertificateDetails = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const isValid = validateFormData(certificatesSchema, formData);
-    if (!isValid) return;
+    const { isValid, errors } = validateFormData(certificatesSchema, formData);
+    if (!isValid) {
+      setErrorMessage(errors);
+      return;
+    }
+
+    setErrorMessage({});
     mutate(formData);
   };
   const { data: profileProgress } = useGetTrainerProgress();
@@ -119,6 +96,7 @@ const CertificateDetails = () => {
                     key={index}
                     i={index}
                     formType={"certificates"}
+                    errors={errorMessage}
                   />
                 ))}
               </div>

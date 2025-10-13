@@ -185,6 +185,7 @@ export default function CommonForm({
             value={value}
             disabled={disabled}
             index={index}
+            errorMessage={errorMessage}
           />
         );
       case "select":

@@ -8,67 +8,38 @@ import { useUpload } from "../../hooks/common/useUpload";
 import { z } from "zod";
 import { validateFormData } from "../../utils/commonFunctions";
 import { useTrainerRegisterationStage3 } from "../../hooks/trainer/useAuth";
-import useAuthStore from "../../stores/useAuthStore";
 
-export const experienceSchema = z.object({
-  // expertiseLevel: z.string().min(1, "Expertise level is required"),
+const experienceSchema = z.object({
+  expertiseLevel: z
+    .array(z.string().min(1, "Expertise level cannot be empty"))
+    .min(1, "At least one expertise level is required"),
 
   totalYearsExperience: z
     .string()
-    .regex(/^\d+$/, "Years must be a number")
-    .optional(),
+    .min(1, "Total years of experience is required"),
 
   totalMonthsExperience: z
     .string()
-    .regex(/^\d+$/, "Months must be a number")
-    .optional(),
+    .min(1, "Total months of experience is required"),
 
-  linkedin: z.string().url("Please enter a valid LinkedIn URL").optional(),
+  linkedin: z.string().min(1, "LinkedIn profile is required"),
 
-  WorkingDetails: z
-    .object({
-      companyName: z.string().min(1, "Company name is required"),
-      designation: z.string().min(1, "Designation is required"),
-      startDate: z
-        .string()
-        .refine(
-          (val) => !isNaN(new Date(val).getTime()),
-          "Start date must be a valid date"
-        ),
-      endDate: z
-        .string()
-        .refine(
-          (val) => !isNaN(new Date(val).getTime()),
-          "End date must be a valid date"
-        ),
-    })
-    .refine(
-      (data) => {
-        const parseMMYY = (str) => {
-          if (!str) return null;
-          const [month, year] = str.split("/");
-          return new Date(`20${year}-${month}-01`);
-        };
+  WorkingDetails: z.object({
+    companyName: z.string().min(1, "Company name is required"),
+    designation: z.string().min(1, "Designation is required"),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+  }),
 
-        const start = parseMMYY(data.startDate);
-        const end = parseMMYY(data.endDate);
+  relievingLetter: z.string().optional(),
 
-        // If endDate is optional (can be empty), skip comparison
-        if (!end) return true;
-
-        return end.getTime() >= start.getTime();
-      },
-      {
-        path: ["endDate"],
-        message: "End date must be after start date",
-      }
-    ),
-  relievingLetter: z.string().optional(), // can be file path or base64
-
-  expertiseAreas: z.array(z.string().min(1)).optional(),
+  expertiseAreas: z
+    .array(z.string().min(1, "Expertise area cannot be empty"))
+    .min(1, "At least one expertise area is required"),
 });
 
 const WorkingDetails = () => {
+  const [errorMessage, setErrorMessage] = useState({});
   const { mutate: UploadImage } = useUpload();
   const [formData, setFormData] = useState({
     expertiseLevel: [],
@@ -98,9 +69,20 @@ const WorkingDetails = () => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    const isValid = validateFormData(experienceSchema, formData);
-    if (!isValid) return;
-    mutate(formData);
+    let payLoad = { ...formData };
+    if (formData?.expertiseLevel?.length > 0) {
+      payLoad.expertiseLevel = formData?.expertiseLevel?.map(
+        (item) => item.label
+      );
+    }
+    const { isValid, errors } = validateFormData(experienceSchema, payLoad);
+    if (!isValid) {
+      setErrorMessage(errors);
+      return;
+    }
+
+    setErrorMessage({});
+    mutate(payLoad);
   };
   const { data: profileProgress } = useGetTrainerProgress();
   console.log(formData);
@@ -152,6 +134,7 @@ const WorkingDetails = () => {
                   formData={formData}
                   setFormData={setFormData}
                   handleUpload={handleUpload}
+                  errors={errorMessage}
                 />
               </div>
             </div>

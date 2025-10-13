@@ -19,8 +19,9 @@ const Address = ({ setFormData, formData }) => {
           />
           <span className="text-xs font-medium">Same as Current Address?</span>
         </div>
-        <Label className="text-base text-[#20102B] font-semibold">
+        <Label className="gap-1 text-base text-[#20102B] font-semibold">
           Permanent Address
+          <span className="text-red-500 text-[14px]">*</span>
         </Label>
         <Textarea
           disabled={formData?.sameAs}

@@ -6,10 +6,12 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useGetAllTrainings = () => {
+export const useGetAllTrainings = (filter) => {
   return useQuery({
-    queryKey: ["trainings"],
-    queryFn: ({ signal }) => getAllTrainings({ signal }),
+    queryKey: ["trainings", filter],
+    queryFn: getAllTrainings,
+    retry: false,
+    keepPreviousData: true,
   });
 };
 

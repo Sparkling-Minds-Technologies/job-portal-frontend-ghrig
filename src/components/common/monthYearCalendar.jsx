@@ -32,11 +32,11 @@ const years = Array.from(
 
 export default function MonthYearPicker({
   name,
-  formData,
   index,
   setFormData,
   value,
   disabled,
+  errorMessage,
 }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState("year");
@@ -68,7 +68,9 @@ export default function MonthYearPicker({
       <PopoverTrigger asChild>
         <div
           onClick={() => setOpen(disabled && index === 1 ? null : !open)}
-          className="w-full self-stretch px-4 py-2.5 bg-white rounded outline outline-neutral-200 inline-flex justify-start items-center gap-2 cursor-pointer text-neutral-400 text-sm font-normal leading-normal"
+          className={`w-full self-stretch px-4 py-2.5 bg-white rounded outline ${
+            errorMessage ? "outline-red-500" : "outline-neutral-200"
+          } inline-flex justify-start items-center gap-2 cursor-pointer text-neutral-400 text-sm font-normal leading-normal`}
         >
           {value ? (
             <span className="text-black">{value}</span>
