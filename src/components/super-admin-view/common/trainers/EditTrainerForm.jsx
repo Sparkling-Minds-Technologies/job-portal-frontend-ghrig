@@ -6,22 +6,11 @@ import { useUpdateTrainer } from "../../../../hooks/super-admin/useTrainers";
 
 const trainerPersonalInfo = [
   {
-    row: [
-      {
-        name: "firstName",
-        label: "First Name",
-        placeholder: "Enter first name",
-        componentType: "input",
-        type: "text",
-      },
-      {
-        name: "lastName",
-        label: "Last Name",
-        placeholder: "Enter last name",
-        componentType: "input",
-        type: "text",
-      },
-    ],
+    name: "name",
+    label: "Name",
+    placeholder: "Enter full name",
+    componentType: "input",
+    type: "text",
   },
   {
     row: [
@@ -241,9 +230,10 @@ const EditTrainerForm = ({ trainer, onClose, onRevalidate }) => {
             }`
           : trainer.phoneNumber || "";
 
+      const name = trainer.name || "";
+
       setFormData({
-        firstName: trainer.firstName || "",
-        lastName: trainer.lastName || "",
+        name: name,
         email: trainer.email || "",
         phoneNumber: phoneNumber,
         fatherName: trainer.fatherName || "",
@@ -309,8 +299,7 @@ const EditTrainerForm = ({ trainer, onClose, onRevalidate }) => {
       console.log("Form data:", formData);
       const payload = {};
 
-      if (formData.firstName) payload.firstName = formData.firstName;
-      if (formData.lastName) payload.lastName = formData.lastName;
+      if (formData.name) payload.name = formData.name;
       if (formData.email) payload.email = formData.email;
       if (formData.phoneNumber) payload.phoneNumber = formData.phoneNumber;
       if (formData.fatherName) payload.fatherName = formData.fatherName;

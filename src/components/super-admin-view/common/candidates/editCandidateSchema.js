@@ -55,7 +55,7 @@ export const editCandidateBasicDetails = [
     required: false,
   },
   {
-    name: "bio",
+    name: "about",
     label: "About Me",
     componentType: "textarea",
     placeholder: "Write a brief description about yourself",
@@ -231,24 +231,12 @@ export const editCandidateWorkExperience = [
 
 export const editCandidateWorkExperienceSummary = [
   {
-    row: [
-      {
-        name: "totalExperience",
-        label: "Total Experience",
-        componentType: "input",
-        type: "number",
-        placeholder: "Years of experience",
-        required: false,
-      },
-      {
-        name: "totalExperienceInMonth",
-        label: "Total Experience in Months",
-        componentType: "input",
-        type: "number",
-        placeholder: "Months",
-        required: false,
-      },
-    ],
+    name: "totalExperience",
+    label: "Total Experience",
+    componentType: "input",
+    type: "text",
+    placeholder: "e.g., 2 years 6 months",
+    required: false,
   },
   {
     name: "skillSet",

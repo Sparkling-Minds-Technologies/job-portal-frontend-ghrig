@@ -26,101 +26,96 @@ const EditCandidateForm = ({ candidate, onSave, onClose }) => {
 
   useEffect(() => {
     if (!candidate) return;
+    console.log("candidate", candidate.about);
+
+    const birthDate = candidate?.dob || "";
+    const formattedBirthDate = birthDate
+      ? (() => {
+          const parts = birthDate.split("-");
+          if (parts.length === 3) {
+            if (parts[0].length === 4) {
+              return birthDate;
+            }
+            return `${parts[2]}-${parts[0]}-${parts[1]}`;
+          }
+          return birthDate;
+        })()
+      : "";
 
     setFormData({
       // Basic Details
-      name: candidate?.data?.name || candidate?.name || "",
-      birthDate: candidate?.data?.birthDate || candidate?.birthDate || "",
-      phone: candidate?.data?.phone ||
-        candidate?.phone || { countryCode: "+91", number: "" },
-      email: candidate?.data?.email || candidate?.email || "",
-      bio: candidate?.data?.bio || candidate?.bio || candidate?.summary || "",
-      profilePicture:
-        candidate?.data?.profilePicture || candidate?.profilePicture || "",
-      currentAddress: candidate?.data?.currentAddress ||
-        candidate?.currentAddress || {
-          address: "",
-          city: "",
-          state: "",
-          pincode: "",
-        },
-      permanentAddress: candidate?.data?.permanentAddress ||
-        candidate?.permanentAddress || {
-          address: "",
-          city: "",
-          state: "",
-          pincode: "",
-        },
-      gender: candidate?.data?.gender || candidate?.gender || "",
-      resume: candidate?.data?.resume || candidate?.resume || "",
-      currentWorkingStatus:
-        candidate?.data?.currentWorkingStatus ||
-        candidate?.currentWorkingStatus ||
-        "",
+      name: candidate?.name || "",
+      birthDate: formattedBirthDate,
+      phone: candidate?.phone || { countryCode: "+91", number: "" },
+      email: candidate?.email || "",
+      about: candidate?.about,
+      profilePicture: candidate?.profilePicture || "",
+      currentAddress: candidate?.currentAddress
+        ? {
+            address: candidate?.currentAddress?.address || "",
+            city: candidate?.currentAddress?.city || "",
+            state: candidate?.currentAddress?.state || "",
+            pincode: candidate?.currentAddress?.pincode || "",
+          }
+        : {
+            address: "",
+            city: "",
+            state: "",
+            pincode: "",
+          },
+      permanentAddress: candidate?.permanentAddress || {
+        address: "",
+        city: "",
+        state: "",
+        pincode: "",
+      },
+      gender: candidate?.gender || "",
+      resume: candidate?.resume || "",
+      currentWorkingStatus: candidate?.currentWorkingStatus || "",
 
       // Working Details Summary
-      totalExperience:
-        candidate?.data?.totalExperience || candidate?.totalExperience || "",
-      totalExperienceInMonth:
-        candidate?.data?.totalExperienceInMonth ||
-        candidate?.totalExperienceInMonth ||
-        "",
-      skillSet: Array.isArray(candidate?.data?.skillSet || candidate?.skills)
-        ? (candidate?.data?.skillSet || candidate?.skills).join(", ")
-        : candidate?.data?.skillSet || candidate?.skills || "",
+      totalExperience: candidate?.totalExperience || "",
+      skillSet: Array.isArray(candidate?.skills)
+        ? (candidate?.skills).join(", ")
+        : candidate?.skills || "",
 
       // Role & Expertise
-      roleLookingFor:
-        candidate?.data?.roleLookingFor || candidate?.roleLookingFor || "",
-      currentIndustry:
-        candidate?.data?.currentIndustry || candidate?.currentIndustry || "",
-      areaOfExpertise:
-        candidate?.data?.areaOfExpertise || candidate?.areaOfExpertise || [],
-      functionalAreas:
-        candidate?.data?.functionalAreas || candidate?.functionalAreas || [],
-      location:
-        candidate?.data?.location ||
-        candidate?.preferredWorkLocation ||
-        candidate?.preferredLocation ||
-        [],
+      roleLookingFor: candidate?.roleLookingFor || "",
+      currentIndustry: candidate?.currentIndustry || "",
+      areaOfExpertise: candidate?.areaOfExpertise || [],
+      functionalAreas: candidate?.functionalAreas || [],
+      location: candidate?.location || candidate?.preferredLocation || [],
 
       // Additional Details
-      maritalStatus:
-        candidate?.data?.maritalStatus || candidate?.maritalStatus || "",
-      handleTeam: candidate?.data?.handleTeam || candidate?.handleTeam || "",
-      willingTo6DayWork:
-        candidate?.data?.willingTo6DayWork ||
-        candidate?.willingTo6DayWork ||
-        "",
-      willingToRelocate:
-        candidate?.data?.willingToRelocate ||
-        candidate?.willingToRelocate ||
-        "",
-      earlyStageStartup:
-        candidate?.data?.earlyStageStartup ||
-        candidate?.earlyStageStartup ||
-        "",
-      differentlyAbled:
-        candidate?.data?.differentlyAbled || candidate?.differentlyAbled || "",
-      medicalProblem:
-        candidate?.data?.medicalProblem || candidate?.medicalProblem || "",
-      willingToTravel:
-        candidate?.data?.willingToTravel || candidate?.willingToTravel || "",
+      maritalStatus: candidate?.maritalStatus || "",
+      handleTeam: candidate?.handleTeam || "",
+      willingTo6DayWork: candidate?.willingTo6DayWork || "",
+      willingToRelocate: candidate?.willingToRelocate || "",
+      earlyStageStartup: candidate?.earlyStageStartup || "",
+      differentlyAbled: candidate?.differentlyAbled || "",
+      medicalProblem: candidate?.medicalProblem || "",
+      willingToTravel: candidate?.willingToTravel || "",
       languages: candidate?.data?.languages || candidate?.languages || [],
 
       // Salary & Notice Period
-      noticePeriod:
-        candidate?.data?.noticePeriod || candidate?.noticePeriod || "",
-      currentSalary:
-        candidate?.data?.currentSalary || candidate?.currentSalary || "",
-      expectedSalary:
-        candidate?.data?.expectedSalary || candidate?.expectedSalary || "",
+      noticePeriod: candidate?.noticePeriod || "",
+      currentSalary: candidate?.currentSalary || "",
+      expectedSalary: candidate?.expectedSalary || "",
     });
 
     // Initialize work experiences
-    if (candidate?.workExperience && Array.isArray(candidate.workExperience)) {
+    if (
+      candidate?.experienceDetails &&
+      Array.isArray(candidate.experienceDetails)
+    ) {
+      const mappedExperiences = candidate.experienceDetails.map((exp) => ({
+        companyName: exp.companyName || "",
+        employmentType: exp.employmentType || "",
+        startingYear: exp.startDate || "",
+        endingYear: exp.currentlyWorking ? "" : exp.endDate || "",
+      }));
       setWorkExperiences(
-        candidate.workExperience.length > 0 ? candidate.workExperience : [{}]
+        mappedExperiences.length > 0 ? mappedExperiences : [{}]
       );
     } else {
       setWorkExperiences([{}]);
@@ -217,11 +212,11 @@ const EditCandidateForm = ({ candidate, onSave, onClose }) => {
 
       // Map work experience fields to backend format
       const mappedExperience = filteredWork.map((exp) => ({
-        company: exp.companyName,
-        position: exp.position,
+        companyName: exp.companyName,
+        employmentType: exp.employmentType,
         startDate: exp.startingYear,
         endDate: exp.endingYear,
-        description: exp.description,
+        currentlyWorking: !exp.endingYear || exp.endingYear === "",
       }));
 
       // Map education fields to backend format
@@ -242,9 +237,6 @@ const EditCandidateForm = ({ candidate, onSave, onClose }) => {
 
       let payload = {
         ...formData,
-        experience: mappedExperience,
-        education: mappedEducation,
-        certifications: mappedCertifications,
       };
 
       // Map fields to backend format
@@ -257,18 +249,20 @@ const EditCandidateForm = ({ candidate, onSave, onClose }) => {
       if (payload.profilePicture)
         backendPayload.profilePicture = payload.profilePicture;
       if (payload.resume) backendPayload.resume = payload.resume;
-      if (payload.bio) backendPayload.about = payload.bio;
+      if (payload.about) backendPayload.about = payload.about;
 
       // Phone mapping
       if (payload.phone) {
-        const primary =
-          typeof payload.phone === "string"
-            ? payload.phone
-            : [payload.phone.countryCode, payload.phone.number]
-                .filter(Boolean)
-                .join(" ");
-        if (primary) {
-          backendPayload.phone = { primary };
+        if (typeof payload.phone === "object" && payload.phone.number) {
+          backendPayload.phone = {
+            number: payload.phone.number,
+            countryCode: payload.phone.countryCode || "+91",
+          };
+        } else if (typeof payload.phone === "string") {
+          backendPayload.phone = {
+            number: payload.phone,
+            countryCode: "+91",
+          };
         }
       }
 
@@ -285,20 +279,24 @@ const EditCandidateForm = ({ candidate, onSave, onClose }) => {
 
       // Address mapping
       if (
-        payload.currentAddress?.address ||
-        payload.currentAddress?.city ||
-        payload.currentAddress?.state ||
-        payload.currentAddress?.pincode
+        payload.currentAddress &&
+        typeof payload.currentAddress === "object"
       ) {
-        backendPayload.address = {};
-        if (payload.currentAddress.address)
-          backendPayload.address.street = payload.currentAddress.address;
-        if (payload.currentAddress.city)
-          backendPayload.address.city = payload.currentAddress.city;
-        if (payload.currentAddress.state)
-          backendPayload.address.state = payload.currentAddress.state;
-        if (payload.currentAddress.pincode)
-          backendPayload.address.zipCode = payload.currentAddress.pincode;
+        const { address, city, state, pincode } = payload.currentAddress;
+        console.log("Current address fields:", {
+          address,
+          city,
+          state,
+          pincode,
+        });
+        if (address || city || state || pincode) {
+          backendPayload.address = {};
+          if (address) backendPayload.address.street = address;
+          if (city) backendPayload.address.city = city;
+          if (state) backendPayload.address.state = state;
+          if (pincode) backendPayload.address.zipCode = pincode;
+          console.log("Mapped address:", backendPayload.address);
+        }
       }
 
       // Skills mapping
@@ -313,27 +311,14 @@ const EditCandidateForm = ({ candidate, onSave, onClose }) => {
         }
       }
 
-      // Total Experience - concatenate years and months
-      if (payload.totalExperience || payload.totalExperienceInMonth) {
-        const years = payload.totalExperience || 0;
-        const months = payload.totalExperienceInMonth || 0;
-        const parts = [];
-
-        if (years > 0) {
-          parts.push(`${years} ${years === 1 ? "year" : "years"}`);
-        }
-        if (months > 0) {
-          parts.push(`${months} ${months === 1 ? "month" : "months"}`);
-        }
-
-        if (parts.length > 0) {
-          backendPayload.totalExperience = parts.join(" ");
-        }
+      // Total Experience
+      if (payload.totalExperience) {
+        backendPayload.totalExperience = payload.totalExperience;
       }
 
       // Experience, Education, Certifications
       if (mappedExperience.length > 0)
-        backendPayload.experience = mappedExperience;
+        backendPayload.experienceDetails = mappedExperience;
       if (mappedEducation.length > 0)
         backendPayload.education = mappedEducation;
       if (mappedCertifications.length > 0)
@@ -385,6 +370,7 @@ const EditCandidateForm = ({ candidate, onSave, onClose }) => {
         {}
       );
 
+      console.log("Clean payload being sent:", cleanPayload);
       await onSave(cleanPayload);
     } catch (err) {
       console.error(err);
