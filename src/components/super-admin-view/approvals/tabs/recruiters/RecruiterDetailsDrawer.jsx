@@ -364,13 +364,18 @@ const RecruiterDetailsDrawer = ({
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 w-full overflow-hidden rounded-sm mb-2">
+                    <div
+                      className="flex-1 w-full overflow-hidden rounded-sm mb-2 cursor-pointer"
+                      onClick={() =>
+                        value?.trim() && window.open(value, "_blank")
+                      }
+                    >
                       {value?.trim() ? (
                         isPdf ? (
                           <iframe
                             src={`${value}#toolbar=0&navpanes=0&scrollbar=0`}
                             title={key}
-                            className="w-full h-full border-none no-scrollbar"
+                            className="w-full h-full border-none no-scrollbar pointer-events-none"
                           />
                         ) : (
                           <img
