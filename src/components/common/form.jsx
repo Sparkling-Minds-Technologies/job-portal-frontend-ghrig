@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Checkbox } from "../ui/checkbox";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import {
@@ -32,7 +31,9 @@ export default function CommonForm({
   handleUpload,
   disabled = false,
   formType = null,
+  errors = {},
 }) {
+  console.log(errors);
   const [showPassword, setShowPassword] = useState(false);
   const [otherSelections, setOtherSelections] = useState({});
   function renderInputsByComponentType(getControlItem, index) {
@@ -41,6 +42,9 @@ export default function CommonForm({
       nameWithIndex = `${formType}.${i}.${getControlItem.name}`;
     }
     const value = getNestedValue(formData, nameWithIndex) || "";
+    const errorMessage =
+      errors?.[nameWithIndex]?.[0] || errors?.[nameWithIndex];
+    console.log(errorMessage, nameWithIndex, "errorMessage");
     const commonInputProps = {
       name: nameWithIndex,
       id: nameWithIndex,
@@ -56,8 +60,11 @@ export default function CommonForm({
               : event.target.value
           )
         ),
-      className:
-        "flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]",
+      className: `flex placeholder:translate-y-[1px] items-center justify-center text-black text-base rounded-[4px] border py-[10px] px-[16px] placeholder:text-[#9B959F] ${
+        errorMessage
+          ? "border-red-500 focus:border-red-500"
+          : "border-[#E2E2E2]"
+      } focus:outline-none focus-visible:ring-0`,
     };
 
     switch (getControlItem.componentType) {
@@ -107,9 +114,18 @@ export default function CommonForm({
           number: "",
           countryCode: "",
         };
+        const numberError =
+          errors && typeof errors === "object"
+            ? errors[`${nameWithIndex}.number`]
+            : null;
+
+        const codeError =
+          errors && typeof errors === "object"
+            ? errors[`${nameWithIndex}.countryCode`]
+            : null;
         const fullNumber =
           (phoneObject.countryCode || "") + (phoneObject.number || "");
-
+        // console.log(phoneObject, errorMessage[`${nameWithIndex}.number`]);
         return (
           <PhoneInput
             country={"in"}
@@ -124,8 +140,16 @@ export default function CommonForm({
                 })
               );
             }}
-            inputClass="!w-full !h-[44px] !rounded-[4px] !px-[16px] !text-sm !border !border-[#E2E2E2] !placeholder:text-[#9B959F] focus:!ring-1 focus:!ring-black focus:!outline-none"
-            buttonClass="!border-r !border-[#E2E2E2] !bg-white"
+            inputClass={`!w-full !h-[44px] !rounded-[4px] !px-[16px] !text-sm !border ${
+              numberError || codeError
+                ? "!border-red-500 focus:!border-red-500 focus:!ring-1 focus:!ring-red-500"
+                : "!border-[#E2E2E2] !bg-white focus:!ring-1 focus:!ring-black"
+            } !placeholder:text-[#9B959F]  focus:!outline-none`}
+            buttonClass={`!border-r ${
+              codeError || numberError
+                ? "!border-red-500 focus:!border-red-500"
+                : "!border-[#E2E2E2] !bg-white"
+            } !bg-white`}
             containerClass="!w-full"
             dropdownClass="!bg-white !text-sm !rounded-md !shadow-lg z-50"
             placeholder={getControlItem.placeholder || "Enter phone number"}
@@ -161,6 +185,7 @@ export default function CommonForm({
             value={value}
             disabled={disabled}
             index={index}
+            errorMessage={errorMessage}
           />
         );
       case "select":
@@ -207,6 +232,9 @@ export default function CommonForm({
 
                   return updated;
                 });
+                setFormData((prev) =>
+                  setNestedValue(prev, "medicalProblemDetails", "")
+                );
 
                 setOtherSelections((prev) => ({
                   ...prev,
@@ -219,7 +247,13 @@ export default function CommonForm({
                   : selectedValue || ""
               }
             >
-              <SelectTrigger className="w-full flex placeholder:translate-y-[1px] items-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[20px] px-[16px] data-[placeholder]:text-[#9B959F]">
+              <SelectTrigger
+                className={`w-full flex placeholder:translate-y-[1px] items-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1  ${
+                  errorMessage
+                    ? "!border-red-500 focus:!border-red-500"
+                    : "!border-[#E2E2E2] !bg-white"
+                } py-[20px] px-[16px] data-[placeholder]:text-[#9B959F]`}
+              >
                 <SelectValue placeholder={getControlItem?.placeholder} />
               </SelectTrigger>
               <SelectContent className={"bg-white"}>
@@ -266,7 +300,11 @@ export default function CommonForm({
                     )
                   )
                 }
-                className="flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+                className={`flex placeholder:translate-y-[1px] items-center justify-center text-black text-base rounded-[4px] border py-[10px] px-[16px] placeholder:text-[#9B959F] ${
+                  errorMessage
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-[#E2E2E2]"
+                } focus:outline-none focus-visible:ring-0`}
               />
             )}
 
@@ -285,7 +323,11 @@ export default function CommonForm({
                     )
                   )
                 }
-                className="flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+                className={`flex placeholder:translate-y-[1px] items-center justify-center text-black text-base rounded-[4px] border py-[10px] px-[16px] placeholder:text-[#9B959F] ${
+                  errors["medicalProblemDetails"]
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-[#E2E2E2]"
+                } focus:outline-none focus-visible:ring-0`}
               />
             )}
           </div>
@@ -369,7 +411,11 @@ export default function CommonForm({
                 setNestedValue(prev, nameWithIndex, event.target.value)
               )
             }
-            className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+            className={`bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 ${
+              errorMessage
+                ? "border-red-500 focus:border-red-500"
+                : "border-[#E2E2E2]"
+            } py-[10px] px-[16px] placeholder:text-[#9B959F]`}
           />
         );
       case "salary-range":
@@ -397,7 +443,11 @@ export default function CommonForm({
               value={minSalary}
               onChange={(e) => handleSalaryChange("min", e.target.value)}
               min={0}
-              className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+              className={`bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 ${
+                errors[`${nameWithIndex}.min`]
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-[#E2E2E2]"
+              } py-[10px] px-[16px] placeholder:text-[#9B959F]`}
             />
             <Input
               type="number"
@@ -405,22 +455,18 @@ export default function CommonForm({
               value={maxSalary}
               onChange={(e) => handleSalaryChange("max", e.target.value)}
               min={0}
-              className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
+              className={`bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 ${
+                errors[`${nameWithIndex}.max`]
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-[#E2E2E2]"
+              } py-[10px] px-[16px] placeholder:text-[#9B959F]`}
             />
           </div>
         );
 
       case "file":
         const fileUrl = getNestedValue(formData, nameWithIndex);
-        const isMultiple = getControlItem.multiple;
-
-        // Handle multiple files vs single file
-        let currentFiles = [];
-        if (isMultiple) {
-          currentFiles = Array.isArray(fileUrl) ? fileUrl : [];
-        } else {
-          const fileName = fileUrl ? fileUrl.split("/").pop() : "";
-        }
+        const fileName = fileUrl ? fileUrl.split("/").pop() : "";
 
         const acceptType =
           getControlItem.accept === "image"
@@ -429,212 +475,92 @@ export default function CommonForm({
             ? "application/pdf"
             : "";
 
-        const handleRemoveFile = (indexToRemove = null) => {
-          if (isMultiple && indexToRemove !== null) {
-            setFormData((prev) => {
-              const currentFiles = Array.isArray(fileUrl) ? fileUrl : [];
-              const updatedFiles = currentFiles.filter(
-                (_, index) => index !== indexToRemove
-              );
-              return setNestedValue(prev, nameWithIndex, updatedFiles);
-            });
-          } else {
-            setFormData((prev) => setNestedValue(prev, nameWithIndex, ""));
-          }
+        const handleRemoveFile = () => {
+          setFormData((prev) => setNestedValue(prev, nameWithIndex, ""));
         };
 
-        if (isMultiple) {
-          return (
-            <div className="relative">
-              <div className="relative w-full cursor-pointer">
+        return (
+          <div className="relative">
+            <div className="relative w-full cursor-pointer">
+              {!fileName && (
                 <Input
                   id={getControlItem.name}
                   type="file"
                   accept={acceptType}
-                  multiple
                   className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
                   onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    if (files.length === 0) return;
+                    const file = e.target.files?.[0];
+                    if (!file) return;
 
-                    // Validate all files
-                    for (const file of files) {
-                      const isImage = file.type.startsWith("image/");
-                      const isPdf = file.type === "application/pdf";
-                      const isValidSize = file.size <= 5 * 1024 * 1024;
+                    const isImage = file.type.startsWith("image/");
+                    const isPdf = file.type === "application/pdf";
+                    const isValidSize = file.size <= 5 * 1024 * 1024;
 
-                      let isValidType = false;
-                      if (getControlItem.accept === "image")
-                        isValidType = isImage;
-                      else if (getControlItem.accept === "pdf")
-                        isValidType = isPdf;
+                    let isValidType = false;
+                    if (getControlItem.accept === "image")
+                      isValidType = isImage;
+                    else if (getControlItem.accept === "pdf")
+                      isValidType = isPdf;
 
-                      if (!isValidType) {
-                        alert(
-                          getControlItem.accept === "image"
-                            ? "Only image files are allowed."
-                            : "Only PDF files are allowed."
-                        );
-                        return;
-                      }
-
-                      if (!isValidSize) {
-                        alert("File must be smaller than 5MB.");
-                        return;
-                      }
+                    if (!isValidType) {
+                      alert(
+                        getControlItem.accept === "image"
+                          ? "Only image files are allowed."
+                          : "Only PDF files are allowed."
+                      );
+                      return;
                     }
 
-                    // Upload all files sequentially to avoid race conditions
-                    const uploadFilesSequentially = async () => {
-                      const uploadedUrls = [...currentFiles];
+                    if (!isValidSize) {
+                      alert("File must be smaller than 5MB.");
+                      return;
+                    }
 
-                      for (const file of files) {
-                        try {
-                          await new Promise((resolve, reject) => {
-                            handleUpload(file, (uploadedFileUrl) => {
-                              uploadedUrls.push(uploadedFileUrl);
-                              resolve(uploadedFileUrl);
-                            });
-                          });
-                        } catch (error) {
-                          console.error("Error uploading file:", error);
-                        }
-                      }
-
-                      // Update form data with all uploaded URLs
+                    handleUpload(file, (uploadedFileUrl) => {
                       setFormData((prev) =>
-                        setNestedValue(prev, nameWithIndex, uploadedUrls)
+                        setNestedValue(prev, nameWithIndex, uploadedFileUrl)
                       );
-                    };
-
-                    uploadFilesSequentially();
+                    });
                   }}
                 />
-                <Label
-                  htmlFor={getControlItem.name}
-                  className="flex items-center justify-between border border-[#E2E2E2] w-full rounded-[4px] py-[9px] px-[16px] cursor-pointer z-10"
-                >
-                  <span className="text-[#9B959F] text-base truncate w-60">
-                    {getControlItem.placeholder || "Upload Files"}
-                  </span>
-                  <Plus className="h-[15px] w-[15px]" />
-                </Label>
-              </div>
-
-              {/* Display uploaded files */}
-              {currentFiles.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  {currentFiles.map((file, index) => {
-                    const fileName = file.split("/").pop();
-                    return (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between bg-gray-50 p-2 rounded border"
-                      >
-                        <span className="text-sm text-gray-700 truncate flex-1 mr-2">
-                          {fileName}
-                        </span>
-                        <X
-                          className="h-[15px] w-[15px] text-red-500 cursor-pointer"
-                          onClick={() => handleRemoveFile(index)}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
               )}
-
-              <div className="absolute bottom-[-20px] left-0 text-xs text-[#655F5F]">
-                Supported formats:{" "}
-                {getControlItem.accept === "image" ? "Images only" : "PDF only"}
-                , Max size: 5MB per file.
-              </div>
-            </div>
-          );
-        } else {
-          const fileName = fileUrl ? fileUrl.split("/").pop() : "";
-
-          return (
-            <div className="relative">
-              <div className="relative w-full cursor-pointer">
-                {!fileName && (
-                  <Input
-                    id={getControlItem.name}
-                    type="file"
-                    accept={acceptType}
-                    className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-
-                      const isImage = file.type.startsWith("image/");
-                      const isPdf = file.type === "application/pdf";
-                      const isValidSize = file.size <= 5 * 1024 * 1024;
-
-                      let isValidType = false;
-                      if (getControlItem.accept === "image")
-                        isValidType = isImage;
-                      else if (getControlItem.accept === "pdf")
-                        isValidType = isPdf;
-
-                      if (!isValidType) {
-                        alert(
-                          getControlItem.accept === "image"
-                            ? "Only image files are allowed."
-                            : "Only PDF files are allowed."
-                        );
-                        return;
-                      }
-
-                      if (!isValidSize) {
-                        alert("File must be smaller than 5MB.");
-                        return;
-                      }
-
-                      handleUpload(file, (uploadedFileUrl) => {
-                        setFormData((prev) =>
-                          setNestedValue(prev, nameWithIndex, uploadedFileUrl)
-                        );
-                      });
-                    }}
-                  />
-                )}
-                <Label
-                  htmlFor={!fileName ? getControlItem.name : undefined}
-                  className="flex items-center justify-between border border-[#E2E2E2] w-full rounded-[4px] py-[9px] px-[16px] cursor-pointer z-10"
+              <Label
+                htmlFor={!fileName ? getControlItem.name : undefined}
+                className={`flex items-center justify-between border ${
+                  errorMessage ? "border-red-500" : "border-[#E2E2E2]"
+                } w-full rounded-[4px] py-[9px] px-[16px] cursor-pointer z-10`}
+              >
+                <span
+                  className={`${
+                    fileName ? "text-black" : "text-[#9B959F]"
+                  } text-base truncate w-60`}
                 >
-                  <span
-                    className={`${
-                      fileName ? "text-black" : "text-[#9B959F]"
-                    } text-base truncate w-60`}
-                  >
-                    {fileName || getControlItem.placeholder || "Upload File"}
-                  </span>
+                  {fileName || getControlItem.placeholder || "Upload File"}
+                </span>
 
-                  <span
-                    className="flex justify-center items-center"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (fileName) handleRemoveFile();
-                    }}
-                  >
-                    {fileName ? (
-                      <X className="h-[15px] w-[15px] text-red-500 cursor-pointer" />
-                    ) : (
-                      <Plus className="h-[15px] w-[15px]" />
-                    )}
-                  </span>
-                </Label>
-              </div>
-              <div className="absolute bottom-[-20px] left-0 text-xs text-[#655F5F]">
-                Supported formats:{" "}
-                {getControlItem.accept === "image" ? "Images only" : "PDF only"}
-                , Max size: 5MB.
-              </div>
+                <span
+                  className="flex justify-center items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (fileName) handleRemoveFile();
+                  }}
+                >
+                  {fileName ? (
+                    <X className="h-[15px] w-[15px] text-red-500 cursor-pointer" />
+                  ) : (
+                    <Plus className="h-[15px] w-[15px]" />
+                  )}
+                </span>
+              </Label>
             </div>
-          );
-        }
+            <div className="absolute bottom-[-20px] left-0 text-xs text-[#655F5F]">
+              Supported formats:{" "}
+              {getControlItem.accept === "image" ? "Images only" : "PDF only"},{" "}
+              Max size: 5MB.
+            </div>
+          </div>
+        );
 
       case "calendar":
         const isValidDate = value && !isNaN(new Date(value).getTime());
@@ -644,7 +570,9 @@ export default function CommonForm({
             <PopoverTrigger asChild>
               <div
                 onClick={() => setIsOpen(true)}
-                className="self-stretch px-4 py-2.5 bg-white rounded outline outline-neutral-200 inline-flex justify-start items-center gap-2 cursor-pointer"
+                className={`self-stretch px-4 py-2.5 bg-white rounded outline ${
+                  errorMessage ? "outline-red-500" : "outline-neutral-200"
+                } inline-flex justify-start items-center gap-2 cursor-pointer`}
               >
                 <div className="flex-1 self-stretch flex justify-start items-start gap-2.5">
                   <div className="flex-1 justify-start text-neutral-400 text-sm font-normal leading-normal">
@@ -710,22 +638,8 @@ export default function CommonForm({
               )
             }
             placeholder={getControlItem.placeholder || "Select options..."}
+            errorMessage={errorMessage}
           />
-        );
-
-      case "checkbox":
-        return (
-          <div className="flex items-center">
-            <Checkbox
-              id={nameWithIndex}
-              checked={!!value}
-              onCheckedChange={(checked) =>
-                setFormData((prev) =>
-                  setNestedValue(prev, nameWithIndex, checked)
-                )
-              }
-            />
-          </div>
         );
 
       default:
@@ -753,9 +667,12 @@ export default function CommonForm({
                         item.componentType === "file" ? "max-sm:mb-2" : ""
                       }`}
                     >
-                      {item.label && item.componentType !== "checkbox" && (
-                        <Label className="text-base text-[#20102B] font-semibold">
+                      {item.label && (
+                        <Label className="text-base gap-1 text-[#20102B] font-semibold">
                           {item.label}
+                          {item.required && (
+                            <span className="text-red-500 text-[14px]">*</span>
+                          )}
                         </Label>
                       )}
                       {renderInputsByComponentType(item, i)}
@@ -772,12 +689,14 @@ export default function CommonForm({
                   controlItem.componentType === "file" ? "mb-2" : ""
                 }`}
               >
-                {controlItem.label &&
-                  controlItem.componentType !== "checkbox" && (
-                    <Label className="text-base text-[#20102B] font-semibold">
-                      {controlItem.label}
-                    </Label>
-                  )}
+                {controlItem.label && (
+                  <Label className="text-base gap-1 text-[#20102B] font-semibold">
+                    {controlItem.label}
+                    {controlItem.required && (
+                      <span className="text-red-500 text-[14px]">*</span>
+                    )}
+                  </Label>
+                )}
                 {renderInputsByComponentType(controlItem, index)}
               </div>
             );

@@ -5,8 +5,9 @@ import CandidateProfiles from "../../components/recruiter-view/job-openings/cand
 import Navbar from "../../components/recruiter-view/navbar";
 import { useGetCandidatesByJobId } from "../../hooks/corporate/useJob";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useGetApplicantById } from "../../hooks/recruiter/useApplicant";
+
 import useJobSeekerProfileStore from "../../stores/useJobSeekerProfileStore";
+import { useGetApplicantById } from "@/hooks/corporate/useApplicant";
 
 const AppliedCandidatesJobs = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,7 +47,11 @@ const AppliedCandidatesJobs = () => {
             overflow-y-auto border-transparent"
         >
           <div className="w-full h-full">
-            <CandidateProfiles applicantData={applicantData} />
+            <CandidateProfiles
+              open={open2}
+              setOpen={setOpen2}
+              applicantData={applicantData}
+            />
           </div>
         </SheetContent>
       </Sheet>

@@ -10,79 +10,71 @@ import UploadResume from "../../components/common/uploadResume";
 import { z } from "zod";
 import { useTrainerRegisterationStage1 } from "../../hooks/trainer/useAuth";
 
-export const basicDetailsSchema = z
+const candidateProfileSchema = z
   .object({
     fullName: z.string().min(1, "Full name is required"),
-    profilePicture: z.string().optional(), // file URL or base64
+    profilePicture: z.string().optional(),
 
     phone: z.object({
       countryCode: z.string().min(1, "Country code is required"),
       number: z
         .string()
-        .min(10, "Phone number must be at least 10 digits")
-        .max(15, "Phone number is too long"),
+        .min(1, "Phone number is required")
+        .regex(/^\d{10}$/, "Phone number must be 10 digits"),
     }),
 
     email: z
       .string()
       .min(1, "Email is required")
-      .email("Please enter a valid email"),
+      .email("Invalid email address"),
 
-    password: z.string().min(6, "Password must be at least 6 characters long"),
-
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Confirm password is required"),
 
     currentAddress: z.object({
-      address: z.string().min(1, "Address is required"),
-      city: z.string().min(1, "City is required"),
-      pincode: z
-        .string()
-        .min(6, "Pincode must be 6 digits")
-        .max(6, "Pincode must be 6 digits"),
-      state: z.string().min(1, "State is required"),
+      address: z.string().min(1, "Current address is required"),
+      city: z.string().min(1, "Current city is required"),
+      pincode: z.string().min(1, "Current pincode is required"),
+      state: z.string().min(1, "Current state is required"),
     }),
 
     permanentAddress: z.object({
-      address: z.string().min(1, "Address is required"),
-      city: z.string().min(1, "City is required"),
-      pincode: z
-        .string()
-        .min(6, "Pincode must be 6 digits")
-        .max(6, "Pincode must be 6 digits"),
-      state: z.string().min(1, "State is required"),
+      address: z.string().min(1, "Permanent address is required"),
+      city: z.string().min(1, "Permanent city is required"),
+      pincode: z.string().min(1, "Permanent pincode is required"),
+      state: z.string().min(1, "Permanent state is required"),
     }),
 
-    resume: z.string().optional(), // file URL or base64
+    resume: z.string().min(1, "Resume is required"),
 
     panDetails: z.object({
-      number: z
-        .string()
-        .regex(/[A-Z]{5}[0-9]{4}[A-Z]{1}/, "Invalid PAN format"),
-      image: z.string().optional(),
+      number: z.string().min(1, "PAN number is required"),
+      image: z.string().min(1, "PAN image is required"),
     }),
 
     aadharDetails: z.object({
-      number: z
-        .string()
-        .regex(/^[0-9]{12}$/, "Aadhar number must be 12 digits"),
-      image: z.string().optional(),
+      number: z.string().min(1, "Aadhar number is required"),
+      image: z.string().min(1, "Aadhar image is required"),
     }),
 
     bankDetails: z.object({
-      accountNumber: z.string().min(6, "Account number is required"),
+      accountNumber: z.string().min(1, "Account number is required"),
       accountHolderName: z.string().min(1, "Account holder name is required"),
-      bankName: z.string().min(1, "Bank name is required"),
-      ifscCode: z.string().regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code"),
+      branchName: z.string().min(1, "Branch name is required"),
+      ifscCode: z.string().min(1, "IFSC code is required"),
     }),
 
-    cancelChequeOrPassbookImage: z.string().optional(),
+    cancelChequeOrPassbookImage: z
+      .string()
+      .min(1, "Cancel cheque or passbook image is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
     message: "Passwords do not match",
+    path: ["confirmPassword"],
   });
 
 const BasicDetails = () => {
+  const [errorMessage, setErrorMessage] = useState({});
   const [formData, setFormData] = useState({
     fullName: "",
     profilePicture: "",
@@ -122,6 +114,7 @@ const BasicDetails = () => {
     },
     cancelChequeOrPassbookImage: "",
   });
+  // console.log(formData);
   const [fileName, setFileName] = useState("");
   const { mutate, isPending } = useTrainerRegisterationStage1();
   const { mutate: UploadImage } = useUpload();
@@ -142,8 +135,16 @@ const BasicDetails = () => {
     if (formData.sameAs) {
       payload.permanentAddress = { ...formData.currentAddress };
     }
-    const isValid = validateFormData(basicDetailsSchema, payload);
-    if (!isValid) return;
+    const { isValid, errors } = validateFormData(
+      candidateProfileSchema,
+      payload
+    );
+    if (!isValid) {
+      setErrorMessage(errors);
+      return;
+    }
+
+    setErrorMessage({});
     mutate(payload);
   };
   const handleUpload2 = (file, callback) => {
@@ -204,15 +205,22 @@ const BasicDetails = () => {
                   formData={formData}
                   setFormData={setFormData}
                   handleUpload={handleUpload}
+                  errors={errorMessage}
                 />
               </div>
-              <Address setFormData={setFormData} formData={formData} />
+              <Address
+                setFormData={setFormData}
+                formData={formData}
+                errors={errorMessage}
+              />
               <UploadResume
                 setFormData={setFormData}
                 fileName={fileName}
                 setFileName={setFileName}
                 handleRemoveFile={handleRemoveFile}
                 handleUpload={handleUpload2}
+                formData={formData}
+                errors={errorMessage}
               />
             </div>
             <div className="self-stretch p-6 bg-white rounded-lg shadow-[0px_1px_2px_0px_rgba(0,0,0,0.03)] outline-1 outline-offset-[-1px] outline-zinc-300 flex flex-col justify-start items-start gap-4">
@@ -228,6 +236,7 @@ const BasicDetails = () => {
                   formData={formData}
                   setFormData={setFormData}
                   handleUpload={handleUpload}
+                  errors={errorMessage}
                 />
               </div>
             </div>
@@ -235,7 +244,8 @@ const BasicDetails = () => {
               <ButtonComponent
                 isPending={isPending}
                 color={"#6945ED"}
-                buttonText={"Save & Update Profile"}
+                buttonText={"Continue"}
+                type="submit"
               />
             </div>
           </form>
