@@ -13,7 +13,6 @@ import AdminStatusBadge from "@/components/super-admin-view/shared/AdminStatusBa
 import RejectionReasonModal from "@/components/common/RejectionReasonModal";
 import HoldReasonModal from "@/components/common/HoldReasonModal";
 import { toast } from "sonner";
-import JobsTable from "@/components/super-admin-view/common/jobs/JobsTable";
 
 const CandidateDetailsDrawer = ({
   candidateId,

@@ -52,7 +52,8 @@ const TrainerDetailsDrawer = ({
   const isLoading = isLoadingTrainerDetails;
   const error = trainerDetailsError;
 
-  console.log("displayTrainer", displayTrainer);
+  console.log("displayTrainer", trainerId);
+  console.log("approvalId", approvalId);
   const handleApprove = async () => {
     try {
       await approveApplication(approvalId);

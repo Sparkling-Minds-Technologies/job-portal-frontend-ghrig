@@ -93,8 +93,8 @@ export const updateJobApplicationStatus = async (applicationId, data) => {
 };
 
 export const updateTrainingApplicationStatus = async (applicationId, data) => {
-  const response = await api.patch(
-    `/admin/applications/${applicationId}/status`,
+  const response = await api.put(
+    `/admin/training-applications/applications/${applicationId}/status`,
     data
   );
   return response.data;
