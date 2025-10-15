@@ -8,6 +8,7 @@ import { useUpload } from "../../hooks/common/useUpload";
 import { z } from "zod";
 import { validateFormData } from "../../utils/commonFunctions";
 import { useTrainerRegisterationStage3 } from "../../hooks/trainer/useAuth";
+import { useDropDown } from "@/hooks/common/useDropDown";
 
 const experienceSchema = z.object({
   expertiseLevel: z
@@ -34,7 +35,7 @@ const experienceSchema = z.object({
   relievingLetter: z.string().optional(),
 
   expertiseAreas: z
-    .array(z.string().min(1, "Expertise area cannot be empty"))
+    .array(z.any())
     .min(1, "At least one expertise area is required"),
 });
 
@@ -56,6 +57,19 @@ const WorkingDetails = () => {
     expertiseAreas: [],
   });
   const { mutate, isPending } = useTrainerRegisterationStage3();
+  const { data: skillOptions } = useDropDown("expertise-area");
+  const updatedFields = experienceFormControls.map((field) =>
+    field.name === "expertiseAreas"
+      ? {
+          ...field,
+          options: skillOptions?.data?.values.map((skill) => ({
+            id: skill._id,
+            label: skill.label,
+          })),
+        }
+      : field
+  );
+
   const handleUpload = (file, callback) => {
     UploadImage(file, {
       onSuccess: (data) => {
@@ -74,6 +88,9 @@ const WorkingDetails = () => {
       payLoad.expertiseLevel = formData?.expertiseLevel?.map(
         (item) => item.label
       );
+    }
+    if (formData?.expertiseAreas?.length > 0) {
+      payLoad.expertiseAreas = formData?.expertiseAreas?.map((item) => item.id);
     }
     const { isValid, errors } = validateFormData(experienceSchema, payLoad);
     if (!isValid) {
@@ -130,7 +147,7 @@ const WorkingDetails = () => {
               <div className="self-stretch h-0 outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
               <div className="w-full">
                 <CommonForm
-                  formControls={experienceFormControls}
+                  formControls={updatedFields}
                   formData={formData}
                   setFormData={setFormData}
                   handleUpload={handleUpload}

@@ -63,7 +63,7 @@ const jobSchema = z
     regionalLanguageRequired: z
       .string({ required_error: "Specify if regional language is required" })
       .min(1, "Specify if regional language is required"),
-    regionalLanguages: z.array(z.string()).optional(),
+    regionalLanguages: z.array(z.any()).optional(),
     preferredAgeRange: z.string().optional(),
     requiredSkills: z.array(z.any()).min(1, "At least one skill is required"),
     salaryRange: z.object({
@@ -209,6 +209,7 @@ const JobPosting = () => {
   });
   const { mutate, isPending } = useCorporateJobPost();
   const { data: skillOptions } = useDropDown("skills");
+  const { data: skillOptions2 } = useDropDown("languages");
   const updatedFields = jobController3.map((field) =>
     field.name === "requiredSkills"
       ? {
@@ -216,6 +217,17 @@ const JobPosting = () => {
           options: skillOptions?.data?.values.map((skill) => ({
             id: skill._id,
             label: skill.label,
+          })),
+        }
+      : field
+  );
+  const updatedFields2 = regionalLanguage.map((field) =>
+    field.name === "regionalLanguages"
+      ? {
+          ...field,
+          options: skillOptions2?.data?.values.map((language) => ({
+            id: language._id,
+            label: language.label,
           })),
         }
       : field
@@ -240,6 +252,11 @@ const JobPosting = () => {
     });
     if (formData.requiredSkills.length > 0) {
       payload.requiredSkills = formData.requiredSkills.map((skill) => skill.id);
+    }
+    if (formData.regionalLanguages.length > 0) {
+      payload.regionalLanguages = formData.regionalLanguages.map(
+        (lang) => lang.id
+      );
     }
     mutate(payload);
   };
@@ -293,7 +310,7 @@ const JobPosting = () => {
             />
             {formData?.regionalLanguageRequired === "yes" && (
               <CommonForm
-                formControls={regionalLanguage}
+                formControls={updatedFields2}
                 formData={formData}
                 setFormData={setFormData}
                 errors={errorMessage}
