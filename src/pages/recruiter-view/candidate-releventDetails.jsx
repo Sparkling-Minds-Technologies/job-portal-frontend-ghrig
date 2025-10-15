@@ -16,44 +16,56 @@ import Navbar from "../../components/recruiter-view/navbar";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-const experienceDetailSchema = z
+export const experienceDetailSchema = z
   .object({
     companyName: z.string().min(1, "Company name is required"),
+
     employmentType: z.string().optional(),
+
     startDate: z
       .string()
       .min(1, "Start date is required")
       .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Start date must be in MM/YY format"),
+
     endDate: z
       .string()
       .optional()
       .refine((val) => !val || /^(0[1-9]|1[0-2])\/\d{2}$/.test(val), {
         message: "End date must be in MM/YY format",
       }),
+
     currentlyWorking: z.boolean().optional(),
   })
-  .refine(
-    (data) => {
-      if (!data.endDate) return true;
+  // ✅ Rule 1: endDate is required if not currently working
+  .superRefine((data, ctx) => {
+    if (!data.currentlyWorking && !data.endDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["endDate"],
+        message: "End date is required when not currently working",
+      });
+    }
+
+    // ✅ Rule 2: startDate must be <= endDate (if both exist)
+    if (data.startDate && data.endDate) {
       const parseDate = (str) => {
         const [month, year] = str.split("/").map(Number);
         const fullYear = year >= 50 ? 1900 + year : 2000 + year;
         return new Date(fullYear, month - 1);
       };
 
-      try {
-        const start = parseDate(data.startDate);
-        const end = parseDate(data.endDate);
-        return start <= end;
-      } catch {
-        return false;
+      const start = parseDate(data.startDate);
+      const end = parseDate(data.endDate);
+
+      if (start > end) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["startDate"],
+          message: "Start date must be before or equal to end date",
+        });
       }
-    },
-    {
-      message: "Start date must be before or equal to end date",
-      path: ["startDate"],
     }
-  );
+  });
 
 const formDataSchema = z.object({
   noticePeriod: z
@@ -93,18 +105,21 @@ const CandidateReleventDetails = () => {
     currentSalary: 0,
     currentIndustry: "",
     expectedSalary: 0,
+    variableCTC: 0,
     currentWorkingStatus: "",
     experienceDetails: [
       {
         companyName: "",
-        employmentType: "",
+        designation: "",
         startDate: "",
         endDate: "",
         currentlyWorking: false,
       },
     ],
-    variable: false,
+    variableTick: false,
+    acceptTerms: false,
   });
+  // console.log(formData)
   const { mutate, isPending } = useUpdateApplicant();
   const onSubmit = (e) => {
     const id = localStorage.getItem("seekerID");
@@ -200,7 +215,7 @@ const CandidateReleventDetails = () => {
                           ...prev,
                           currentWorkingStatus: "serving-notice-period",
                           experienceDetails: prev.experienceDetails.map(
-                            (item) => ({ ...item, currentlyWorking: false })
+                            (item) => ({ ...item, currentlyWorking: true })
                           ),
                         }))
                       }
@@ -256,7 +271,7 @@ const CandidateReleventDetails = () => {
                       key={index}
                       i={index}
                       formType={"experienceDetails"}
-                      disabled={item.currentlyWorking}
+                      disabled={formData.currentWorkingStatus === "working"}
                     />
                   ))}
                 </div>
@@ -405,10 +420,11 @@ const CandidateReleventDetails = () => {
                   onCheckedChange={() =>
                     setFormData((prev) => ({
                       ...prev,
-                      variable: !formData.variable,
+                      variableTick: !formData.variableTick,
+                      variableCTC: "",
                     }))
                   }
-                  checked={formData.variable}
+                  checked={formData.variableTick}
                   className="data-[state=checked]:text-white data-[state=checked]:bg-[#6945ED] h-[16px] w-[16px] rounded-[2px] flex items-center justify-center cursor-pointer"
                 />
                 <span className="text-xs font-medium">
@@ -416,23 +432,43 @@ const CandidateReleventDetails = () => {
                 </span>
               </div>
               <div
-                className={`w-1/2 ${formData.variable ? "block" : "hidden"}`}
+                className={`w-1/2 ${
+                  formData.variableTick ? "block" : "hidden"
+                }`}
               >
                 <Input
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      variableCTC: e.target.value,
+                    }))
+                  }
+                  value={formData.variableCTC}
+                  type={"number"}
                   placeholder="Enter Variable CTC"
                   className="flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 border-[#E2E2E2] py-[10px] px-[16px] placeholder:text-[#9B959F]"
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Checkbox className="data-[state=checked]:text-white data-[state=checked]:bg-[#6945ED] h-[16px] w-[16px] rounded-[2px] flex items-center justify-center cursor-pointer" />
+                <Checkbox
+                  onCheckedChange={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      acceptTerms: !formData.acceptTerms,
+                    }))
+                  }
+                  checked={formData.acceptTerms}
+                  className="data-[state=checked]:text-white data-[state=checked]:bg-[#6945ED] h-[16px] w-[16px] rounded-[2px] flex items-center justify-center cursor-pointer"
+                />
                 <span className="text-xs font-medium">
                   I accept the Terms & Conditions
                 </span>
               </div>
             </div>
-            <div className="self-stretch flex justify-between items-end gap-10">
-              <PrevButton link={"/recruiter/candidates/candidate-create"} />
+            <div className="self-stretch flex justify-end items-end gap-10">
+              {/* <PrevButton link={"/recruiter/candidates/candidate-create"} /> */}
               <ButtonComponent
+                type="submit"
                 color={"#6945ED"}
                 isPending={isPending}
                 buttonText={"Continue"}

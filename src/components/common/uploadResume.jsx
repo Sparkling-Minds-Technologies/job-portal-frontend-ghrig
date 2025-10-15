@@ -13,8 +13,9 @@ const UploadResume = ({
   return (
     <div className="self-stretch flex flex-col justify-start items-start gap-10">
       <div className="inline-flex justify-start items-start gap-2.5">
-        <div className="justify-start text-gray-900 text-base font-semibold leading-normal">
+        <div className="gap-1 justify-start text-gray-900 text-base font-semibold leading-normal">
           Upload Resume
+          <span className="text-red-500 text-[14px] ml-1">*</span>
         </div>
       </div>
       <div className="self-stretch flex flex-col justify-center items-center gap-4">

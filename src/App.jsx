@@ -374,8 +374,8 @@ function App() {
             </CheckAuth>
           }
         >
-          <Route path="dashboard" element={<JobSeekerDashboard />} />
-          <Route path="dashboard/:id" element={<JobDescription />} />
+          <Route path="dashboard" element={<TrainerDashboard />} />
+          <Route path="dashboard/:id" element={<TrainerJobDescription />} />
           <Route path="faq" element={<Faq />} />
         </Route>
 

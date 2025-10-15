@@ -8,33 +8,25 @@ import { validateFormData } from "../../utils/commonFunctions";
 import { useUpload } from "../../hooks/common/useUpload";
 import { useTrainerRegisterationStage2 } from "../../hooks/trainer/useAuth";
 import { z } from "zod";
-export const formSchema = z.object({
+
+const educationSchema = z.object({
   education: z
     .array(
       z.object({
+        institution: z.string().min(1, "Institution name is required"),
         degree: z.string().min(1, "Degree is required"),
-        institution: z.string().min(1, "Institution is required"),
-        // studyType: z.string().min(1, "Study type is required"),
-        startDate: z
-          .string()
-          .refine(
-            (val) => !isNaN(new Date(val).getTime()),
-            "Start date must be a valid date"
-          ),
-        endDate: z
-          .string()
-          .refine(
-            (val) => !isNaN(new Date(val).getTime()),
-            "End date must be a valid date"
-          ),
-        document: z.string().optional(), // can be file path or base64
         fieldOfStudy: z.string().min(1, "Field of study is required"),
+        // studyType: z.string().min(1, "Study type is required"),
+        startDate: z.string().min(1, "Start date is required"),
+        endDate: z.string().min(1, "End date is required"),
+        document: z.string().min(1, "Education document is required"),
       })
     )
-    .min(1, "At least one education entry is required"),
+    .min(1, "At least one education record is required"),
 });
 
 const EducationDetails = () => {
+  const [errorMessage, setErrorMessage] = useState({});
   const { mutate, isPending } = useTrainerRegisterationStage2();
   const { mutate: UploadImage } = useUpload();
   const [formData, setFormData] = useState({
@@ -52,8 +44,13 @@ const EducationDetails = () => {
   });
   const onSubmit = (e) => {
     e.preventDefault();
-    const isValid = validateFormData(formSchema, formData);
-    if (!isValid) return;
+    const { isValid, errors } = validateFormData(educationSchema, formData);
+    if (!isValid) {
+      setErrorMessage(errors);
+      return;
+    }
+
+    setErrorMessage({});
     mutate(formData);
   };
   const handleUpload = (file, callback) => {
@@ -67,6 +64,7 @@ const EducationDetails = () => {
       },
     });
   };
+  console.log(formData);
   const { data: profileProgress } = useGetTrainerProgress();
   return (
     <div className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-[0px] lg:pb-[32px] inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
@@ -120,6 +118,7 @@ const EducationDetails = () => {
                     formData={formData}
                     setFormData={setFormData}
                     handleUpload={handleUpload}
+                    errors={errorMessage}
                   />
                 ))}
               </div>
@@ -128,7 +127,8 @@ const EducationDetails = () => {
               <ButtonComponent
                 isPending={isPending}
                 color={"#6945ED"}
-                buttonText={"Save & Update Profile"}
+                buttonText={"Continue"}
+                type="submit"
               />
             </div>
           </form>

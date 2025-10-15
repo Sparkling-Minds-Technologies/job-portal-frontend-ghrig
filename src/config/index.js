@@ -15,6 +15,7 @@ export const KycVerificationDetails = [
     placeholder: "PAN Card Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "panDetails.image",
@@ -23,6 +24,7 @@ export const KycVerificationDetails = [
     componentType: "file",
     type: "file",
     accept: "image",
+    required: true,
   },
   {
     name: "aadharDetails.number",
@@ -30,6 +32,7 @@ export const KycVerificationDetails = [
     placeholder: "Aadhar Card Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "aadharDetails.image",
@@ -38,6 +41,7 @@ export const KycVerificationDetails = [
     componentType: "file",
     type: "file",
     accept: "image",
+    required: true,
   },
   {
     name: "bankDetails.accountNumber",
@@ -92,6 +96,7 @@ export const basicInformation = [
         componentType: "input",
         type: "text",
         width: "2/3",
+        required: true,
       },
       {
         name: "lastName",
@@ -100,6 +105,7 @@ export const basicInformation = [
         componentType: "input",
         type: "text",
         width: "2/3",
+        required: true,
       },
       {
         name: "profileImage",
@@ -120,6 +126,7 @@ export const basicInformation = [
     componentType: "phone",
     type: "number",
     width: "full",
+    required: true,
   },
   {
     name: "currentAddress.address",
@@ -128,6 +135,7 @@ export const basicInformation = [
     componentType: "textarea",
     type: "text",
     width: "full",
+    required: true,
   },
   {
     row: [
@@ -138,6 +146,7 @@ export const basicInformation = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "currentAddress.state",
@@ -146,6 +155,7 @@ export const basicInformation = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "currentAddress.pincode",
@@ -154,6 +164,7 @@ export const basicInformation = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
     ],
   },
@@ -165,6 +176,7 @@ export const recruiterSignUp = [
     placeholder: "Enter your e-mail",
     componentType: "input",
     type: "email",
+    required: true,
   },
   {
     name: "password",
@@ -172,6 +184,7 @@ export const recruiterSignUp = [
     placeholder: "********",
     componentType: "input",
     type: "password",
+    required: true,
   },
   {
     name: "confirmPassword",
@@ -179,6 +192,7 @@ export const recruiterSignUp = [
     placeholder: "********",
     componentType: "input",
     type: "password",
+    required: true,
   },
 ];
 export const LoginFields = [
@@ -205,6 +219,7 @@ export const sectoralFieldsForm = [
     componentType: "multi-select",
     max: 3,
     options: [],
+    required: true,
   },
 
   {
@@ -213,6 +228,7 @@ export const sectoralFieldsForm = [
     componentType: "input",
     type: "number",
     placeholder: "e.g. 5",
+    required: true,
   },
 
   {
@@ -225,18 +241,23 @@ export const sectoralFieldsForm = [
       { id: "midlevel", label: "Mid Level Hirings" },
       { id: "senior", label: "Senior Level Hirings" },
     ],
+    required: true,
   },
   {
     name: "lastOrganization.name",
     label: "Last Organization Name",
     componentType: "input",
     type: "text",
+    placeholder: "Enter Organization Name",
+    required: true,
   },
   {
     name: "lastOrganization.position",
     label: "Designation in Last Organization",
     componentType: "input",
     type: "text",
+    placeholder: "Enter Designation",
+    required: true,
   },
   {
     name: "relievingLetter",
@@ -244,6 +265,7 @@ export const sectoralFieldsForm = [
     componentType: "file",
     placeholder: "Upload relieving letter",
     accept: "pdf",
+    required: true,
   },
 
   {
@@ -251,6 +273,8 @@ export const sectoralFieldsForm = [
     label: "LinkedIn Profile URL",
     componentType: "input",
     type: "url",
+    placeholder: "Enter LinkedIn Profile URL",
+    required: true,
   },
   {
     name: "permanentAddress.address",
@@ -259,6 +283,7 @@ export const sectoralFieldsForm = [
     componentType: "textarea",
     type: "text",
     width: "full",
+    required: true,
   },
   {
     row: [
@@ -269,6 +294,7 @@ export const sectoralFieldsForm = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "permanentAddress.state",
@@ -277,6 +303,7 @@ export const sectoralFieldsForm = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "permanentAddress.pincode",
@@ -285,17 +312,20 @@ export const sectoralFieldsForm = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
     ],
   },
 ];
 export const sectoralFieldsForm2 = [
   {
-    name: "latestQualifications",
+    name: "latestQualificationName",
     label: "Latest Qualification",
     componentType: "input",
     placeholder: "Experience",
     width: "2/4",
+    type: "text",
+    required: true,
   },
   {
     name: "latestQualification",
@@ -303,6 +333,7 @@ export const sectoralFieldsForm2 = [
     componentType: "file",
     placeholder: "Upload supporting document",
     accept: "pdf",
+    required: true,
   },
 
   {
@@ -311,6 +342,7 @@ export const sectoralFieldsForm2 = [
     componentType: "textarea-count",
     maxWords: 30,
     placeholder: "Write your reason...",
+    required: true,
   },
 
   {
@@ -335,6 +367,7 @@ export const sectoralFieldsForm2 = [
     showOtherInput: false,
     inlineOther: false,
     placeholder: "Select",
+    required: true,
   },
 
   {
@@ -342,12 +375,14 @@ export const sectoralFieldsForm2 = [
     label: "Father's Name",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "motherName",
     label: "Mother's Name",
     componentType: "input",
     type: "text",
+    required: true,
   },
 
   {
@@ -359,18 +394,19 @@ export const sectoralFieldsForm2 = [
       { id: "yes", label: "Yes" },
     ],
     placeholder: "select",
+    required: true,
   },
 ];
 export const referenceFields = [
   {
     row: [
       {
-        watkins: false,
         name: "name",
         label: "Reference",
         placeholder: "Enter Name",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "contactNo",
@@ -405,6 +441,7 @@ export const candiadateCreationformControls = [
         componentType: "input",
         type: "text",
         placeholder: "e.g. Jason Wild",
+        required: true,
       },
       {
         name: "profilePicture",
@@ -421,6 +458,7 @@ export const candiadateCreationformControls = [
     label: "Phone Number",
     componentType: "phone",
     placeholder: "Ex. XXXXX XXXXX",
+    required:true
   },
   {
     name: "email",
@@ -428,6 +466,7 @@ export const candiadateCreationformControls = [
     componentType: "input",
     type: "email",
     placeholder: "Enter email",
+    required: true,
   },
 
   {
@@ -437,6 +476,7 @@ export const candiadateCreationformControls = [
     componentType: "textarea",
     type: "text",
     width: "full",
+    required: true,
   },
   {
     row: [
@@ -447,6 +487,7 @@ export const candiadateCreationformControls = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "currentAddress.state",
@@ -455,6 +496,7 @@ export const candiadateCreationformControls = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "currentAddress.pincode",
@@ -463,6 +505,7 @@ export const candiadateCreationformControls = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
     ],
   },
@@ -479,12 +522,16 @@ export const candiadateCreationformControls = [
     allowOther: true,
     showOtherInput: true,
     inlineOther: true,
+    required: true,
   },
   {
     name: "summary",
-    componentType: "textarea",
+    componentType: "textarea-count",
     placeholder: "Write a brief summary about the candidate",
     label: "Summary",
+    type: "text",
+    maxWords: 300,
+    required: true,
   },
   {
     name: "skills",
@@ -492,6 +539,7 @@ export const candiadateCreationformControls = [
     componentType: "multi-select",
     max: 30,
     options: [],
+    required: true,
   },
 ];
 export const highestQualification = [
@@ -501,6 +549,7 @@ export const highestQualification = [
     placeholder: "e.g B.Tech",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     row: [
@@ -587,7 +636,7 @@ export const workingExperience = [
     type: "text",
   },
   {
-    name: "desgination",
+    name: "designation",
     label: "Designation in Last Organisation",
     placeholder: "e.g Software Engineer",
     componentType: "input",
@@ -618,6 +667,66 @@ export const basicCorporateInformation = [
         componentType: "input",
         type: "text",
         width: "2/3",
+        required: true,
+      },
+      {
+        name: "basicInformation.companyLogo",
+        label: "Company Logo",
+        placeholder: "",
+        componentType: "file",
+        type: "file",
+        width: "1/3",
+        accept: "image",
+      },
+    ],
+  },
+  {
+    name: "basicInformation.companyContactNumber",
+    label: "Company Contact Number",
+    placeholder: "Ex. XXXXX XXXXX",
+    componentType: "phone",
+    type: "number",
+    width: "full",
+    required: true,
+  },
+  {
+    name: "basicInformation.companyEmail",
+    label: "Company Email Id",
+    placeholder: "Enter your Email Id",
+    componentType: "input",
+    type: "email",
+    width: "full",
+    required: true,
+  },
+  {
+    name: "basicInformation.password",
+    label: "Password",
+    placeholder: "Enter your password",
+    componentType: "input",
+    type: "password",
+    width: "full",
+    required: true,
+  },
+  {
+    name: "basicInformation.confirmPassword",
+    label: "Confirm Password",
+    placeholder: "Confirm Password",
+    componentType: "input",
+    type: "password",
+    width: "full",
+    required: true,
+  },
+];
+export const basicCorporateInformationUpdate = [
+  {
+    row: [
+      {
+        name: "basicInformation.companyName",
+        label: "Company Name",
+        placeholder: "e.g. Google",
+        componentType: "input",
+        type: "text",
+        width: "2/3",
       },
       {
         name: "basicInformation.companyLogo",
@@ -638,30 +747,6 @@ export const basicCorporateInformation = [
     type: "number",
     width: "full",
   },
-  {
-    name: "basicInformation.companyEmail",
-    label: "Company Email Id",
-    placeholder: "Enter your Email Id",
-    componentType: "input",
-    type: "email",
-    width: "full",
-  },
-  {
-    name: "basicInformation.password",
-    label: "Password",
-    placeholder: "Enter your password",
-    componentType: "input",
-    type: "password",
-    width: "full",
-  },
-  {
-    name: "basicInformation.confirmPassword",
-    label: "Confirm Password",
-    placeholder: "Confirm Password",
-    componentType: "input",
-    type: "password",
-    width: "full",
-  },
 ];
 export const basicInformationControls = [
   {
@@ -670,6 +755,7 @@ export const basicInformationControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter Website URL",
+    required: true,
   },
   {
     name: "basicInformation.companyType",
@@ -681,12 +767,14 @@ export const basicInformationControls = [
       { id: "proprietorship", label: "Proprietorship" },
       { id: "lld", label: "LLD" },
     ],
+    required: true,
   },
   {
-    name: "basicInformation.aboutCompany",
+    name: "basicInformation.companyDescription",
     label: "About Company",
     componentType: "textarea",
     placeholder: "Write about your company",
+    required: true,
   },
 ];
 export const spocInformationControls = [
@@ -695,13 +783,17 @@ export const spocInformationControls = [
     label: "Full Name",
     componentType: "input",
     type: "text",
-    placeholder: "Enter your Full Name", // Adjusted to a more appropriate placeholder
+    placeholder: "Enter your Full Name",
+    required: true,
+    // Adjusted to a more appropriate placeholder
   },
   {
     name: "spocInformation.contactNumber",
     label: "Contact Number",
     componentType: "phone",
     placeholder: "Ex. XXXXXXXXXX",
+    type: "number",
+    required: true,
   },
   {
     name: "spocInformation.email",
@@ -709,6 +801,7 @@ export const spocInformationControls = [
     componentType: "input",
     type: "email",
     placeholder: "Enter the Email id",
+    required: true,
   },
 ];
 export const corporateFormControls = [
@@ -717,6 +810,8 @@ export const corporateFormControls = [
     name: "currentAddress",
     placeholder: "Enter Permanent Address",
     componentType: "textarea",
+    type: "text",
+    required: true,
   },
   {
     row: [
@@ -726,6 +821,7 @@ export const corporateFormControls = [
         placeholder: "Enter City",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         label: "",
@@ -733,6 +829,7 @@ export const corporateFormControls = [
         placeholder: "Enter State",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         label: "",
@@ -740,6 +837,7 @@ export const corporateFormControls = [
         placeholder: "Enter Pincode",
         componentType: "input",
         type: "text",
+        required: true,
       },
     ],
   },
@@ -754,6 +852,7 @@ export const corporateFormControls = [
       { id: "trading", label: "Trading" },
       { id: "other", label: "Other" },
     ],
+    required: true,
   },
   {
     row: [
@@ -763,7 +862,6 @@ export const corporateFormControls = [
         placeholder: "Enter PAN Card Number",
         componentType: "input",
         type: "text",
-        value: "MBBPS6808E", // Pre-filled as per screenshot
       },
       {
         label: "",
@@ -781,7 +879,7 @@ export const corporateFormControls = [
     placeholder: "Enter GSTIN",
     componentType: "input",
     type: "text",
-    value: "42AALCA2030B01830", // Pre-filled as per screenshot
+    required: true,
   },
 ];
 export const formControlsBankDetails = [
@@ -821,6 +919,8 @@ export const formControlsForIndividual = [
     name: "currentAddress",
     placeholder: "Enter Permanent Address",
     componentType: "textarea",
+    type: "text",
+    required: true,
   },
   {
     row: [
@@ -830,6 +930,7 @@ export const formControlsForIndividual = [
         placeholder: "Enter City",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         label: "State",
@@ -837,6 +938,7 @@ export const formControlsForIndividual = [
         placeholder: "Enter State",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         label: "Pincode",
@@ -844,6 +946,7 @@ export const formControlsForIndividual = [
         placeholder: "Enter Pincode",
         componentType: "input",
         type: "text",
+        required: true,
       },
     ],
   },
@@ -853,7 +956,7 @@ export const formControlsForIndividual = [
     placeholder: "Enter GSTIN",
     componentType: "input",
     type: "text",
-    value: "ads1023230391830", // Pre-filled as per screenshot
+    required: true,
   },
   {
     label: "PAN Card No.",
@@ -861,7 +964,6 @@ export const formControlsForIndividual = [
     placeholder: "Enter PAN Card Number",
     componentType: "input",
     type: "text",
-    value: "MBBPS6808E", // Pre-filled as per screenshot
   },
   {
     label: "",
@@ -877,7 +979,7 @@ export const formControlsForIndividual = [
     placeholder: "Enter Aadhar Card Number",
     componentType: "input",
     type: "text",
-    value: "64271 2281 238972", // Pre-filled as per screenshot
+    required: true,
   },
   {
     label: "",
@@ -886,6 +988,7 @@ export const formControlsForIndividual = [
     componentType: "file",
     formats: "JPG, PNG, PDF.",
     accept: "image",
+    required: true,
   },
 ];
 export const jobOpeningFilters = [
@@ -1048,6 +1151,7 @@ export const trainingController1 = [
     type: "text",
     placeholder: "Enter Title",
     name: "title",
+    required: true,
   },
   {
     name: "description",
@@ -1056,6 +1160,7 @@ export const trainingController1 = [
     componentType: "textarea",
     type: "text",
     width: "full",
+    required: true,
   },
   {
     name: "skills",
@@ -1063,6 +1168,7 @@ export const trainingController1 = [
     componentType: "multi-select",
     max: 30,
     options: [],
+    required: true,
   },
 ];
 export const trainingMode = [
@@ -1079,42 +1185,47 @@ export const trainingMode = [
       { id: "In-person / On-site", label: "In-person / On-site" },
       { id: "Hybrid", label: "Hybrid" },
     ],
+    required: true,
   },
 ];
 export const trainingAddress = [
   {
-    name: "currentAddress.address",
+    name: "address",
     label: "Where will the training be conducted?",
     placeholder: "Enter Address",
     componentType: "textarea",
     type: "text",
     width: "full",
+    required: true,
   },
   {
     row: [
       {
-        name: "currentAddress.city",
+        name: "city",
         label: "",
         placeholder: "Enter City",
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
-        name: "currentAddress.state",
+        name: "state",
         label: "",
         placeholder: "Enter State",
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
-        name: "currentAddress.pincode",
+        name: "pincode",
         label: "",
         placeholder: "Enter Pincode",
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
     ],
   },
@@ -1137,6 +1248,7 @@ export const trainingController2 = [
       { id: "halfYearly", label: "Half-yearly" },
       { id: "yearly", label: "Yearly" },
     ],
+    required: true,
   },
   {
     name: "totalDurationDays",
@@ -1144,6 +1256,7 @@ export const trainingController2 = [
     placeholder: "Enter duration",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "hoursPerDay",
@@ -1159,6 +1272,7 @@ export const trainingController2 = [
     allowOther: true,
     showOtherInput: true,
     inlineOther: true,
+    required: true,
   },
   {
     label: "What is the minimum experience required?",
@@ -1179,6 +1293,7 @@ export const trainingController2 = [
       { id: "10+ years", label: "10+ years" },
       { id: "15+ years", label: "15+ years" },
     ],
+    required: true,
   },
   {
     label: "What level of subject matter expertise do you expect?",
@@ -1192,6 +1307,7 @@ export const trainingController2 = [
       },
       { id: "moderate", label: "Moderate" },
     ],
+    required: true,
   },
   {
     name: "qualificationsRequired",
@@ -1199,6 +1315,7 @@ export const trainingController2 = [
     placeholder: "Enter Degree",
     componentType: "input",
     type: "text",
+    required: true,
   },
 ];
 export const trainingController3 = [
@@ -1208,6 +1325,7 @@ export const trainingController3 = [
     placeholder: "Enter Budget",
     componentType: "input",
     type: "text",
+    required: true,
   },
 ];
 
@@ -1218,6 +1336,7 @@ export const trainingController4 = [
     placeholder: "Enter session",
     componentType: "input",
     type: "number",
+    required: true,
   },
   {
     label: "Will you cover travel/stay if the trainer needs to relocate?",
@@ -1232,6 +1351,7 @@ export const trainingController4 = [
       { id: "no", label: "No" },
       { id: "partially", label: "Partially" },
     ],
+    required: true,
   },
   {
     name: "languagesFluent",
@@ -1239,6 +1359,7 @@ export const trainingController4 = [
     componentType: "multi-select",
     max: 30,
     options: [],
+    required: true,
   },
   {
     name: "participantsPerBatch",
@@ -1254,6 +1375,7 @@ export const trainingController4 = [
     allowOther: true,
     showOtherInput: true,
     inlineOther: true,
+    required: true,
   },
   {
     label: "Do you expect the trainer to provide study materials or slides?",
@@ -1268,6 +1390,7 @@ export const trainingController4 = [
       { id: "no", label: "No" },
       { id: "shared", label: "Shared Responsibility" },
     ],
+    required: true,
   },
   {
     label: "Would you like a demo session before confirming?",
@@ -1281,6 +1404,7 @@ export const trainingController4 = [
       },
       { id: "no", label: "No" },
     ],
+    required: true,
   },
 ];
 export const jobController1 = [
@@ -1290,6 +1414,7 @@ export const jobController1 = [
     placeholder: "Enter Title",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     label: "What type of job is this?",
@@ -1304,6 +1429,7 @@ export const jobController1 = [
       { id: "Part-Time", label: "Part-Time" },
       { id: "Internship", label: "Internship" },
     ],
+    required: true,
   },
   {
     name: "workingHours",
@@ -1318,6 +1444,7 @@ export const jobController1 = [
     allowOther: true,
     showOtherInput: true,
     inlineOther: true,
+    required: true,
   },
   {
     name: "workingDays",
@@ -1325,6 +1452,7 @@ export const jobController1 = [
     componentType: "input",
     placeholder: "e.g. Monday to Friday",
     type: "text",
+    required: true,
   },
   {
     label: "Is Sunday a working day?",
@@ -1338,6 +1466,7 @@ export const jobController1 = [
       },
       { id: "no", label: "No" },
     ],
+    required: true,
   },
   {
     name: "officeLocation",
@@ -1346,6 +1475,7 @@ export const jobController1 = [
     componentType: "textarea",
     type: "text",
     width: "full",
+    required: true,
   },
   {
     row: [
@@ -1356,6 +1486,7 @@ export const jobController1 = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "state",
@@ -1364,6 +1495,7 @@ export const jobController1 = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
       {
         name: "pincode",
@@ -1372,6 +1504,7 @@ export const jobController1 = [
         componentType: "input",
         type: "text",
         width: "1/3",
+        required: true,
       },
     ],
   },
@@ -1388,6 +1521,7 @@ export const jobController1 = [
       { id: "Work from Home", label: "Work from Home" },
       { id: "Hybrid", label: "Hybrid" },
     ],
+    required: true,
   },
   {
     label: "What experience level is required?",
@@ -1408,6 +1542,7 @@ export const jobController1 = [
       { id: "10+ years", label: "10+ years" },
       { id: "15+ years", label: "15+ years" },
     ],
+    required: true,
   },
   {
     name: "genderPreference",
@@ -1419,6 +1554,7 @@ export const jobController1 = [
       { id: "Female", label: "Female" },
       { id: "Other", label: "Other" },
     ],
+    required: true,
   },
   {
     name: "minimumEducation",
@@ -1432,6 +1568,7 @@ export const jobController1 = [
       { id: "Graduate", label: "Graduate" },
       { id: "Postgraduate", label: "Postgraduate" },
     ],
+    required: true,
   },
 ];
 export const jobController2 = [
@@ -1445,6 +1582,7 @@ export const jobController2 = [
       { id: "moderate", label: "Moderate" },
       { id: "fluent", label: "Fluent" },
     ],
+    required: true,
   },
   {
     name: "regionalLanguageRequired",
@@ -1458,6 +1596,7 @@ export const jobController2 = [
       },
       { id: "no", label: "No" },
     ],
+    required: true,
   },
 ];
 export const regionalLanguage = [
@@ -1477,6 +1616,7 @@ export const jobController3 = [
     label: "No of positions for this job",
     placeholder: "e.g. 15",
     type: "text",
+    required: true,
   },
   {
     name: "preferredAgeRange",
@@ -1489,6 +1629,7 @@ export const jobController3 = [
     name: "salaryRange",
     componentType: "salary-range",
     label: "Salary Range (In ₹ LPA)",
+    required: true,
   },
   {
     name: "requiredSkills",
@@ -1496,6 +1637,7 @@ export const jobController3 = [
     componentType: "multi-select",
     max: 30,
     options: [],
+    required: true,
   },
   {
     name: "twoWheelerMandatory",
@@ -1506,6 +1648,7 @@ export const jobController3 = [
       { id: "yes", label: "Yes" },
       { id: "no", label: "No" },
     ],
+    required: true,
   },
   {
     name: "jobDescription",
@@ -1516,6 +1659,7 @@ export const jobController3 = [
     type: "text",
     maxChars: 300,
     width: "full",
+    required: true,
   },
   {
     name: "isWalkInInterview",
@@ -1526,6 +1670,7 @@ export const jobController3 = [
       { id: "yes", label: "Yes" },
       { id: "no", label: "No" },
     ],
+    required: true,
   },
 ];
 export const walkinAdress = [
@@ -1534,21 +1679,18 @@ export const walkinAdress = [
     label: "",
     componentType: "calendar",
     placeholder: "Select Date",
-    required: true,
   },
   {
     name: "walkInTime",
     label: "",
     componentType: "time",
     placeholder: "Enter Time",
-    required: true,
   },
   {
     name: "walkInAddress",
     label: "Address",
     componentType: "textarea",
     placeholder: "Enter your address",
-    required: true,
   },
   {
     name: "spocName",
@@ -1556,7 +1698,6 @@ export const walkinAdress = [
     componentType: "input",
     type: "text",
     placeholder: "Enter name",
-    required: true,
   },
   {
     name: "spocNumber",
@@ -1564,7 +1705,6 @@ export const walkinAdress = [
     componentType: "input",
     type: "text",
     placeholder: "Enter number",
-    required: true,
   },
 ];
 export const jobSeekerBasicDetails = [
@@ -1715,6 +1855,7 @@ export const jobSeekerEducationFormControls = [
       { id: "bachelor_of_science", label: "Bachelor of Science" },
       { id: "other", label: "Other" },
     ],
+    required: true,
   },
   {
     row: [
@@ -1740,6 +1881,7 @@ export const jobSeekerEducationFormControls = [
     placeholder: "Upload Profile Picture",
     componentType: "file",
     accept: "image", // only allow images
+    required: true,
   },
 ];
 export const workExperienceFormControls = [
@@ -1887,7 +2029,6 @@ export const certificateFormControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter the title",
-    required: true,
   },
   {
     name: "organisation",
@@ -1895,7 +2036,6 @@ export const certificateFormControls = [
     componentType: "input",
     type: "text",
     placeholder: "Enter the issuing organization",
-    required: true,
   },
   {
     row: [
@@ -1904,14 +2044,12 @@ export const certificateFormControls = [
         label: "Issue Date",
         componentType: "monthYear",
         placeholder: "Select Issue Date",
-        required: true,
       },
       {
         name: "expiryDate",
         label: "Expiry Date",
         componentType: "monthYear",
         placeholder: "Select Expiry Date",
-        required: true,
       },
     ],
   },
@@ -2041,6 +2179,7 @@ export const trainerFormControls1 = [
         placeholder: "e.g. Jason Wild",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "profilePicture",
@@ -2056,6 +2195,7 @@ export const trainerFormControls1 = [
     label: "Contact Number",
     placeholder: "Ex. XXXXX XXXXX",
     componentType: "phone",
+    required: true,
   },
   {
     name: "email",
@@ -2063,6 +2203,7 @@ export const trainerFormControls1 = [
     placeholder: "Enter your email",
     componentType: "input",
     type: "email",
+    required: true,
   },
   {
     name: "password",
@@ -2070,6 +2211,7 @@ export const trainerFormControls1 = [
     placeholder: "Enter your Password",
     componentType: "input",
     type: "password",
+    required: true,
   },
   {
     name: "confirmPassword",
@@ -2077,6 +2219,7 @@ export const trainerFormControls1 = [
     placeholder: "Enter your Password",
     componentType: "input",
     type: "password",
+    required: true,
   },
   {
     row: [
@@ -2084,8 +2227,10 @@ export const trainerFormControls1 = [
         name: "currentAddress.address",
         label: "Current Address",
         placeholder: "Enter Current Address",
-        componentType: "input",
+        componentType: "textarea",
         type: "text",
+        width: "full",
+        required: true,
       },
     ],
   },
@@ -2096,18 +2241,21 @@ export const trainerFormControls1 = [
         placeholder: "Enter City",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "currentAddress.state",
         placeholder: "Enter State",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "currentAddress.pincode",
         placeholder: "Enter Pincode",
         componentType: "input",
         type: "text",
+        required: true,
       },
     ],
   },
@@ -2121,6 +2269,7 @@ export const kycBankFormControls = [
     placeholder: "Upload Aadhar Card",
     componentType: "file",
     accept: "image",
+    required: true,
   },
   {
     name: "aadharDetails.number",
@@ -2128,6 +2277,7 @@ export const kycBankFormControls = [
     placeholder: "Enter Adhar Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "panDetails.image",
@@ -2135,6 +2285,7 @@ export const kycBankFormControls = [
     placeholder: "Upload PAN Card",
     componentType: "file",
     accept: "image",
+    required: true,
   },
   {
     name: "panDetails.number",
@@ -2142,6 +2293,7 @@ export const kycBankFormControls = [
     placeholder: "Enter PAN Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "bankDetails.accountNumber",
@@ -2149,6 +2301,7 @@ export const kycBankFormControls = [
     placeholder: "Enter Account Number",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "bankDetails.accountHolderName",
@@ -2156,6 +2309,7 @@ export const kycBankFormControls = [
     placeholder: "Enter Account Holder's name",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     row: [
@@ -2165,6 +2319,7 @@ export const kycBankFormControls = [
         placeholder: "Branch Name",
         componentType: "input",
         type: "text",
+        required: true,
       },
       {
         name: "bankDetails.ifscCode",
@@ -2172,6 +2327,7 @@ export const kycBankFormControls = [
         placeholder: "IFSC Code",
         componentType: "input",
         type: "text",
+        required: true,
       },
     ],
   },
@@ -2181,6 +2337,7 @@ export const kycBankFormControls = [
     placeholder: "",
     componentType: "file",
     accept: "image", // you can also use "pdf" if needed
+    required: true,
   },
 ];
 // experienceFormControls.js
@@ -2190,12 +2347,14 @@ export const experienceFormControls = [
     name: "expertiseLevel",
     label: "Experience Level",
     placeholder: "Select level",
-    componentType: "select",
+    componentType: "multi-select",
     options: [
       { id: "frontline", label: "Frontline Team Trainnings" },
       { id: "midLevel", label: "Mid-Level Hirings" },
       { id: "expert", label: "Senior-Level Hirings" },
     ],
+    max: 2,
+    required: true,
   },
   {
     row: [
@@ -2208,6 +2367,7 @@ export const experienceFormControls = [
           id: i.toString(),
           label: `${i} Years`,
         })),
+        required: true,
       },
       {
         name: "totalMonthsExperience",
@@ -2218,6 +2378,7 @@ export const experienceFormControls = [
           id: i.toString(),
           label: `${i} Months`,
         })),
+        required: true,
       },
     ],
   },
@@ -2227,6 +2388,7 @@ export const experienceFormControls = [
     placeholder: "Enter URL",
     componentType: "input",
     type: "url",
+    required: true,
   },
 
   {
@@ -2235,6 +2397,7 @@ export const experienceFormControls = [
     placeholder: "Enter Name",
     componentType: "input",
     type: "text",
+    required: true,
   },
   {
     name: "WorkingDetails.designation",
@@ -2242,6 +2405,7 @@ export const experienceFormControls = [
     placeholder: "Enter Position",
     componentType: "input",
     type: "text",
+    required: true,
   },
 
   {
@@ -2250,13 +2414,13 @@ export const experienceFormControls = [
         name: "WorkingDetails.startDate",
         label: "Starting Year",
         placeholder: "Select Date",
-        componentType: "calendar",
+        componentType: "monthYear",
       },
       {
         name: "WorkingDetails.endDate",
         label: "Ending Year",
         placeholder: "Select Date",
-        componentType: "calendar",
+        componentType: "monthYear",
       },
     ],
   },

@@ -8,60 +8,42 @@ import { useUpload } from "../../hooks/common/useUpload";
 import { z } from "zod";
 import { validateFormData } from "../../utils/commonFunctions";
 import { useTrainerRegisterationStage3 } from "../../hooks/trainer/useAuth";
-import useAuthStore from "../../stores/useAuthStore";
+import { useDropDown } from "@/hooks/common/useDropDown";
 
-export const experienceSchema = z.object({
-  expertiseLevel: z.string().min(1, "Expertise level is required"),
+const experienceSchema = z.object({
+  expertiseLevel: z
+    .array(z.string().min(1, "Expertise level cannot be empty"))
+    .min(1, "At least one expertise level is required"),
 
   totalYearsExperience: z
     .string()
-    .regex(/^\d+$/, "Years must be a number")
-    .optional(),
+    .min(1, "Total years of experience is required"),
 
   totalMonthsExperience: z
     .string()
-    .regex(/^\d+$/, "Months must be a number")
-    .optional(),
+    .min(1, "Total months of experience is required"),
 
-  linkedin: z.string().url("Please enter a valid LinkedIn URL").optional(),
+  linkedin: z.string().min(1, "LinkedIn profile is required"),
 
-  WorkingDetails: z
-    .object({
-      companyName: z.string().min(1, "Company name is required"),
-      designation: z.string().min(1, "Designation is required"),
-      startDate: z
-        .string()
-        .refine(
-          (val) => !isNaN(new Date(val).getTime()),
-          "Start date must be a valid date"
-        ),
-      endDate: z
-        .string()
-        .refine(
-          (val) => !isNaN(new Date(val).getTime()),
-          "End date must be a valid date"
-        ),
-    })
-    .refine(
-      (data) =>
-        new Date(data.endDate).getTime() >= new Date(data.startDate).getTime(),
-      {
-        path: ["endDate"],
-        message: "End date must be after start date",
-      }
-    ),
+  WorkingDetails: z.object({
+    companyName: z.string().min(1, "Company name is required"),
+    designation: z.string().min(1, "Designation is required"),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+  }),
 
-  relievingLetter: z.string().optional(), // can be file path or base64
+  relievingLetter: z.string().optional(),
 
   expertiseAreas: z
-    .array(z.string().min(1))
-    .min(1, "Select at least one area of expertise"),
+    .array(z.any())
+    .min(1, "At least one expertise area is required"),
 });
 
 const WorkingDetails = () => {
+  const [errorMessage, setErrorMessage] = useState({});
   const { mutate: UploadImage } = useUpload();
   const [formData, setFormData] = useState({
-    expertiseLevel: "",
+    expertiseLevel: [],
     totalYearsExperience: "",
     totalMonthsExperience: "",
     linkedin: "",
@@ -75,6 +57,19 @@ const WorkingDetails = () => {
     expertiseAreas: [],
   });
   const { mutate, isPending } = useTrainerRegisterationStage3();
+  const { data: skillOptions } = useDropDown("expertise-area");
+  const updatedFields = experienceFormControls.map((field) =>
+    field.name === "expertiseAreas"
+      ? {
+          ...field,
+          options: skillOptions?.data?.values.map((skill) => ({
+            id: skill._id,
+            label: skill.label,
+          })),
+        }
+      : field
+  );
+
   const handleUpload = (file, callback) => {
     UploadImage(file, {
       onSuccess: (data) => {
@@ -88,13 +83,26 @@ const WorkingDetails = () => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    const isValid = validateFormData(experienceSchema, formData);
-    if (!isValid) return;
-    mutate(formData);
+    let payLoad = { ...formData };
+    if (formData?.expertiseLevel?.length > 0) {
+      payLoad.expertiseLevel = formData?.expertiseLevel?.map(
+        (item) => item.label
+      );
+    }
+    if (formData?.expertiseAreas?.length > 0) {
+      payLoad.expertiseAreas = formData?.expertiseAreas?.map((item) => item.id);
+    }
+    const { isValid, errors } = validateFormData(experienceSchema, payLoad);
+    if (!isValid) {
+      setErrorMessage(errors);
+      return;
+    }
+
+    setErrorMessage({});
+    mutate(payLoad);
   };
   const { data: profileProgress } = useGetTrainerProgress();
-  const { user } = useAuthStore();
-  console.log(user);
+  console.log(formData);
   return (
     <div className="w-full self-stretch px-[20px] py-[20px] lg:px-36 lg:py-[0px] lg:pb-[32px] inline-flex flex-col justify-start items-start gap-[18px] lg:gap-7">
       <Navbar onlySupport={true} />
@@ -139,10 +147,11 @@ const WorkingDetails = () => {
               <div className="self-stretch h-0 outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
               <div className="w-full">
                 <CommonForm
-                  formControls={experienceFormControls}
+                  formControls={updatedFields}
                   formData={formData}
                   setFormData={setFormData}
                   handleUpload={handleUpload}
+                  errors={errorMessage}
                 />
               </div>
             </div>
@@ -151,7 +160,8 @@ const WorkingDetails = () => {
               <ButtonComponent
                 isPending={isPending}
                 color={"#6945ED"}
-                buttonText={"Save & Update Profile"}
+                buttonText={"Continue"}
+                type="submit"
               />
             </div>
           </form>
