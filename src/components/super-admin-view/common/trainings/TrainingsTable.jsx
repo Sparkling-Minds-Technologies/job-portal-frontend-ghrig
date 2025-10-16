@@ -98,7 +98,14 @@ const TrainingsTable = ({
                 <th className={thClass}>Candidates</th>
                 <th className={thClass}>Location</th>
                 <th className={thClass}>Experience</th>
-                <th className={thClass}>Status</th>
+                {isApprovalContext ? (
+                  <th className={thClass}>Status</th>
+                ) : (
+                  <>
+                    <th className={thClass}>Status by Admin</th>
+                    <th className={thClass}>Status by Corporate</th>
+                  </>
+                )}
                 {!isApprovalContext && <th className={thClass}>Actions</th>}
               </tr>
             </thead>
@@ -149,9 +156,24 @@ const TrainingsTable = ({
                       <td className="p-2 align-middle whitespace-nowrap">
                         {training.minimumExperience || "N/A"}
                       </td>
-                      <td className="p-2 align-middle whitespace-nowrap">
-                        {getStatusBadge(status)}
-                      </td>
+                      {isApprovalContext ? (
+                        <td className="p-2 align-middle whitespace-nowrap">
+                          {getStatusBadge(status)}
+                        </td>
+                      ) : (
+                        <>
+                          <td className="p-2 align-middle whitespace-nowrap">
+                            {getStatusBadge(
+                              training.statusByAdmin || "Not coming"
+                            )}
+                          </td>
+                          <td className="p-2 align-middle whitespace-nowrap">
+                            {getStatusBadge(
+                              training.statusByCorporate || "Not coming"
+                            )}
+                          </td>
+                        </>
+                      )}
                       {!isApprovalContext && (
                         <td className="p-2 align-middle whitespace-nowrap">
                           <button
@@ -169,7 +191,7 @@ const TrainingsTable = ({
               ) : (
                 <tr>
                   <td
-                    colSpan={isApprovalContext ? 9 : 10}
+                    colSpan={isApprovalContext ? 9 : 11}
                     className="p-2 align-middle whitespace-nowrap text-center py-8"
                   >
                     <div className="flex flex-col items-center justify-center space-y-2">

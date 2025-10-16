@@ -85,7 +85,7 @@ const TrainersTable = ({
                           name="selectTrainer"
                           checked={selectedTrainerId === trainer._id}
                           onChange={() => handleSelectTrainer(trainer._id)}
-                          aria-label={`Select trainer ${trainer.firstName} ${trainer.lastName}`}
+                          aria-label={`Select trainer ${trainer.name || "N/A"}`}
                           className="w-4 h-4 text-primary-purple border-2 border-gray-300 focus:ring-2 focus:ring-primary-purple/50 focus:ring-offset-0 cursor-pointer appearance-none rounded-full checked:bg-primary-purple checked:border-primary-purple relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:transform before:-translate-x-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-white before:rounded-full before:opacity-0 checked:before:opacity-100"
                         />
                       </TableCell>
@@ -100,7 +100,7 @@ const TrainersTable = ({
                           {trainer.profileImage ? (
                             <img
                               src={trainer.profileImage}
-                              alt={`${trainer.firstName} ${trainer.lastName} avatar`}
+                              alt={`${trainer.name || "Trainer"} avatar`}
                               className="w-10 h-10 rounded-full object-cover"
                             />
                           ) : (
@@ -111,19 +111,9 @@ const TrainersTable = ({
                           <div className="flex flex-col min-w-0">
                             <span
                               className="font-medium text-gray-900 truncate"
-                              title={
-                                trainer.name ||
-                                `${trainer.firstName || ""} ${
-                                  trainer.lastName || ""
-                                }`.trim() ||
-                                "N/A"
-                              }
+                              title={trainer.name || "N/A"}
                             >
-                              {trainer.name ||
-                                `${trainer.firstName || ""} ${
-                                  trainer.lastName || ""
-                                }`.trim() ||
-                                "N/A"}
+                              {trainer.name || "N/A"}
                             </span>
                             <span
                               className="text-sm text-gray-500 truncate"
