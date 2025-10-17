@@ -6,40 +6,40 @@ class TokenService {
   }
 
   getToken() {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
 
   setToken(token) {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    sessionStorage.setItem(this.TOKEN_KEY, token);
   }
 
   removeToken() {
-    localStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.TOKEN_KEY);
   }
 
   getUserRole() {
-    return localStorage.getItem(this.USER_ROLE_KEY);
+    return sessionStorage.getItem(this.USER_ROLE_KEY);
   }
 
   setUserRole(role) {
-    localStorage.setItem(this.USER_ROLE_KEY, role);
+    sessionStorage.setItem(this.USER_ROLE_KEY, role);
   }
 
   removeUserRole() {
-    localStorage.removeItem(this.USER_ROLE_KEY);
+    sessionStorage.removeItem(this.USER_ROLE_KEY);
   }
 
   getProfile() {
-    const profile = localStorage.getItem(this.PROFILE_KEY);
+    const profile = sessionStorage.getItem(this.PROFILE_KEY);
     return profile ? JSON.parse(profile) : null;
   }
 
   setProfile(profile) {
-    localStorage.setItem(this.PROFILE_KEY, JSON.stringify(profile));
+    sessionStorage.setItem(this.PROFILE_KEY, JSON.stringify(profile));
   }
 
   removeProfile() {
-    localStorage.removeItem(this.PROFILE_KEY);
+    sessionStorage.removeItem(this.PROFILE_KEY);
   }
 
   clearAll() {

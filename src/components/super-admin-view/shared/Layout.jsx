@@ -16,7 +16,6 @@ const Layout = () => {
       <MobileNav />
       {/* desktop-view */}
       <Navbar />
-      <TopHeader />
 
       {/* mobile-view */}
       <div className="lg:hidden w-full p-6 pt-[84px] bg-gray-900 border-r border-zinc-300 inline-flex flex-col justify-start items-start gap-4 overflow-hidden">
@@ -68,8 +67,11 @@ const Layout = () => {
           ))}
         </div>
       </div>
-      <section className="lg:ml-[327px] h-screen grid grid-rows-[1fr] overflow-hidden flex-1">
-        <div className="h-full overflow-auto p-6">
+      <section className="lg:ml-[327px] h-screen grid grid-rows-[auto_1fr] overflow-hidden flex-1">
+        <div className="p-6 pb-0">
+          <TopHeader />
+        </div>
+        <div className="h-full overflow-auto p-6 pt-0">
           <Outlet />
         </div>
       </section>

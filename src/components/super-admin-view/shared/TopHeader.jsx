@@ -5,6 +5,7 @@ import { useGetNotifications } from "../../../hooks/super-admin/useNotifications
 import tokenService from "../../../services/super-admin/tokenService";
 import { useState } from "react";
 import NotificationSideDrawer from "./NotificationSideDrawer";
+import { CircleQuestionMarkIcon, UserIcon } from "lucide-react";
 
 const TopHeader = () => {
   const { data: profileData } = useGetSuperAdminProfile();
@@ -20,20 +21,17 @@ const TopHeader = () => {
 
   return (
     <>
-      {/* Top Right Header */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-3">
-        {/* Support Button */}
-        <button className="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white text-sm font-medium flex items-center gap-2">
+      <div className="flex items-center gap-3 justify-end">
+        <div className="cursor-pointer py-2 px-4 rounded-full border border-gray-700 flex items-center gap-2 text-sm">
           Support
-          <span className="w-2 h-2 bg-white rounded-full"></span>
-        </button>
+          <CircleQuestionMarkIcon className="w-5 h-5" strokeWidth={1.5} />
+        </div>
 
-        {/* Notification Bell */}
         <div
-          className="cursor-pointer p-2 rounded-full hover:bg-gray-700 relative bg-gray-800"
+          className="cursor-pointer p-3 rounded-full border border-gray-700 flex items-center gap-2"
           onClick={() => setNotificationDrawerOpen(true)}
         >
-          <NotificationIcon className="w-5 h-5 text-white" />
+          <NotificationIcon className="w-5 h-5" strokeWidth={1.5} />
           {unreadCount > 0 && (
             <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
               {unreadCount > 9 ? "9+" : unreadCount}
@@ -43,20 +41,21 @@ const TopHeader = () => {
 
         {/* Profile Image */}
         <div className="relative">
-          <img
-            className="w-10 h-10 rounded-full border-2 border-gray-600 object-cover"
-            src={profile?.profileImage || "/person.png"}
-            alt={
-              profile?.firstName
-                ? `${profile.firstName} ${profile.lastName}`
-                : "Super Admin"
-            }
-          />
-          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-800"></div>
+          {profile?.profileImage ? (
+            <img
+              className="w-10 h-10 rounded-full border-2 border-gray-600 object-cover"
+              src={profile?.profileImage}
+              alt={profile?.name}
+            />
+          ) : (
+            <UserIcon
+              className="w-10 h-10 border border-gray-700 rounded-full p-2"
+              strokeWidth={1.5}
+            />
+          )}
+          <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border border-gray-800"></div>
         </div>
       </div>
-
-      {/* Notification Drawer */}
       <Sheet
         open={notificationDrawerOpen}
         onOpenChange={setNotificationDrawerOpen}
