@@ -67,7 +67,7 @@ const JobCard = ({ setOpen, item, setOpen1, setCandidateFilters }) => {
         </div>
         <div className="flex items-center gap-[24px]">
           <span className="text-[#7D5AE2] text-xs font-medium py-[2px] px-[6px] rounded-[3px] bg-custom-purple">
-            2 Applied
+            {item?.applicationStats?.totalApplications || 0} applied
           </span>
           <div className="flex flex-wrap items-center gap-[14px]">
             {((item?.title && item?.trainingMode !== "Virtual / Online") ||
