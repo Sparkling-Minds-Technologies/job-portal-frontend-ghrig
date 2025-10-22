@@ -2132,7 +2132,73 @@ export const gigTrainingFormConfig = [
     row: [
       {
         name: "name",
-        label: "Reference",
+        label: "Testimonial 1",
+        placeholder: "Enter Name",
+        componentType: "input",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "contactNo",
+        label: "",
+        placeholder: "Contact No.",
+        componentType: "input",
+        type: "text",
+      },
+      {
+        name: "organization",
+        label: "",
+        placeholder: "Organisation",
+        componentType: "input",
+        type: "text",
+      },
+      {
+        name: "designation",
+        label: "",
+        placeholder: "Designation",
+        componentType: "input",
+        type: "text",
+      },
+    ],
+  },
+  {
+    row: [
+      {
+        name: "name",
+        label: "Testimonial 2",
+        placeholder: "Enter Name",
+        componentType: "input",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "contactNo",
+        label: "",
+        placeholder: "Contact No.",
+        componentType: "input",
+        type: "text",
+      },
+      {
+        name: "organization",
+        label: "",
+        placeholder: "Organisation",
+        componentType: "input",
+        type: "text",
+      },
+      {
+        name: "designation",
+        label: "",
+        placeholder: "Designation",
+        componentType: "input",
+        type: "text",
+      },
+    ],
+  },
+  {
+    row: [
+      {
+        name: "name",
+        label: "Testimonial 3",
         placeholder: "Enter Name",
         componentType: "input",
         type: "text",
@@ -2180,11 +2246,29 @@ export const gigTrainingFormConfig = [
     maxWords: 50,
   },
   {
-    name: "trainingPictures",
-    label: "Pictures of past training sessions",
-    componentType: "file",
-    accept: "image",
-    placeholder: "Upload images",
+    row: [
+      {
+        name: "trainingPictures",
+        label: "Pictures of past training sessions",
+        componentType: "file",
+        accept: "image",
+        placeholder: "Upload image",
+      },
+      {
+        name: "trainingPictures",
+        label: "",
+        componentType: "file",
+        accept: "image",
+        placeholder: "Upload image",
+      },
+      {
+        name: "trainingPictures",
+        label: "",
+        componentType: "file",
+        accept: "image",
+        placeholder: "Upload image",
+      },
+    ],
   },
 ];
 
