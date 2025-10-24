@@ -16,7 +16,6 @@ import {
   MapPin,
   GraduationCap,
   Briefcase,
-  Heart,
   Stethoscope,
   LinkIcon,
 } from "lucide-react";
@@ -259,7 +258,7 @@ const RecruiterDetailsDrawer = ({
               Personal Information
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-              <div className="h-[125px] flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px]">
+              <div className="h-48 flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px]">
                 <div className="flex items-center gap-[12px]">
                   <div>
                     <Briefcase className="w-5 h-4 text-[#121417]" />
@@ -273,44 +272,7 @@ const RecruiterDetailsDrawer = ({
                 </div>
               </div>
 
-              <div className="h-[125px] flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px]">
-                <div className="flex items-center gap-[12px]">
-                  <div>
-                    <GraduationCap className="w-5 h-5 text-[#121417]" />
-                  </div>
-                  <div className="text-[#121417] text-sm font-semibold">
-                    Latest Qualification
-                  </div>
-                </div>
-                {displayRecruiter?.latestQualification ? (
-                  <div className="flex flex-col gap-2">
-                    <div
-                      className="w-full h-[60px] rounded-sm overflow-hidden cursor-pointer bg-stone-50"
-                      onClick={() =>
-                        window.open(
-                          displayRecruiter.latestQualification,
-                          "_blank"
-                        )
-                      }
-                    >
-                      <iframe
-                        src={`${displayRecruiter.latestQualification}#toolbar=0&navpanes=0&scrollbar=0`}
-                        title="Latest Qualification"
-                        className="w-full h-full border-none no-scrollbar pointer-events-none"
-                      />
-                    </div>
-                    <div className="text-[11px] text-gray-500 truncate">
-                      {displayRecruiter.latestQualification?.split("/").pop()}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-[#61758A] text-sm font-normal">
-                    Not specified
-                  </div>
-                )}
-              </div>
-
-              <div className="h-[125px] flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px]">
+              <div className="h-48 flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px]">
                 <div className="flex items-center gap-[12px]">
                   <div>
                     <Phone className="w-5 h-5 text-[#121417]" />
@@ -332,7 +294,7 @@ const RecruiterDetailsDrawer = ({
                 </div>
               </div>
 
-              <div className="h-[125px] flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px] md:col-span-2 lg:col-span-1">
+              <div className="h-48 flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px] md:col-span-2 lg:col-span-1">
                 <div className="flex items-center gap-[12px]">
                   <div>
                     <MapPin className="w-5 h-5 text-[#121417]" />
@@ -341,11 +303,41 @@ const RecruiterDetailsDrawer = ({
                     Address
                   </div>
                 </div>
-                <div className="text-[#61758A] text-sm font-normal leading-tight line-clamp-2">
-                  {displayRecruiter?.currentAddress?.address &&
-                  displayRecruiter?.currentAddress?.city
-                    ? `${displayRecruiter.currentAddress.address}, ${displayRecruiter.currentAddress.city}`
-                    : displayRecruiter?.location || "Not specified"}
+                <div className="text-[#61758A] text-sm">
+                  <div>{displayRecruiter?.currentAddress?.address || "-"}</div>
+                  <div className="mt-1">
+                    City: {displayRecruiter?.currentAddress?.city || "-"}
+                  </div>
+                  <div>
+                    State: {displayRecruiter?.currentAddress?.state || "-"}
+                  </div>
+                  <div>
+                    Pincode: {displayRecruiter?.currentAddress?.pincode || "-"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="h-48 flex flex-col p-[16px] gap-[12px] rounded-[8px] border-[#DBE0E5] border-[1px] md:col-span-2 lg:col-span-1">
+                <div className="flex items-center gap-[12px]">
+                  <div>
+                    <MapPin className="w-5 h-5 text-[#121417]" />
+                  </div>
+                  <div className="text-[#121417] text-sm font-semibold">
+                    Permanent Address
+                  </div>
+                </div>
+                <div className="text-[#61758A] text-sm">
+                  <div>{displayRecruiter?.permanentAddress?.address}</div>
+                  <div className="mt-1">
+                    City: {displayRecruiter?.permanentAddress?.city || "-"}
+                  </div>
+                  <div>
+                    State: {displayRecruiter?.permanentAddress?.state || "-"}
+                  </div>
+                  <div>
+                    Pincode:{" "}
+                    {displayRecruiter?.permanentAddress?.pincode || "-"}
+                  </div>
                 </div>
               </div>
             </div>
@@ -536,6 +528,76 @@ const RecruiterDetailsDrawer = ({
                         : displayRecruiter?.medicalProblemDetails}
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="self-stretch inline-flex flex-col justify-start items-start gap-6 mt-8">
+            <div className="justify-start text-gray-900 text-xl font-semibold leading-tight">
+              Financial Details
+            </div>
+            <div className="self-stretch flex flex-col justify-start items-start">
+              <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                  PAN Number
+                </div>
+                <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                  {displayRecruiter?.kycDetails?.panDetails?.number ||
+                    "Not specified"}
+                </div>
+              </div>
+              <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                  Aadhaar Number
+                </div>
+                <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                  {displayRecruiter?.kycDetails?.aadharDetails?.number ||
+                    "Not specified"}
+                </div>
+              </div>
+              <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                  Account Number
+                </div>
+                <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                  {displayRecruiter?.kycDetails?.bankDetails?.accountNumber ||
+                    "Not specified"}
+                </div>
+              </div>
+              <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                  Account Holder Name
+                </div>
+                <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                  {displayRecruiter?.kycDetails?.bankDetails
+                    ?.accountHolderName || "Not specified"}
+                </div>
+              </div>
+              <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                  Branch Name
+                </div>
+                <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                  {displayRecruiter?.kycDetails?.bankDetails?.bankName ||
+                    "Not specified"}
+                </div>
+              </div>
+              <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                  IFSC Code
+                </div>
+                <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                  {displayRecruiter?.kycDetails?.bankDetails?.ifscCode ||
+                    "Not specified"}
+                </div>
+              </div>
+              <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                  Account Type
+                </div>
+                <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                  {displayRecruiter?.kycDetails?.bankDetails?.accountType ||
+                    "Not specified"}
                 </div>
               </div>
             </div>
