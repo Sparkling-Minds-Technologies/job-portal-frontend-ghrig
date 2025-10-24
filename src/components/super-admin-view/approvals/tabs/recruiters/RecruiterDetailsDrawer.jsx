@@ -479,6 +479,14 @@ const RecruiterDetailsDrawer = ({
                       "Not Specified"}
                   </div>
                 </div>
+                <div className="self-stretch py-4 border-t border-b border-gray-200 flex flex-col lg:flex-row justify-start items-start lg:items-center gap-2 lg:gap-28">
+                  <div className="w-full lg:w-48 justify-start text-gray-500 text-sm font-normal leading-tight">
+                    Monthly Closures
+                  </div>
+                  <div className="w-full lg:w-48 justify-start text-neutral-900 text-sm font-normal leading-tight break-words">
+                    {displayRecruiter?.monthlyClosures || "Not Specified"}
+                  </div>
+                </div>
               </div>
             </div>
             <div className="w-full lg:w-[48%] h-full inline-flex flex-col justify-start items-start gap-6 mt-6 lg:mt-0">
@@ -601,6 +609,56 @@ const RecruiterDetailsDrawer = ({
                 </div>
               </div>
             </div>
+          </div>
+          <div className="self-stretch inline-flex flex-col justify-start items-start gap-6 mt-8">
+            <div className="justify-start text-gray-900 text-xl font-semibold leading-tight">
+              References
+            </div>
+            {displayRecruiter?.references &&
+            displayRecruiter?.references?.length > 0 ? (
+              <div className="w-full overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border border-gray-200 px-4 py-2 text-left text-sm font-semibold text-gray-900">
+                        Name
+                      </th>
+                      <th className="border border-gray-200 px-4 py-2 text-left text-sm font-semibold text-gray-900">
+                        Contact No
+                      </th>
+                      <th className="border border-gray-200 px-4 py-2 text-left text-sm font-semibold text-gray-900">
+                        Organization
+                      </th>
+                      <th className="border border-gray-200 px-4 py-2 text-left text-sm font-semibold text-gray-900">
+                        Designation
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayRecruiter?.references?.map((ref, index) => (
+                      <tr key={index}>
+                        <td className="border border-gray-200 px-4 py-2 text-sm text-gray-600">
+                          {ref.name || "-"}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-2 text-sm text-gray-600">
+                          {ref.contactNo || "-"}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-2 text-sm text-gray-600">
+                          {ref.organization || "-"}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-2 text-sm text-gray-600">
+                          {ref.designation || "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-gray-500 text-sm">
+                No references available
+              </div>
+            )}
           </div>
         </div>
       </div>
