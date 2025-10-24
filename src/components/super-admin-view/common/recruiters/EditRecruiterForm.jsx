@@ -88,6 +88,41 @@ const EditRecruiterForm = ({ recruiter, onSave, onClose }) => {
         },
       ],
     },
+    {
+      name: "permanentAddress.address",
+      label: "Permanent Address",
+      placeholder: "Enter Permanent Address",
+      componentType: "textarea",
+      type: "text",
+    },
+    {
+      row: [
+        {
+          name: "permanentAddress.city",
+          label: "",
+          placeholder: "Enter City",
+          componentType: "input",
+          type: "text",
+          width: "1/3",
+        },
+        {
+          name: "permanentAddress.state",
+          label: "",
+          placeholder: "Enter State",
+          componentType: "input",
+          type: "text",
+          width: "1/3",
+        },
+        {
+          name: "permanentAddress.pincode",
+          label: "",
+          placeholder: "Enter Pincode",
+          componentType: "input",
+          type: "text",
+          width: "1/3",
+        },
+      ],
+    },
   ];
 
   const documentsFields = [
@@ -200,6 +235,61 @@ const EditRecruiterForm = ({ recruiter, onSave, onClose }) => {
     },
   ];
 
+  const kycFields = [
+    {
+      name: "kycDetails.panDetails.number",
+      label: "PAN Number",
+      componentType: "input",
+      type: "text",
+      placeholder: "Enter PAN Number",
+    },
+    {
+      name: "kycDetails.aadharDetails.number",
+      label: "Aadhaar Number",
+      componentType: "input",
+      type: "text",
+      placeholder: "Enter Aadhaar Number",
+    },
+  ];
+
+  const bankDetailsFields = [
+    {
+      name: "kycDetails.bankDetails.accountNumber",
+      label: "Account Number",
+      componentType: "input",
+      type: "text",
+      placeholder: "Enter Account Number",
+    },
+    {
+      name: "kycDetails.bankDetails.accountHolderName",
+      label: "Account Holder Name",
+      componentType: "input",
+      type: "text",
+      placeholder: "Enter Account Holder Name",
+    },
+    {
+      name: "kycDetails.bankDetails.bankName",
+      label: "Bank Name",
+      componentType: "input",
+      type: "text",
+      placeholder: "Enter Bank Name",
+    },
+    {
+      name: "kycDetails.bankDetails.ifscCode",
+      label: "IFSC Code",
+      componentType: "input",
+      type: "text",
+      placeholder: "Enter IFSC Code",
+    },
+    {
+      name: "kycDetails.bankDetails.accountType",
+      label: "Account Type",
+      componentType: "input",
+      type: "text",
+      placeholder: "Enter Account Type",
+    },
+  ];
+
   useEffect(() => {
     if (recruiter) {
       setFormData({
@@ -212,6 +302,12 @@ const EditRecruiterForm = ({ recruiter, onSave, onClose }) => {
           countryCode: "+91",
         },
         currentAddress: recruiter.currentAddress || {
+          address: "",
+          city: "",
+          state: "",
+          pincode: "",
+        },
+        permanentAddress: recruiter.permanentAddress || {
           address: "",
           city: "",
           state: "",
@@ -235,6 +331,21 @@ const EditRecruiterForm = ({ recruiter, onSave, onClose }) => {
         fatherName: recruiter.fatherName || "",
         motherName: recruiter.motherName || "",
         medicalProblemDetails: recruiter.medicalProblemDetails || "",
+        kycDetails: recruiter.kycDetails || {
+          panDetails: {
+            number: "",
+          },
+          aadharDetails: {
+            number: "",
+          },
+          bankDetails: {
+            accountNumber: "",
+            accountHolderName: "",
+            bankName: "",
+            ifscCode: "",
+            accountType: "",
+          },
+        },
       });
     }
   }, [recruiter]);
@@ -282,12 +393,25 @@ const EditRecruiterForm = ({ recruiter, onSave, onClose }) => {
       linkedinProfile: formData.linkedinProfile,
     };
 
+    // Add current address details
+    if (formData.currentAddress) {
+      payload.currentAddress = formData.currentAddress;
+    }
+
+    // Add permanent address details
+    if (formData.permanentAddress) {
+      payload.permanentAddress = formData.permanentAddress;
+    }
+
+    // Add documents
     if (formData.documents) {
       payload.documents = formData.documents;
     }
     if (formData.latestQualification) {
       payload.latestQualification = formData.latestQualification;
     }
+
+    // Add additional information
     if (formData.fatherName) {
       payload.fatherName = formData.fatherName;
     }
@@ -296,6 +420,11 @@ const EditRecruiterForm = ({ recruiter, onSave, onClose }) => {
     }
     if (formData.medicalProblemDetails) {
       payload.medicalProblemDetails = formData.medicalProblemDetails;
+    }
+
+    // Add KYC and bank details
+    if (formData.kycDetails) {
+      payload.kycDetails = formData.kycDetails;
     }
 
     return payload;
@@ -379,6 +508,34 @@ const EditRecruiterForm = ({ recruiter, onSave, onClose }) => {
             <div className="space-y-4">
               <CommonForm
                 formControls={additionalInfoFields}
+                formData={formData}
+                setFormData={setFormData}
+                handleUpload={handleUpload}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              KYC Details
+            </h3>
+            <div className="space-y-4">
+              <CommonForm
+                formControls={kycFields}
+                formData={formData}
+                setFormData={setFormData}
+                handleUpload={handleUpload}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Bank Details
+            </h3>
+            <div className="space-y-4">
+              <CommonForm
+                formControls={bankDetailsFields}
                 formData={formData}
                 setFormData={setFormData}
                 handleUpload={handleUpload}
