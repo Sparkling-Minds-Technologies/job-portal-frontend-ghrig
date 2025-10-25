@@ -990,7 +990,7 @@ export const formControlsForIndividual = [
     componentType: "file",
     formats: "JPG, PNG, PDF.",
     accept: "image",
-    required: true,
+    // required: true,
   },
 ];
 export const jobOpeningFilters = [
@@ -1856,7 +1856,7 @@ export const jobSeekerEducationFormControls = [
     placeholder: "Upload Profile Picture",
     componentType: "file",
     accept: "image", // only allow images
-    required: true,
+    // required: true,
   },
 ];
 export const workExperienceFormControls = [
@@ -2438,7 +2438,7 @@ export const kycBankFormControls = [
     placeholder: "Upload Aadhar Card",
     componentType: "file",
     accept: "image",
-    required: true,
+    // required: true,
   },
   {
     name: "aadharDetails.number",
@@ -2454,7 +2454,7 @@ export const kycBankFormControls = [
     placeholder: "Upload PAN Card",
     componentType: "file",
     accept: "image",
-    required: true,
+    // required: true,
   },
   {
     name: "panDetails.number",
@@ -2506,7 +2506,7 @@ export const kycBankFormControls = [
     placeholder: "",
     componentType: "file",
     accept: "image", // you can also use "pdf" if needed
-    required: true,
+    // required: true,
   },
 ];
 // experienceFormControls.js

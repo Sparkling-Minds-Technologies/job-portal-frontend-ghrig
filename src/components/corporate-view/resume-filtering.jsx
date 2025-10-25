@@ -13,6 +13,7 @@ import {
 import { Checkbox } from "../ui/checkbox";
 import { convertMonthsToYearsAndMonths } from "../../utils/commonFunctions";
 import useJobSeekerProfileStore from "../../stores/useJobSeekerProfileStore";
+import { useLocation } from "react-router-dom";
 
 const ResumeFiltering = ({
   candidateProfiles,
@@ -20,6 +21,7 @@ const ResumeFiltering = ({
   setFormData,
   setOpen2,
 }) => {
+  const location = useLocation();
   const { setJobSeekerProfile } = useJobSeekerProfileStore();
   const handleOpen = (i, id) => {
     setJobSeekerProfile({ _id: i, id });
@@ -30,7 +32,11 @@ const ResumeFiltering = ({
     <div className="w-full inline-flex flex-col justify-start items-start gap-12 overflow-hidden">
       <div className="self-stretch flex flex-col justify-start items-start gap-8">
         <div className="self-stretch justify-start text-black text-3xl font-bold leading-loose">
-          List of candidates applied for this job
+          {location.pathname.includes("job-posting")
+            ? "List of candidates applied for this job"
+            : location.pathname.includes("training")
+            ? "List of candidates applied in this training"
+            : "List of candidates"}
         </div>
       </div>
       <div className="self-stretch inline-flex justify-start items-start gap-7">
@@ -103,21 +109,17 @@ const ResumeFiltering = ({
                             <div className="self-stretch justify-start text-[#35353A] text-sm font-bold leading-tight">
                               {item?.name || item.applicantName}
                             </div>
-                            <div className="self-stretch justify-start text-[#6E6E71] text-xs font-normal leading-none">
+                            {/* <div className="self-stretch justify-start text-[#6E6E71] text-xs font-normal leading-none">
                               {item?.areaOfExpertise || item.applicantRole}
-                            </div>
+                            </div> */}
                           </div>
+                        </TableCell>
+                        <TableCell className="px-[16px] py-[12px]">
+                          <div className="self-stretch justify-start text-[#35353A] text-sm font-normal leading-tight"></div>
                         </TableCell>
                         <TableCell className="px-[16px] py-[12px]">
                           <div className="self-stretch justify-start text-[#35353A] text-sm font-normal leading-tight">
                             {item._id}
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-[16px] py-[12px]">
-                          <div className="self-stretch justify-start text-[#35353A] text-sm font-normal leading-tight">
-                            {convertMonthsToYearsAndMonths(
-                              item?.totalExperience || item?.applicantExperience
-                            )}
                           </div>
                         </TableCell>
                         <TableCell className="px-[16px] py-[12px]">
