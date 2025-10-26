@@ -127,8 +127,8 @@ const ResumeFiltering = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {candidateProfiles?.data?.applications.length > 0 ? (
-                    candidateProfiles?.data?.applications.map((item, i) => (
+                  {candidateProfiles?.data?.applications?.length > 0 ? (
+                    candidateProfiles?.data?.applications?.map((item, i) => (
                       <TableRow key={i}>
                         <TableCell className="w-[50px] px-[16px] py-[12px]">
                           <Checkbox className="data-[state=checked]:text-white data-[state=checked]:bg-[#6945ED] h-[16px] w-[16px] rounded-[2px] flex items-center justify-center cursor-pointer" />
@@ -146,15 +146,22 @@ const ResumeFiltering = ({
                             <img
                               src={
                                 item?.profilePicture ||
-                                item.applicant?.profilePicture
+                                item.applicant?.profilePicture ||
+                                item?.applicantImage
                               }
-                              alt={item?.name || item.applicant?.name}
+                              alt={
+                                item?.name ||
+                                item.applicant?.name ||
+                                item?.applicantName
+                              }
                               className="h-full w-full rounded-[50px] object-cover"
                             />
                           </div>
                           <div className="flex flex-col items-center justify-center">
                             <div className="self-stretch justify-start text-[#35353A] text-sm font-bold leading-tight">
-                              {item?.name || item.applicant?.name}
+                              {item?.name ||
+                                item.applicant?.name ||
+                                item?.applicantName}
                             </div>
                           </div>
                         </TableCell>
@@ -169,19 +176,22 @@ const ResumeFiltering = ({
                           </div>
                         </TableCell>
                         <TableCell className="px-[16px] py-[12px]">
-                          {item.application.status === "rejected" ? (
+                          {(item?.application?.status || item?.status) ===
+                          "rejected" ? (
                             <div className="size- px-2 py-1 bg-red-600/10 rounded-[3px] inline-flex justify-start items-center gap-1 overflow-hidden">
                               <div className="justify-start text-red-600 text-xs font-medium leading-none">
                                 Rejected
                               </div>
                             </div>
-                          ) : item.application.status === "approved" ? (
+                          ) : (item?.application?.status || item?.status) ===
+                            "approved" ? (
                             <div className="size- px-2 py-1 bg-lime-600/10 rounded-[3px] inline-flex justify-start items-center gap-1 overflow-hidden">
                               <div className="justify-start text-lime-600 text-xs font-medium leading-none">
                                 Approved
                               </div>
                             </div>
-                          ) : item.application.status === "hold" ? (
+                          ) : (item?.application?.status || item?.status) ===
+                            "hold" ? (
                             <div className="size- px-2 py-1 bg-[#000] rounded-[3px] inline-flex justify-start items-center gap-1 overflow-hidden">
                               <div className="justify-start text-[#fff] text-xs font-medium leading-none">
                                 Hold

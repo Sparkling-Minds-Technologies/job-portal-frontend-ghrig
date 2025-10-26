@@ -38,6 +38,7 @@ const CandidateProfile = ({ open, setOpen, applicantData }) => {
 
     // setOpen(false);
   };
+  // console.log(location.pathname)
 
   return (
     <Fragment>
@@ -101,7 +102,7 @@ const CandidateProfile = ({ open, setOpen, applicantData }) => {
               </div>
             </div>
           </div>
-          {location.pathname.includes("corporate") && (
+          {location.pathname.includes("corporate/job-posting") && (
             <div className="w-40 inline-flex flex-col justify-center items-start gap-2.5">
               <div
                 onClick={() => handleStatusUpdate("approved")}
