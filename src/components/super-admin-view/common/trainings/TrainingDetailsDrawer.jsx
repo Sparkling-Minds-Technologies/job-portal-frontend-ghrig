@@ -294,15 +294,47 @@ const TrainingDetailsDrawer = ({
                 </span>
               </li>
             )}
-            {displayTraining.participantsPerBatch && (
-              <li className="flex items-start gap-2">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
-                <span className="text-gray-700">
-                  <strong>Participants Per Batch:</strong>{" "}
-                  {displayTraining.participantsPerBatch}
-                </span>
-              </li>
-            )}
+
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-gray-700">
+                <strong>How many participants will be in each batch:</strong>{" "}
+                {displayTraining?.participantsPerBatch || "-"}
+              </span>
+            </li>
+
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-gray-700">
+                <strong>Total Number of Sessions:</strong>{" "}
+                {displayTraining?.sessionsExpected || "-"}
+              </span>
+            </li>
+
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-gray-700">
+                <strong>
+                  Do you expect the trainer to provide study materials or
+                  slides?
+                </strong>{" "}
+                {displayTraining?.studyMaterialsProvided === true
+                  ? "Yes"
+                  : "No"}
+              </span>
+            </li>
+
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-gray-700">
+                <strong>
+                  Would you like a demo session before confirming:
+                </strong>{" "}
+                {displayTraining?.demoSessionBeforeConfirming === true
+                  ? "Yes"
+                  : "No"}
+              </span>
+            </li>
             {displayTraining.subjectMatterExpertise && (
               <li className="flex items-start gap-2">
                 <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
@@ -324,12 +356,19 @@ const TrainingDetailsDrawer = ({
             <li className="flex items-start gap-2">
               <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
               <span className="text-gray-700">
-                <strong>Travel Required:</strong>{" "}
-                {displayTraining.travelRequired !== undefined
-                  ? displayTraining.travelRequired
-                    ? "Yes"
-                    : "No"
-                  : "Not specified"}
+                <strong>
+                  {" "}
+                  Will you cover travel/stay if the trainer needs to relocate:
+                </strong>{" "}
+                {displayTraining?.travelRequired === true ? "Yes" : "No"}
+              </span>
+            </li>
+
+            <li className="flex items-start gap-2">
+              <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+              <span className="text-gray-700">
+                <strong>What languages should the trainer be fluent in?</strong>{" "}
+                {displayTraining?.languagesFluent?.join(", ") || "-"}
               </span>
             </li>
           </ul>
@@ -353,10 +392,7 @@ const TrainingDetailsDrawer = ({
         </div>
 
         {/* Skills/Tags */}
-        {(displayTraining.requiredSkills ||
-          displayTraining.skills ||
-          displayTraining.technicalSkills ||
-          displayTraining.languagesFluent) && (
+        {displayTraining.requiredSkills && (
           <div className="mt-6">
             <div className="flex flex-wrap gap-2">
               {displayTraining.requiredSkills &&
@@ -367,36 +403,6 @@ const TrainingDetailsDrawer = ({
                     className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full border"
                   >
                     {skill}
-                  </span>
-                ))}
-              {displayTraining.skills &&
-                Array.isArray(displayTraining.skills) &&
-                displayTraining.skills.map((skill, index) => (
-                  <span
-                    key={`skill-${index}`}
-                    className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full border"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              {displayTraining.technicalSkills &&
-                Array.isArray(displayTraining.technicalSkills) &&
-                displayTraining.technicalSkills.map((skill, index) => (
-                  <span
-                    key={`tech-${index}`}
-                    className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full border"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              {displayTraining.languagesFluent &&
-                Array.isArray(displayTraining.languagesFluent) &&
-                displayTraining.languagesFluent.map((language, index) => (
-                  <span
-                    key={`lang-${index}`}
-                    className="px-3 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full border"
-                  >
-                    {language}
                   </span>
                 ))}
             </div>
@@ -477,6 +483,7 @@ const TrainingDetailsDrawer = ({
                   </span>
                 </div>
               )}
+
               {displayTraining.totalDurationDays && (
                 <div className="flex items-center gap-2">
                   <CalendarIcon className="h-4 w-4" />

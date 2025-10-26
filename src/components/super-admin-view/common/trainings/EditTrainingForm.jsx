@@ -8,17 +8,16 @@ import { toast } from "sonner";
 import { PlusIcon, XIcon } from "lucide-react";
 import ButtonComponent from "@/components/common/button";
 import {
-  EDUCATION_LEVELS,
   EXPERIENCE_LEVELS,
   TRAINING_MODES,
   SESSION_FREQUENCIES,
 } from "@/constants/super-admin";
+import { useDropDown } from "@/hooks/common/useDropDown";
 
 const editTrainingSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   responsibilities: z.array(z.string()).optional(),
-  minimumEducation: z.string().optional(),
   minimumExperience: z.string().optional(),
   trainingMode: z.string().optional(),
   sessionFrequency: z.string().optional(),
@@ -72,22 +71,11 @@ const trainingBasicInfo = [
 
 const trainingDetails = [
   {
-    row: [
-      {
-        name: "minimumEducation",
-        label: "Education",
-        componentType: "select",
-        placeholder: "Select education",
-        options: EDUCATION_LEVELS,
-      },
-      {
-        name: "minimumExperience",
-        label: "Experience Level",
-        componentType: "select",
-        placeholder: "Select experience",
-        options: EXPERIENCE_LEVELS,
-      },
-    ],
+    name: "minimumExperience",
+    label: "Experience Level",
+    componentType: "select",
+    placeholder: "Select experience",
+    options: EXPERIENCE_LEVELS,
   },
   {
     row: [
@@ -129,7 +117,7 @@ const trainingDetails = [
     row: [
       {
         name: "participantsPerBatch",
-        label: "Participants Per Batch",
+        label: "How many participants will be in each batch:",
         placeholder: "Enter number",
         componentType: "input",
         type: "number",
@@ -151,13 +139,13 @@ const trainingDetails = [
   {
     name: "qualificationsRequired",
     label: "Qualifications Required",
-    placeholder: "Enter qualifications",
-    componentType: "input",
-    type: "text",
+    placeholder: "Select qualification",
+    componentType: "select",
+    options: [],
   },
   {
     name: "sessionsExpected",
-    label: "Sessions Expected",
+    label: "Total Number of Sessions:",
     placeholder: "Enter number of sessions",
     componentType: "input",
     type: "number",
@@ -167,17 +155,17 @@ const trainingDetails = [
 const trainingAdditionalInfo = [
   {
     name: "travelRequired",
-    label: "Travel Required",
+    label: "Will you cover travel/stay if the trainer needs to relocate:",
     componentType: "checkbox",
   },
   {
     name: "studyMaterialsProvided",
-    label: "Study Materials Provided",
+    label: "Do you expect the trainer to provide study materials or slides?",
     componentType: "checkbox",
   },
   {
     name: "demoSessionBeforeConfirming",
-    label: "Demo Session Before Confirming",
+    label: "Would you like a demo session before confirming:",
     componentType: "checkbox",
   },
   {
@@ -194,7 +182,7 @@ const trainingAdditionalInfo = [
   },
   {
     name: "languagesFluent",
-    label: "Languages Fluent (comma separated)",
+    label: "What languages should the trainer be fluent in?",
     placeholder: "Enter languages separated by commas",
     componentType: "textarea",
     rows: 2,
@@ -244,11 +232,18 @@ const trainingAddressInfo = [
 ];
 
 const EditTrainingForm = ({ training, onClose, onSave }) => {
+  const { data: educationLevelDropdown } = useDropDown("education-level");
+
+  const educationLevelOptions =
+    educationLevelDropdown?.data?.values?.map((item) => ({
+      id: item.value,
+      label: item.label,
+    })) || [];
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     responsibilities: "",
-    minimumEducation: "",
     minimumExperience: "",
     trainingMode: "",
     sessionFrequency: "",
@@ -311,7 +306,6 @@ const EditTrainingForm = ({ training, onClose, onSave }) => {
         title: training.title || "",
         description: training.description || "",
         responsibilities: "",
-        minimumEducation: training.minimumEducation || "",
         minimumExperience: training.minimumExperience || "",
         trainingMode: training.trainingMode || "",
         sessionFrequency: training.sessionFrequency || "",
@@ -393,12 +387,13 @@ const EditTrainingForm = ({ training, onClose, onSave }) => {
         sessionsExpected: formData.sessionsExpected
           ? Number(formData.sessionsExpected)
           : undefined,
-        postedBy: {
-          ...(currentAddress && { currentAddress }),
-          ...(city && { city }),
-          ...(state && { state }),
-          ...(pincode && { pincode }),
-        },
+        // TODO: Uncomment this when BE is fixed
+        // postedBy: {
+        //   ...(currentAddress && { currentAddress }),
+        //   ...(city && { city }),
+        //   ...(state && { state }),
+        //   ...(pincode && { pincode }),
+        // },
       };
 
       Object.keys(payload).forEach((key) => {
@@ -562,10 +557,15 @@ const EditTrainingForm = ({ training, onClose, onSave }) => {
                     </div>
                   );
                 } else {
+                  const finalControl =
+                    control.name === "qualificationsRequired"
+                      ? { ...control, options: educationLevelOptions }
+                      : control;
+
                   return (
                     <div key={control.name} className="flex flex-col gap-2">
                       <CommonForm
-                        formControls={[control]}
+                        formControls={[finalControl]}
                         formData={formData}
                         setFormData={setFormData}
                       />
