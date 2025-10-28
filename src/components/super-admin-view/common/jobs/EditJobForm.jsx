@@ -216,25 +216,6 @@ const jobAdditionalInfo = [
   },
 ];
 
-// Validation schema - all fields are optional since BE accepts all optional
-const editJobSchema = z.object({
-  jobTitle: z.string().optional(),
-  jobType: z.string().optional(),
-  jobDescription: z.string().optional(),
-  minimumEducation: z.string().optional(),
-  experienceLevel: z.string().optional(),
-  modeOfWork: z.string().optional(),
-  modeOfInterview: z.string().optional(),
-  officeLocation: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  salaryRange: z.string().optional(),
-  workingHours: z.string().optional(),
-  genderPreference: z.string().optional(),
-  regionalLanguageRequired: z.boolean().optional(),
-  requiredSkills: z.array(z.string()).optional(),
-});
-
 const EditJobForm = ({ job, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -276,11 +257,10 @@ const EditJobForm = ({ job, onClose, onSave }) => {
     })) || [];
 
   // Fetch expertise area dropdown values
-  const { data: expertiseDropdownData } =
-    useGetDropdownValues("expertise-area");
-  const expertiseOptions =
-    expertiseDropdownData?.data?.values?.map((item) => ({
-      id: item.value,
+  const { data: skillDropdownData } = useGetDropdownValues("skills");
+  const skillOptions =
+    skillDropdownData?.data?.values?.map((item) => ({
+      id: item._id,
       label: item.label,
     })) || [];
 
@@ -373,11 +353,7 @@ const EditJobForm = ({ job, onClose, onSave }) => {
 
       const payload = {
         ...formData,
-        requiredSkills: Array.isArray(formData.requiredSkills)
-          ? formData.requiredSkills.map((skill) =>
-              typeof skill === "string" ? skill : skill.id || skill.value
-            )
-          : undefined,
+        requiredSkills: formData.requiredSkills.map((skill) => skill.id) || [],
       };
 
       // Remove empty/undefined values to keep payload clean
@@ -528,7 +504,7 @@ const EditJobForm = ({ job, onClose, onSave }) => {
                     options: languageProficiencyOptions,
                   };
                 } else if (control.name === "requiredSkills") {
-                  updatedControl = { ...control, options: expertiseOptions };
+                  updatedControl = { ...control, options: skillOptions };
                 }
 
                 return (
