@@ -140,20 +140,22 @@ const TrainersTable = ({
                       <TableCell
                         className="w-[180px] max-w-[180px] truncate"
                         title={
-                          Array.isArray(trainer.industryExperience)
-                            ? trainer.industryExperience
-                                .map(
-                                  (industry) => industry.name || industry._id
-                                )
+                          context === "approvals"
+                            ? trainer?.data?.expertiseAreas
+                                ?.map((item) => item._id)
                                 .join(", ")
-                            : trainer.industryExperience || "N/A"
+                            : trainer?.expertiseAreas
+                                ?.map((item) => item._id)
+                                .join(", ")
                         }
                       >
-                        {Array.isArray(trainer.industryExperience)
-                          ? trainer.industryExperience
-                              .map((industry) => industry.name || industry._id)
+                        {context === "approvals"
+                          ? trainer?.data?.expertiseAreas
+                              ?.map((item) => item._id)
                               .join(", ")
-                          : trainer.industryExperience || "N/A"}
+                          : trainer?.expertiseAreas
+                              ?.map((item) => item._id)
+                              .join(", ")}
                       </TableCell>
                       <TableCell className="w-[120px]">
                         {trainer.totalYearOfExperience || ""}
