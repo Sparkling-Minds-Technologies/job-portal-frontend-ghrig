@@ -147,8 +147,8 @@ const RecruitersTab = ({ context = "database" }) => {
 
   const totalCount =
     context === "approvals"
-      ? data?.data?.pagination?.totalApprovals || paginatedRecruiters.length
-      : data?.data?.pagination?.total || 0;
+      ? data?.data?.pagination?.totalApprovals
+      : data?.data?.pagination?.total;
 
   const totalPages =
     context === "approvals"

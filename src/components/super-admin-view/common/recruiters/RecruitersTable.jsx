@@ -42,7 +42,7 @@ const RecruitersTable = ({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="min-w-[40px] max-w-[40px] font-semibold"></TableHead>
+                  <TableHead className="w-[40px] font-semibold"></TableHead>
                   <TableHead className="min-w-[80px] max-w-[80px] font-semibold">
                     ID
                   </TableHead>
@@ -93,7 +93,7 @@ const RecruitersTable = ({
                       onClick={(e) => handleRowClick(recruiter, e)}
                       className="cursor-pointer hover:bg-gray-50 transition-colors"
                     >
-                      <TableCell className="text-center max-w-[40px]">
+                      <TableCell className="text-center w-[40px]">
                         <input
                           type="radio"
                           name="selectRecruiter"
