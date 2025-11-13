@@ -43,6 +43,25 @@ const bankDetailsSchema = z
   })
   .optional();
 
+const gstDetailsSchema = z
+  .object({
+    gstinNumber: z
+      .string()
+      .optional()
+      .or(z.literal(""))
+      .transform((val) => val?.toUpperCase?.() || val)
+      .refine(
+        (val) =>
+          !val ||
+          /^(0[1-9]|1[0-9]|2[0-9]|3[0-7])[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(
+            val
+          ),
+        { message: "Invalid GSTIN format" }
+      ),
+    gstinFile: optionalFileSchema,
+  })
+  .optional();
+
 export const privateCompanySchema = z.object({
   currentAddress: z
     .string({ required_error: "Current address is required" }) // catches undefined
@@ -60,12 +79,14 @@ export const privateCompanySchema = z.object({
     .string({ required_error: "Industry type is required" })
     .min(1, "Industry type cannot be empty"),
   gstin: z
-    .string({ required_error: "GSTIN is required" })
-    .min(1, "GSTIN cannot be empty")
-    .regex(
-      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
-      "Invalid GSTIN format"
-    ),
+  .string({ required_error: "GSTIN is required" })
+  .min(15, "GSTIN must be exactly 15 characters")
+  .max(15, "GSTIN must be exactly 15 characters")
+  .regex(
+    /^(0[1-9]|1[0-9]|2[0-9]|3[0-7])[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/,
+    "Invalid GSTIN format"
+  ),
+
 
   panDetails: panDetailsSchema,
   bankDetails: bankDetailsSchema,
@@ -85,12 +106,14 @@ export const individualFormSchema = z.object({
     .string({ required_error: "Pincode is required" })
     .min(1, "Pincode cannot be empty"),
   gstin: z
-    .string({ required_error: "GSTIN is required" })
-    .min(1, "GSTIN cannot be empty")
-    .regex(
-      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
-      "Invalid GSTIN format"
-    ),
+  .string({ required_error: "GSTIN is required" })
+  .min(15, "GSTIN must be exactly 15 characters")
+  .max(15, "GSTIN must be exactly 15 characters")
+  .regex(
+    /^(0[1-9]|1[0-9]|2[0-9]|3[0-7])[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/,
+    "Invalid GSTIN format"
+  ),
+
 
   panDetails: panDetailsSchema,
   aadharCardNumber: z

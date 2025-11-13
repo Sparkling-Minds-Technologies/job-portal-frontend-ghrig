@@ -36,42 +36,244 @@ export default function CommonForm({
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [otherSelections, setOtherSelections] = useState({});
+
+  // -----------------------------------------
+  // VALIDATION: allow only alphabets, digits etc.
+  // -----------------------------------------
+const applyRestrictions = (fieldName, value) => {
+  let v = value;
+  const lower = fieldName.toLowerCase();
+
+  // -----------------------------------------
+  // FIX: Ignore email fields completely
+  // -----------------------------------------
+  if (lower.includes("email")) {
+    return value; // allow @ . _ -
+  }
+
+  // -----------------------------------------
+  // 1️⃣ Organization / Company — allow letters + numbers
+  // (EXCLUDING any email field)
+  // -----------------------------------------
+  if (
+    (
+      lower.includes("organization") ||
+      lower.includes("organisation") ||
+      lower.includes("company") ||
+      lower.includes("companyname") ||
+      lower.includes("lastorganization") ||
+      lower.includes("org")
+    ) &&
+    !lower.includes("email") // IMPORTANT FIX
+  ) {
+    let cleaned = v.replace(/[^A-Za-z0-9 ]/g, "");
+
+    if (/^[0-9]+$/.test(cleaned)) {
+      return "";
+    }
+
+    return cleaned;
+  }
+
+  // -----------------------------------------
+  // 2️⃣ Designation — allow letters + numbers
+  // -----------------------------------------
+  if (lower.includes("designation")) {
+    let cleaned = v.replace(/[^A-Za-z0-9 ]/g, "");
+
+    if (/^[0-9]+$/.test(cleaned)) {
+      return "";
+    }
+
+    return cleaned;
+  }
+
+  // -----------------------------------------
+  // 3️⃣ Contact Number → ONLY digits
+  // -----------------------------------------
+  if (lower.includes("contactno") || lower === "contact") {
+    return v.replace(/[^0-9]/g, "").slice(0, 10);
+  }
+
+  // -----------------------------------------
+  // 4️⃣ Names (first/last/full)
+  // -----------------------------------------
+    if (
+  fieldName.toLowerCase().includes("name") &&
+  !fieldName.toLowerCase().includes("username")
+) {
+  v = v.replace(/[^A-Za-z]/g, "");
+}
+
+
+  // -----------------------------------------
+  // 5️⃣ City / State — letters only
+  // -----------------------------------------
+  if (lower.includes("city") || lower.includes("state")) {
+    return v.replace(/[^A-Za-z ]/g, "");
+  }
+
+  // -----------------------------------------
+  // 6️⃣ Pincode — digits only
+  // -----------------------------------------
+  if (lower.includes("pincode")) {
+    return v.replace(/[^0-9]/g, "").slice(0, 6);
+  }
+
+  // -----------------------------------------
+  // 7️⃣ Account Number — 18 digits max
+  // -----------------------------------------
+  if (lower.includes("accountnumber")) {
+    return v.replace(/[^0-9]/g, "").slice(0, 18);
+  }
+
+  // -----------------------------------------
+  // 8️⃣ IFSC Code — A-Z + numbers (max 11)
+  // -----------------------------------------
+  if (lower.includes("ifsc")) {
+    return v.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 11);
+  }
+
+  // -----------------------------------------
+  // 9️⃣ PAN Number — 5 letters + 4 digits + 1 letter
+  // -----------------------------------------
+  if (lower.includes("pan")) {
+    return v.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+  }
+
+  // -----------------------------------------
+  // 🔟 Aadhaar Number — 12 digits
+  // -----------------------------------------
+  if (lower.includes("aadhaar") || lower.includes("aadhar")) {
+    return v.replace(/[^0-9]/g, "").slice(0, 12);
+  }
+
+   // GSTIN — Only Caps + Numbers, Max 15
+  // -----------------------------------------
+  if (lower.includes("gstin")) {
+    return v.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15);
+  }
+
+  // No of positions → only digits
+// -----------------------------------------
+if (lower.includes("noofpositions") || lower.includes("positions")) {
+  return v.replace(/[^0-9]/g, "");
+}
+
+// -----------------------------------------
+// Preferred age range (example: "18-50")
+// Allow only digits and a single hyphen
+// -----------------------------------------
+if (lower.includes("agerange") || lower.includes("age")) {
+  // Allow digits and - (only one)
+  let cleaned = v.replace(/[^0-9-]/g, "");
+
+  // Prevent multiple hyphens
+  const hyphens = cleaned.split("-").length - 1;
+  if (hyphens > 1) {
+    cleaned = cleaned.replace(/-+$/, "");
+  }
+
+  return cleaned;
+}
+  return v;
+};
+
+
   function renderInputsByComponentType(getControlItem, index) {
     let nameWithIndex = getControlItem.name;
+
     if (formType !== null && i >= 0) {
       nameWithIndex = `${formType}.${i}.${getControlItem.name}`;
     }
+
     const value = getNestedValue(formData, nameWithIndex) || "";
+
     const errorMessage =
       errors?.[nameWithIndex]?.[0] || errors?.[nameWithIndex];
+
     const commonInputProps = {
       name: nameWithIndex,
       id: nameWithIndex,
       placeholder: getControlItem.placeholder,
       value,
       onChange: (event) => {
-        const value = event.target.value;
+        let val = applyRestrictions(getControlItem.name, event.target.value);
 
-        // Allow only numbers up to 3 digits if max is true
-        if (getControlItem.max && value.length > 3) return;
+        if (getControlItem.max && val.length > 3) return;
 
         setFormData((prev) =>
           setNestedValue(
             prev,
             nameWithIndex,
-            getControlItem.type === "number" ? Number(value) : value
+            getControlItem.type === "number" ? Number(val) : val
           )
         );
       },
+
       onWheel: (e) => e.currentTarget.blur(),
 
-      className: `flex placeholder:translate-y-[1px] items-center justify-center text-black text-base rounded-[4px] border py-[10px] px-[16px] placeholder:text-[#9B959F] ${
-        errorMessage
-          ? "border-red-500 focus:border-red-500"
-          : "border-[#E2E2E2]"
-      } focus:outline-none focus-visible:ring-0`,
+      className: `flex placeholder:translate-y-[1px] items-center justify-center text-black text-base rounded-[4px] border py-[10px] px-[16px] 
+          placeholder:text-[#9B959F] ${
+            errorMessage ? "border-red-500" : "border-[#E2E2E2]"
+          } focus:outline-none focus-visible:ring-0`,
     };
 
+    // -----------------------------------------
+    // PHONE COMPONENT
+    // -----------------------------------------
+    if (getControlItem.componentType === "phone") {
+      const phoneObject = getNestedValue(formData, nameWithIndex) || {
+        number: "",
+        countryCode: "",
+      };
+
+      const numberError = errors?.[`${nameWithIndex}.number`];
+      const codeError = errors?.[`${nameWithIndex}.countryCode`];
+
+      return (
+        <div>
+          <PhoneInput
+            country={"in"}
+            value={(phoneObject.countryCode || "") + (phoneObject.number || "")}
+            onChange={(value, countryData) => {
+              const dialCode = "+" + countryData.dialCode;
+              let number = value.replace(/[^0-9]/g, "");
+              number = number.slice(countryData.dialCode.length).slice(0, 10);
+
+              setFormData((prev) =>
+                setNestedValue(prev, nameWithIndex, {
+                  countryCode: dialCode,
+                  number: number,
+                })
+              );
+            }}
+            inputClass={`!w-full !h-[44px] !rounded-[4px] !px-[16px] !text-sm !border 
+              ${
+                numberError || codeError
+                  ? "!border-red-500"
+                  : "!border-[#E2E2E2]"
+              }`}
+            buttonClass={`!border-r ${
+              numberError || codeError
+                ? "!border-red-500"
+                : "!border-[#E2E2E2]"
+            } !bg-white`}
+            containerClass="!w-full"
+            dropdownClass="!bg-white !text-sm !rounded-md !shadow-lg z-50"
+          />
+
+          {(numberError || codeError) && (
+            <p className="text-red-500 text-sm mt-1">
+              {numberError || codeError}
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    // -------------------------------------------------------------------
+    // SWITCH COMPONENTS
     switch (getControlItem.componentType) {
       case "selection":
         return (
@@ -79,15 +281,15 @@ export default function CommonForm({
             {getControlItem.options.map((item) => (
               <div
                 key={item.id}
-                className="w-full h-11 px-4 py-2.5 bg-white rounded-sm outline-1 outline-neutral-200 inline-flex justify-center items-center gap-2 cursor-pointer"
+                className="w-full h-11 px-4 py-2.5 bg-white rounded-sm outline-1 outline-neutral-200 
+                inline-flex justify-center items-center gap-2 cursor-pointer"
                 onClick={() => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    [getControlItem.name]: item.id,
-                  }));
+                  setFormData((prev) =>
+                    setNestedValue(prev, nameWithIndex, item.id)
+                  );
                 }}
               >
-                <div className="w-full self-stretch flex justify-center items-center gap-2.5">
+                <div className="w-full flex justify-center items-center gap-2.5">
                   {item.id === value && (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -106,72 +308,22 @@ export default function CommonForm({
                       />
                     </svg>
                   )}
-                  <div className="justify-start text-neutral-400 text-sm font-normal">
-                    {item.label}
-                  </div>
+                  <div className="text-neutral-400 text-sm">{item.label}</div>
                 </div>
               </div>
             ))}
           </div>
-        );
-      case "phone":
-        const phoneObject = getNestedValue(formData, nameWithIndex) || {
-          number: "",
-          countryCode: "",
-        };
-        const numberError =
-          errors && typeof errors === "object"
-            ? errors[`${nameWithIndex}.number`]
-            : null;
-
-        const codeError =
-          errors && typeof errors === "object"
-            ? errors[`${nameWithIndex}.countryCode`]
-            : null;
-        const fullNumber =
-          (phoneObject.countryCode || "") + (phoneObject.number || "");
-        return (
-          <PhoneInput
-            country={"in"}
-            value={fullNumber}
-            onChange={(value, countryData) => {
-              const dialCode = "+" + countryData.dialCode;
-              const number = value.slice(countryData.dialCode.length);
-              setFormData((prev) =>
-                setNestedValue(prev, nameWithIndex, {
-                  countryCode: dialCode,
-                  number: number,
-                })
-              );
-            }}
-            inputClass={`!w-full !h-[44px] !rounded-[4px] !px-[16px] !text-sm !border ${
-              numberError || codeError
-                ? "!border-red-500 focus:!border-red-500 focus:!ring-1 focus:!ring-red-500"
-                : "!border-[#E2E2E2] !bg-white focus:!ring-1 focus:!ring-black"
-            } !placeholder:text-[#9B959F]  focus:!outline-none`}
-            buttonClass={`!border-r ${
-              codeError || numberError
-                ? "!border-red-500 focus:!border-red-500"
-                : "!border-[#E2E2E2] !bg-white"
-            } !bg-white`}
-            containerClass="!w-full"
-            dropdownClass="!bg-white !text-sm !rounded-md !shadow-lg z-50"
-            placeholder={getControlItem.placeholder || "Enter phone number"}
-          />
         );
 
       case "input":
         if (getControlItem.type === "password") {
           return (
             <div className="relative w-full">
-              <Input
-                {...commonInputProps}
-                type={showPassword ? "text" : "password"}
-              />
+              <Input {...commonInputProps} type={showPassword ? "text" : "password"} />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9B959F] text-md"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9B959F]"
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
@@ -180,6 +332,7 @@ export default function CommonForm({
         } else {
           return <Input {...commonInputProps} type={getControlItem.type} />;
         }
+
       case "monthYear":
         return (
           <MonthYearPicker
@@ -192,52 +345,20 @@ export default function CommonForm({
             errorMessage={errorMessage}
           />
         );
+
       case "select":
         const isMedicalProblemField =
           getControlItem.name === "hasMedicalProblem";
-        const medicalDetailsValue =
-          getNestedValue(formData, "medicalProblemDetails") || "";
 
-        const isOtherEnabled = getControlItem.showOtherInput; // Decide if "Other" should show input field
-        const selectedValue = getNestedValue(formData, nameWithIndex) ?? ""; // Dynamically get the value
-
-        const shouldShowOtherInput =
-          otherSelections?.[getControlItem.name] ?? false;
+        const selectedValue = getNestedValue(formData, nameWithIndex) ?? "";
+        const showOther = otherSelections?.[getControlItem.name] ?? false;
 
         return (
           <div className="flex flex-col gap-2">
             <Select
               onValueChange={(val) => {
-                setFormData((prev) => {
-                  let updated = { ...prev };
-
-                  if (isOtherEnabled && val === "other") {
-                    // "Other" is selected — keep the field empty or use existing value
-                    if (getControlItem.inlineOther) {
-                      updated = setNestedValue(updated, nameWithIndex, ""); // Override same field (like jobSource)
-                    } else {
-                      updated = setNestedValue(updated, nameWithIndex, "other");
-                    }
-                  } else {
-                    updated = setNestedValue(updated, nameWithIndex, val);
-
-                    if (!getControlItem.inlineOther) {
-                      // Clean up other field if it exists
-                      const otherFieldPath = `${nameWithIndex}_other`;
-                      const existingOtherValue = getNestedValue(
-                        updated,
-                        otherFieldPath
-                      );
-                      if (existingOtherValue !== undefined) {
-                        delete getNestedValue(updated, otherFieldPath);
-                      }
-                    }
-                  }
-
-                  return updated;
-                });
                 setFormData((prev) =>
-                  setNestedValue(prev, "medicalProblemDetails", "")
+                  setNestedValue(prev, nameWithIndex, val)
                 );
 
                 setOtherSelections((prev) => ({
@@ -245,151 +366,98 @@ export default function CommonForm({
                   [getControlItem.name]: val === "other",
                 }));
               }}
-              value={
-                isOtherEnabled && shouldShowOtherInput
-                  ? "other"
-                  : selectedValue || ""
-              }
+              value={showOther ? "other" : selectedValue}
             >
               <SelectTrigger
-                className={`w-full flex placeholder:translate-y-[1px] items-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1  ${
-                  errorMessage
-                    ? "!border-red-500 focus:!border-red-500"
-                    : "!border-[#E2E2E2] !bg-white"
-                } py-[20px] px-[16px] data-[placeholder]:text-[#9B959F]`}
+                className={`w-full rounded-[4px] border ${
+                  errorMessage ? "border-red-500" : "border-[#E2E2E2]"
+                } py-[20px] px-[16px]`}
               >
-                <SelectValue placeholder={getControlItem?.placeholder} />
+                <SelectValue placeholder={getControlItem.placeholder} />
               </SelectTrigger>
-              <SelectContent className={"bg-white"}>
-                {getControlItem.options?.length > 0 &&
-                  getControlItem.options.map((optionItem) => (
-                    <SelectItem
-                      key={optionItem.id}
-                      value={optionItem.id}
-                      className="cursor-pointer hover:bg-gray-300"
-                    >
-                      {optionItem.label}
-                    </SelectItem>
-                  ))}
 
-                {isOtherEnabled && (
+              <SelectContent className="bg-white">
+                {getControlItem.options?.map((option) => (
                   <SelectItem
-                    value="other"
-                    className="cursor-pointer hover:bg-gray-300"
+                    key={option.id}
+                    value={option.id}
+                    className="cursor-pointer"
                   >
-                    Other (please specify)
+                    {option.label}
                   </SelectItem>
+                ))}
+
+                {getControlItem.showOtherInput && (
+                  <SelectItem value="other">Other (please specify)</SelectItem>
                 )}
               </SelectContent>
             </Select>
 
-            {/* Show "Other" input if selected */}
-            {isOtherEnabled && shouldShowOtherInput && (
+            {/* Show OTHER input */}
+            {getControlItem.showOtherInput && showOther && (
               <Input
                 type="text"
                 placeholder="Please specify"
-                value={
-                  getControlItem.inlineOther
-                    ? getNestedValue(formData, nameWithIndex) || ""
-                    : getNestedValue(formData, `${nameWithIndex}_other`) || ""
-                }
+                value={selectedValue === "other" ? "" : selectedValue}
                 onChange={(e) =>
                   setFormData((prev) =>
-                    setNestedValue(
-                      prev,
-                      getControlItem.inlineOther
-                        ? nameWithIndex
-                        : `${nameWithIndex}_other`,
-                      e.target.value
-                    )
+                    setNestedValue(prev, nameWithIndex, e.target.value)
                   )
                 }
-                className={`flex placeholder:translate-y-[1px] items-center justify-center text-black text-base rounded-[4px] border py-[10px] px-[16px] placeholder:text-[#9B959F] ${
-                  errorMessage
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-[#E2E2E2]"
-                } focus:outline-none focus-visible:ring-0`}
+                className={`border ${
+                  errorMessage ? "border-red-500" : "border-[#E2E2E2]"
+                } rounded-[4px] py-[10px] px-[16px]`}
               />
             )}
 
-            {/* Medical Problem Details */}
+            {/* Extra input if gender = yes */}
             {isMedicalProblemField && selectedValue === "yes" && (
               <Input
                 type="text"
                 placeholder="Specify the medical problem"
-                value={medicalDetailsValue}
+                value={getNestedValue(formData, "medicalProblemDetails") || ""}
                 onChange={(e) =>
                   setFormData((prev) =>
-                    setNestedValue(
-                      prev,
-                      "medicalProblemDetails",
-                      e.target.value
-                    )
+                    setNestedValue(prev, "medicalProblemDetails", e.target.value)
                   )
                 }
-                className={`flex placeholder:translate-y-[1px] items-center justify-center text-black text-base rounded-[4px] border py-[10px] px-[16px] placeholder:text-[#9B959F] ${
-                  errors["medicalProblemDetails"]
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-[#E2E2E2]"
-                } focus:outline-none focus-visible:ring-0`}
+                className="border border-[#E2E2E2] rounded-[4px] py-[10px] px-[16px]"
               />
             )}
           </div>
         );
+
       case "textarea-count":
-        // You can set either word-based or char-based limit
         const maxWords = getControlItem.maxWords || null;
-        const maxChars = getControlItem.maxChars || null;
-
-        const currentValue = value || "";
+        const text = value || "";
         const wordCount =
-          currentValue.trim() === ""
-            ? 0
-            : currentValue.trim().split(/\s+/).length;
-        const charCount = currentValue.length;
-
-        const isWordLimitExceeded = maxWords && wordCount > maxWords;
-        const isCharLimitExceeded = maxChars && charCount > maxChars;
+          text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
 
         return (
-          <div className="relative flex flex-col gap-1">
+          <div className="relative flex flex-col">
             <Textarea
               {...commonInputProps}
-              id={getControlItem.id || getControlItem.name}
               rows={4}
               onChange={(e) => {
                 const newVal = e.target.value;
-                if (maxWords) {
-                  const count =
-                    newVal.trim() === ""
-                      ? 0
-                      : newVal.trim().split(/\s+/).length;
-                  if (count > maxWords) return; // prevent exceeding words
-                }
-                if (maxChars && newVal.length > maxChars) return; // prevent exceeding chars
+                const count =
+                  newVal.trim() === ""
+                    ? 0
+                    : newVal.trim().split(/\s+/).length;
+                if (maxWords && count > maxWords) return;
+
                 setFormData((prev) =>
                   setNestedValue(prev, nameWithIndex, newVal)
                 );
               }}
             />
-
-            {/* Word count or char count */}
             {maxWords && (
               <span
                 className={`absolute bottom-[-16px] right-0 text-xs ${
-                  isWordLimitExceeded ? "text-red-500" : "text-gray-500"
-                } self-end`}
+                  wordCount > maxWords ? "text-red-500" : "text-gray-500"
+                }`}
               >
-                {wordCount} / {maxWords} words
-              </span>
-            )}
-            {maxChars && (
-              <span
-                className={`absolute bottom-[-16px] right-0 text-xs ${
-                  isCharLimitExceeded ? "text-red-500" : "text-gray-500"
-                } self-end`}
-              >
-                {charCount} / {maxChars} characters
+                {wordCount}/{maxWords} words
               </span>
             )}
           </div>
@@ -399,12 +467,11 @@ export default function CommonForm({
         return (
           <Textarea
             {...commonInputProps}
-            id={getControlItem.id || getControlItem.name}
             rows={4}
-            disabled={getControlItem.disabled || false}
+            disabled={getControlItem.disabled}
           />
         );
-      case "time":
+              case "time":
         return (
           <Input
             type="time"
@@ -416,13 +483,16 @@ export default function CommonForm({
                 setNestedValue(prev, nameWithIndex, event.target.value)
               )
             }
-            className={`bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 ${
-              errorMessage
-                ? "border-red-500 focus:border-red-500"
-                : "border-[#E2E2E2]"
-            } py-[10px] px-[16px] placeholder:text-[#9B959F]`}
+            className={`bg-background appearance-none flex placeholder:translate-y-[1px] 
+              text-black text-base rounded-[4px] border py-[10px] px-[16px]
+              ${
+                errorMessage
+                  ? "border-red-500"
+                  : "border-[#E2E2E2]"
+              }`}
           />
         );
+
       case "salary-range":
         const minSalary =
           getNestedValue(formData, `${nameWithIndex}.min`) || "";
@@ -430,15 +500,7 @@ export default function CommonForm({
           getNestedValue(formData, `${nameWithIndex}.max`) || "";
 
         const handleSalaryChange = (type, value) => {
-          // Remove all non-digits
-          let num = value.replace(/\D/g, "");
-
-          // Limit to 3 digits only
-          if (num.length > 3) {
-            num = num.slice(0, 3);
-          }
-
-          // Convert to number if not empty
+          let num = value.replace(/\D/g, "").slice(0, 3);
           num = num ? Number(num) : "";
 
           setFormData((prev) => {
@@ -455,26 +517,22 @@ export default function CommonForm({
               placeholder="Min Salary"
               value={minSalary}
               onChange={(e) => handleSalaryChange("min", e.target.value)}
-              min={0}
-              onWheel={(e) => e.currentTarget.blur()}
-              className={`bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 ${
+              className={`rounded-[4px] border py-[10px] px-[16px] ${
                 errors[`${nameWithIndex}.min`]
-                  ? "border-red-500 focus:border-red-500"
+                  ? "border-red-500"
                   : "border-[#E2E2E2]"
-              } py-[10px] px-[16px] placeholder:text-[#9B959F]`}
+              }`}
             />
             <Input
               type="number"
               placeholder="Max Salary"
               value={maxSalary}
               onChange={(e) => handleSalaryChange("max", e.target.value)}
-              min={0}
-              onWheel={(e) => e.currentTarget.blur()}
-              className={`bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none flex placeholder:translate-y-[1px] items-center justify-center text-black text-base focus:outline-none focus-visible:ring-0 focus:border-1 focus:border-black rounded-[4px] border-s-1 ${
+              className={`rounded-[4px] border py-[10px] px-[16px] ${
                 errors[`${nameWithIndex}.max`]
-                  ? "border-red-500 focus:border-red-500"
+                  ? "border-red-500"
                   : "border-[#E2E2E2]"
-              } py-[10px] px-[16px] placeholder:text-[#9B959F]`}
+              }`}
             />
           </div>
         );
@@ -493,7 +551,7 @@ export default function CommonForm({
             ? "application/pdf"
             : "";
 
-        const handleRemoveFile = () => {
+        const removeFile = () => {
           setFormData((prev) => setNestedValue(prev, nameWithIndex, ""));
         };
 
@@ -502,10 +560,9 @@ export default function CommonForm({
             <div className="relative w-full cursor-pointer">
               {!fileName && (
                 <Input
-                  id={getControlItem.name}
                   type="file"
                   accept={acceptType}
-                  className="absolute inset-0 opacity-0 cursor-pointer z-0 h-full w-full"
+                  className="absolute inset-0 opacity-0 cursor-pointer"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
@@ -515,16 +572,14 @@ export default function CommonForm({
                     const isValidSize = file.size <= 5 * 1024 * 1024;
 
                     let isValidType = false;
-                    if (getControlItem.accept === "image")
-                      isValidType = isImage;
-                    else if (getControlItem.accept === "pdf")
-                      isValidType = isPdf;
+                    if (getControlItem.accept === "image") isValidType = isImage;
+                    if (getControlItem.accept === "pdf") isValidType = isPdf;
 
                     if (!isValidType) {
                       alert(
                         getControlItem.accept === "image"
-                          ? "Only image files are allowed."
-                          : "Only PDF files are allowed."
+                          ? "Only images allowed."
+                          : "Only PDF allowed."
                       );
                       return;
                     }
@@ -534,48 +589,42 @@ export default function CommonForm({
                       return;
                     }
 
-                    handleUpload(file, (uploadedFileUrl) => {
+                    handleUpload(file, (uploadedUrl) => {
                       setFormData((prev) =>
-                        setNestedValue(prev, nameWithIndex, uploadedFileUrl)
+                        setNestedValue(prev, nameWithIndex, uploadedUrl)
                       );
                     });
                   }}
                 />
               )}
+
               <Label
-                htmlFor={!fileName ? getControlItem.name : undefined}
                 className={`flex items-center justify-between border ${
                   errorMessage ? "border-red-500" : "border-[#E2E2E2]"
-                } w-full rounded-[4px] py-[9px] px-[16px] cursor-pointer z-10`}
+                } rounded-[4px] py-[10px] px-[16px]`}
               >
-                <span
-                  className={`${
-                    fileName ? "text-black" : "text-[#9B959F]"
-                  } text-base truncate w-60`}
-                >
+                <span className="truncate w-60">
                   {fileName || getControlItem.placeholder || "Upload File"}
                 </span>
 
                 <span
-                  className="flex justify-center items-center"
+                  className="cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
-                    e.stopPropagation();
-                    if (fileName) handleRemoveFile();
+                    if (fileName) removeFile();
                   }}
                 >
                   {fileName ? (
-                    <X className="h-[15px] w-[15px] text-red-500 cursor-pointer" />
+                    <X className="h-[15px] w-[15px] text-red-500" />
                   ) : (
                     <Plus className="h-[15px] w-[15px]" />
                   )}
                 </span>
               </Label>
             </div>
-            <div className="absolute bottom-[-20px] left-0 text-xs text-[#655F5F]">
-              Supported formats:{" "}
-              {getControlItem.accept === "image" ? "Images only" : "PDF only"},{" "}
-              Max size: 5MB.
+
+            <div className="text-xs text-[#655F5F] absolute bottom-[-18px]">
+              Supported: {getControlItem.accept === "image" ? "Images" : "PDF"}, Max 5MB
             </div>
           </div>
         );
@@ -583,79 +632,58 @@ export default function CommonForm({
       case "calendar":
         const isValidDate = value && !isNaN(new Date(value).getTime());
         const [isOpen, setIsOpen] = useState(false);
+
         return (
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
               <div
-                onClick={() => setIsOpen(true)}
-                className={`self-stretch px-4 py-2.5 bg-white rounded outline ${
+                className={`px-4 py-2.5 bg-white rounded outline ${
                   errorMessage ? "outline-red-500" : "outline-neutral-200"
-                } inline-flex justify-start items-center gap-2 cursor-pointer`}
+                } cursor-pointer flex justify-between items-center`}
+                onClick={() => setIsOpen(true)}
               >
-                <div className="flex-1 self-stretch flex justify-start items-start gap-2.5">
-                  <div className="flex-1 justify-start text-neutral-400 text-sm font-normal leading-normal">
-                    {isValidDate ? (
-                      <span className="text-black">
-                        {new Date(value).toLocaleDateString("en-US", {
-                          month: "numeric",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </span>
-                    ) : (
-                      getControlItem.placeholder || "Select Date"
-                    )}
-                  </div>
-                </div>
-                <div className="w-5 h-5 relative overflow-hidden">
-                  <CalenderIcon className="h-full w-full" />
-                </div>
+                <span className="text-neutral-400 text-sm">
+                  {isValidDate
+                    ? new Date(value).toLocaleDateString("en-US")
+                    : getControlItem.placeholder || "Select Date"}
+                </span>
+
+                <CalenderIcon className="h-5 w-5" />
               </div>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-white" align="start">
+
+            <PopoverContent className="bg-white p-0">
               <Calendar
                 mode="single"
                 selected={isValidDate ? new Date(value) : undefined}
-                defaultMonth={isValidDate ? new Date(value) : undefined}
-                captionLayout="dropdown"
                 onSelect={(date) => {
                   setFormData((prev) =>
                     setNestedValue(
                       prev,
                       nameWithIndex,
-                      date
-                        ? new Date(
-                            Date.UTC(
-                              date.getFullYear(),
-                              date.getMonth(),
-                              date.getDate()
-                            )
-                          ).toISOString()
-                        : ""
+                      date ? date.toISOString() : ""
                     )
                   );
                   setIsOpen(false);
                 }}
-                className="rounded-md border shadow bg-white calendar"
-                initialFocus
+                className="rounded-md border shadow bg-white"
               />
             </PopoverContent>
           </Popover>
         );
-      case "multi-select":
-        const selectedItems = value || [];
 
+      case "multi-select":
         return (
           <MultiSelectField
-            value={selectedItems}
+            value={value || []}
             max={getControlItem.max}
             options={getControlItem.options || []}
-            onChange={(updatedItems) =>
+            onChange={(updated) =>
               setFormData((prev) =>
-                setNestedValue(prev, getControlItem.name, updatedItems)
+                setNestedValue(prev, nameWithIndex, updated)
               )
             }
-            placeholder={getControlItem.placeholder || "Select options..."}
+            placeholder={getControlItem.placeholder}
             errorMessage={errorMessage}
           />
         );
@@ -672,34 +700,33 @@ export default function CommonForm({
                 )
               }
             />
-            <Label
-              htmlFor={getControlItem.name}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              {getControlItem.label}
-            </Label>
+            <Label htmlFor={getControlItem.name}>{getControlItem.label}</Label>
           </div>
         );
 
       default:
-        return <Input {...commonInputProps} type={getControlItem.type} />;
+        return <Input {...commonInputProps} />;
     }
   }
-
-  return (
+ return (
     <div key={i} className="w-full">
       <div className="flex flex-col gap-[18px] max-sm:gap-[10px]">
+
         {formControls.map((controlItem, index) => {
+          
+          // ---------------------------------------------------
+          // ROW FIELDS (like city, state, pincode)
+          // ---------------------------------------------------
           if (controlItem.row) {
             return (
               <div
                 key={index}
                 className="flex gap-[8px] w-full flex-wrap justify-end items-end"
               >
-                {controlItem.row.map((item, i) => (
+                {controlItem.row.map((item, subIndex) => (
                   <div
                     key={item.name}
-                    className={`gap-[8px] flex-2/3 lg:flex-1`}
+                    className="gap-[8px] flex-2/3 lg:flex-1"
                   >
                     <div
                       className={`flex flex-col gap-[8px] ${
@@ -707,40 +734,47 @@ export default function CommonForm({
                       }`}
                     >
                       {item.label && (
-                        <Label className="text-base gap-1 text-[#20102B] font-semibold">
+                        <Label className="text-base text-[#20102B] font-semibold">
                           {item.label}
                           {item.required && (
                             <span className="text-red-500 text-[14px]">*</span>
                           )}
                         </Label>
                       )}
-                      {renderInputsByComponentType(item, i)}
+
+                      {/* Render actual field */}
+                      {renderInputsByComponentType(item, subIndex)}
                     </div>
                   </div>
                 ))}
               </div>
             );
-          } else {
-            return (
-              <div
-                key={controlItem.name}
-                className={`flex flex-col gap-[8px] ${
-                  controlItem.componentType === "file" ? "mb-2" : ""
-                }`}
-              >
-                {controlItem.label && (
-                  <Label className="text-base gap-1 text-[#20102B] font-semibold">
-                    {controlItem.label}
-                    {controlItem.required && (
-                      <span className="text-red-500 text-[14px]">*</span>
-                    )}
-                  </Label>
-                )}
-                {renderInputsByComponentType(controlItem, index)}
-              </div>
-            );
           }
+
+          // ---------------------------------------------------
+          // SINGLE FIELDS
+          // ---------------------------------------------------
+          return (
+            <div
+              key={controlItem.name}
+              className={`flex flex-col gap-[8px] ${
+                controlItem.componentType === "file" ? "mb-2" : ""
+              }`}
+            >
+              {controlItem.label && (
+                <Label className="text-base text-[#20102B] font-semibold">
+                  {controlItem.label}
+                  {controlItem.required && (
+                    <span className="text-red-500 text-[14px]">*</span>
+                  )}
+                </Label>
+              )}
+
+              {renderInputsByComponentType(controlItem, index)}
+            </div>
+          );
         })}
+
       </div>
     </div>
   );

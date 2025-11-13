@@ -69,36 +69,46 @@ export const experienceDetailSchema = z
     }
   });
 
-export const formDataSchema = z.object({
-  noticePeriod: z
-    .union([
-      z.number().min(0, "Notice period must be a non-negative number"),
-      z.null(),
-    ])
-    .optional(),
+export const formDataSchema = z
+  .object({
+    noticePeriod: z
+      .union([
+        z.number().min(0, "Notice period must be a non-negative number"),
+        z.null(),
+      ])
+      .optional(),
 
-  totalExperience: z
-    .number({ required_error: "Total experience is required" })
-    .min(0, "Total experience must be a non-negative number"),
+    totalExperience: z
+      .number({ required_error: "Total experience is required" })
+      .min(0, "Total experience must be a non-negative number"),
 
-  totalExperienceInMonth: z
-    .number({ required_error: "Total experience in months is required" })
-    .min(0, "Total experience in months must be non-negative"),
+    totalExperienceInMonth: z
+      .number({ required_error: "Total experience in months is required" })
+      .min(0, "Total experience in months must be non-negative"),
 
-  currentSalary: z
-    .number({ required_error: "Current salary is required" })
-    .min(0, "Current salary must be a non-negative number"),
+    currentSalary: z
+      .number({ required_error: "Current salary is required" })
+      .min(0, "Current salary must be a non-negative number"),
 
-  expectedSalary: z
-    .number({ required_error: "Expected salary is required" })
-    .min(0, "Expected salary must be a non-negative number"),
+    expectedSalary: z
+      .number({ required_error: "Expected salary is required" })
+      .min(0, "Expected salary must be a non-negative number"),
 
-  currentIndustry: z.string().min(1, "Current Sector is required"),
+    currentIndustry: z.string().min(1, "Current Sector is required"),
 
-  experienceDetails: z
-    .array(experienceDetailSchema)
-    .min(1, "At least one experience entry is required"),
-});
+    experienceDetails: z
+      .array(experienceDetailSchema)
+      .min(1, "At least one experience entry is required"),
+  })
+
+  // 🔥 Add THIS validation here
+  .refine(
+    (data) => Number(data.expectedSalary) > Number(data.currentSalary),
+    {
+      path: ["expectedSalary"],
+      message: "Expected salary must be greater than current salary",
+    }
+  );
 
 const CandidateReleventDetails = () => {
   const [showPage, setShowPage] = useState(false);
